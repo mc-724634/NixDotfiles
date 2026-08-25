@@ -1,0 +1,11 @@
+[Applications][org.gnome.Boxes]
+Seen=true
+
+[Applications][vesktop]
+Seen=true
+
+[DoNotDisturb]
+WhenFullscreen=false
+
+[Notifications]
+PopupPosition=TopCenter
