@@ -1,55 +1,44 @@
-{ config, pkgs, ... }:
-
+{ config, pkgs, lib, ... }:
 {
   # KDE configuration
-  xdg.configFile = {
-    "kdeglobals" = {
-      source = ../extras/kde/configs/kdeglobals;
-      force = true;
-    };
-
-    "kwinrc" = {
-      source = ../extras/kde/configs/kwinrc;
-      force = true;
-    };
-
-    "plasma-localerc" = {
-      source = ../extras/kde/configs/plasma-localerc;
-      force = true;
-    };
-
-    "plasmanotifyrc" = {
-      source = ../extras/kde/configs/plasmanotifyrc;
-      force = true;
-    };
-
-    "plasmarc" = {
-      source = ../extras/kde/configs/plasmarc;
-      force = true;
-    };
-
-    "plasmashellrc" = {
-      source = ../extras/kde/configs/plasmashellrc;
-      force = true;
-    };
-  };
-
-  # Plasma desktop/panel layout
   #
-  # This is intentionally NOT managed as a permanent symlink because
-  # Plasma needs to modify this file while you use the desktop.
-  # We only seed it on a fresh installation.
-  home.activation.seedPlasmaLayout =
-    config.lib.dag.entryAfter [ "writeBoundary" ] ''
-      if [ ! -e "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" ]; then
-        mkdir -p "$HOME/.config"
-
-        cp ${../extras/kde/configs/plasma-org.kde.plasma.desktop-appletsrc} \
-          "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
-
-        chmod 600 "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
-      fi
-    '';
+  # These rc files are all things KDE actively reads AND rewrites during
+  # normal use (theme application, window-manager state, per-output/per-screen
+  # geometry, notification history, etc). Force-symlinking them into the Nix
+  # store worked fine as long as every machine had identical hardware, but it
+  # breaks on a VM: KWin/Plasma detect a different display (different EDID,
+  # output name, screen count) than whatever was baked into these files on
+  # the original machine, and because the files are locked read-only symlinks,
+  # KWin can't self-correct like it normally would. Result: panels missing,
+  # theme not applying, output/scaling settings wrong.
+  #
+  # Fix: seed each file once on first login (so a fresh VM/install still gets
+  # your intended defaults), then leave it alone so KDE can freely rewrite it
+  # to match whatever hardware it's actually running on. This is the same
+  # pattern already used below for the Plasma applets layout.
+  home.activation.seedKdeConfig =
+    config.lib.dag.entryAfter [ "writeBoundary" ] (
+      let
+        seeds = [
+          { dest = "kdeglobals";       src = ../extras/kde/configs/kdeglobals; }
+          { dest = "kwinrc";           src = ../extras/kde/configs/kwinrc; }
+          { dest = "plasma-localerc";  src = ../extras/kde/configs/plasma-localerc; }
+          { dest = "plasmanotifyrc";   src = ../extras/kde/configs/plasmanotifyrc; }
+          { dest = "plasmarc";         src = ../extras/kde/configs/plasmarc; }
+          { dest = "plasmashellrc";    src = ../extras/kde/configs/plasmashellrc; }
+          { dest = "plasma-org.kde.plasma.desktop-appletsrc";
+            src = ../extras/kde/configs/plasma-org.kde.plasma.desktop-appletsrc; }
+        ];
+        seedOne = { dest, src }: ''
+          if [ ! -e "$HOME/.config/${dest}" ]; then
+            mkdir -p "$HOME/.config"
+            cp ${src} "$HOME/.config/${dest}"
+            chmod 600 "$HOME/.config/${dest}"
+          fi
+        '';
+      in
+        lib.concatStringsSep "\n" (map seedOne seeds)
+    );
 
   # KDE color scheme
   xdg.dataFile."color-schemes/CatppuccinMacchiatoFlamingo.colors" = {
