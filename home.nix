@@ -47,7 +47,7 @@ in
     klassy
     easyeffects
     krita
-    inputs.appgrid.packages.${pkgs.system}.default
+    inputs.appgrid.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage

@@ -18,6 +18,7 @@
 
     appgrid.url =
       "github:xarbit/plasma6-applet-appgrid";
+    appgrid.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs@{
@@ -30,26 +31,20 @@
   }:
     let
       lib = nixpkgs.lib;
-      system = "x86_64-linux";
-
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-
-        overlays = [
-          helium-flake.overlays.default
-        ];
-      };
     in {
       nixosConfigurations = {
         nixos = lib.nixosSystem {
-          inherit system;
-
+          # No `system = ...` here anymore — passing `system` straight into
+          # nixosSystem is the deprecated antipattern that produced the
+          # evaluation warning. Setting nixpkgs.hostPlatform as a module
+          # value below is the current, non-deprecated way to declare it.
           specialArgs = {
             inherit helium-flake;
           };
 
           modules = [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
+
             ./configuration.nix
 
             home-manager.nixosModules.home-manager

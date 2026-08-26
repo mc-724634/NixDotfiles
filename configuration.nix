@@ -35,7 +35,6 @@
   # Use latest zen kernel.
   boot.kernelPackages = pkgs.linuxPackages_zen;
 
-
   boot.kernelParams = [
     "amdgpu.ppfeaturemask=0xffffffff"
     "quiet"
@@ -59,7 +58,7 @@
   networking.networkmanager.enable = true;
 
   hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true; 
+  hardware.bluetooth.powerOnBoot = true;
 
   networking.firewall = {
     enable = true;
@@ -70,29 +69,22 @@
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
+  # Note: extraLocaleSettings removed — every LC_* category was being set to the
+  # exact same value as defaultLocale, which is what those categories already
+  # inherit by default. Pure redundancy, no behavior change from removing it.
 
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
-
-  };
-
-    zramSwap = {
+  zramSwap = {
     enable = true;
     algorithm = "zstd";
     memoryPercent = 100;
     memoryMax = 8 * 1024 * 1024 * 1024; # 8 GiB
   };
 
-    boot.kernel.sysctl = {
-    "vm.swappiness" = 15;
+  # zram is compressed RAM, not disk — it's fast enough that the kernel should
+  # be encouraged to use it, not avoid it. 15 was tuned for disk-swap avoidance;
+  # kernel docs recommend well above the 60 default (100+) once swap is in-memory.
+  boot.kernel.sysctl = {
+    "vm.swappiness" = 100;
   };
 
   hardware.graphics = {
@@ -113,7 +105,7 @@
 
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
    konsole
-  ]; 
+  ];
 
   programs.gamemode.enable = true;
 
@@ -224,7 +216,7 @@
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # on your system were taken. It's perfectly fine and recommended to leave
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
@@ -235,7 +227,13 @@
     dates = "weekly";
     options = "--delete-older-than 14d";
   };
-nix.settings.auto-optimise-store = true;
+
+  # Swapped auto-optimise-store for a scheduled optimise pass: the old setting
+  # ran store optimisation (hardlinking) after every single build, which adds
+  # real overhead when building large packages (blender, godot, steam, etc.).
+  # This gets you the same disk savings on a weekly cadence instead.
+  nix.optimise.automatic = true;
+  nix.optimise.dates = [ "weekly" ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
