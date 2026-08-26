@@ -107,7 +107,7 @@ in
     };
   };
 
-  programs.plasma = {
+    programs.plasma = {
     enable = true;
 
     workspace = {
@@ -364,7 +364,6 @@ in
     };
 
     configFile = {
-
       kdeglobals.General.ColorScheme = "CatppuccinMacchiatoFlamingo";
       kdeglobals.General.AccentColor = "138,173,244";
       kdeglobals.General.LastUsedCustomAccentColor = "138,173,244";
@@ -372,8 +371,6 @@ in
 
       kscreenlockerrc."Greeter/Wallpaper/org.kde.image/General".Image = "file://${config.home.homeDirectory}/.local/share/wallpapers/cat-vibin.png";
       kscreenlockerrc."Greeter/Wallpaper/org.kde.image/General".PreviewImage = "file://${config.home.homeDirectory}/.local/share/wallpapers/cat-vibin.png";
-
-      kdeglobals.Sounds.Theme = "modern-minimal-ui-sounds-v1.2";
 
       kwinrc."org.kde.kdecoration2".theme = "Klassy";
       kwinrc."org.kde.kdecoration2".library = "org.kde.klassy";
