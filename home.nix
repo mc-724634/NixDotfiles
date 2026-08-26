@@ -7,25 +7,15 @@ in
 {
   imports = [
     spicetify-nix.homeManagerModules.default
+    inputs.plasma-manager.homeModules.plasma-manager
     ./modules/kde.nix
     ./modules/fastfetch.nix
   ];
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
+
   home.username = "mc";
   home.homeDirectory = "/home/mc";
+  home.stateVersion = "26.05";
 
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  #
-  # You should not change this value, even if you update Home Manager. If you do
-  # want to update the value, then make sure to first check the Home Manager
-  # release notes.
-  home.stateVersion = "26.05"; # Please read the comment before changing.
-
-  # The home.packages option allows you to install Nix packages into your
-  # environment.
   home.packages = with pkgs; [
     git
     wget
@@ -50,26 +40,6 @@ in
     inputs.appgrid.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
-  #home.file.
-
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. These will be explicitly sourced when using a
-  # shell provided by Home Manager. If you don't want to manage your shell
-  # through Home Manager then you have to manually source 'hm-session-vars.sh'
-  # located at either
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/mc/etc/profile.d/hm-session-vars.sh
-  #
   home.sessionVariables = {
     # EDITOR = "emacs";
   };
@@ -80,10 +50,8 @@ in
     in
     {
       enable = true;
-
       theme = spicePkgs.themes.catppuccin;
       colorScheme = "macchiato";
-
       enabledExtensions = with spicePkgs.extensions; [
         shuffle
         beautifulLyrics
@@ -96,35 +64,24 @@ in
   programs.zsh = {
     enable = true;
     shellAliases = shellAliases;
-
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-
     oh-my-zsh = {
       enable = true;
-      plugins = [
-        "git"
-      ];
+      plugins = [ "git" ];
     };
   };
 
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
-
-    presets = [
-      "catppuccin-powerline"
-    ];
-  
-  settings = {
-    line_break.disabled = false;
-    
-  
-    os = {
-      disabled = false;
-
-      symbols = {
-        NixOS = " ";
+    presets = [ "catppuccin-powerline" ];
+    settings = {
+      line_break.disabled = false;
+      os = {
+        disabled = false;
+        symbols = {
+          NixOS = " ";
         };
       };
     };
@@ -133,13 +90,65 @@ in
   programs.kitty = {
     enable = true;
     themeFile = "Catppuccin-Macchiato";
-  
     font = {
       name = "Hack";
       size = 12;
     };
   };
 
-  # Let Home Manager install and manage itself.
+  programs.plasma = {
+    enable = true;
+
+    workspace = {
+      iconTheme = "Papirus-Dark";
+      cursor.theme = "Bibata-Catppuccin-Macchiato";
+      wallpaper = "${config.home.homeDirectory}/.local/share/wallpapers/cat-vibin.png";
+    };
+
+    shortcuts = {
+      ksmserver."Lock Session" = [ "Meta+L" "Screensaver" ];
+      "services/helium.desktop".new-window = "Meta+W";
+      "services/helium.desktop".new-private-window = "Meta+Ctrl+W";
+      "services/kitty.desktop"._launch = "Meta+T";
+    };
+
+    configFile = {
+      kdeglobals.General.ColorScheme = "CatppuccinMacchiatoFlamingo";
+      kdeglobals.General.AccentColor = "138,173,244";
+      kdeglobals.General.LastUsedCustomAccentColor = "138,173,244";
+
+      kdeglobals.Sounds.Theme = "modern-minimal-ui-sounds-v1.2";
+
+      kwinrc."org.kde.kdecoration2".theme = "Klassy";
+      kwinrc."org.kde.kdecoration2".BorderSize = "None";
+      kwinrc."org.kde.kdecoration2".BorderSizeAuto = false;
+      kwinrc."org.kde.kdecoration2".ButtonsOnLeft = "MFS";
+      kwinrc."org.kde.kdecoration2".ButtonsOnRight = "HIAX";
+
+      kwinrc.Windows.FocusPolicy = "FocusFollowsMouse";
+      kwinrc.Windows.NextFocusPrefersMouse = true;
+      kwinrc.Windows.DelayFocusInterval = 50;
+
+      kwinrc.Xwayland.Scale = 1;
+      kwinrc.Plugins.fadedesktopEnabled = true;
+      kwinrc.Plugins.slideEnabled = false;
+      kwinrc.Effect-fadedesktop.AnimationDuration = 100;
+      kwinrc.Effect-overview.BorderActivate = 9;
+      kwinrc.Desktops.Number = 2;
+      kwinrc.Desktops.Rows = 1;
+
+      plasma-localerc.Formats.LANG = "en_US.UTF-8";
+      plasmanotifyrc.Notifications.PopupPosition = "TopCenter";
+
+      ksplashrc.KSplash.Engine = "none";
+      ksplashrc.KSplash.Theme = "None";
+      ksmserverrc.General.loginMode = "emptySession";
+      kiorc.Confirmations.ConfirmDelete = true;
+
+      spectaclerc.ImageSave.translatedScreenshotsFolder = "Screenshots";
+      spectaclerc.VideoSave.translatedScreencastsFolder = "Screencasts";
+    };
+  };
+
   programs.home-manager.enable = true;
 }

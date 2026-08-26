@@ -19,6 +19,10 @@
     appgrid.url =
       "github:xarbit/plasma6-applet-appgrid";
     appgrid.inputs.nixpkgs.follows = "nixpkgs";
+
+    plasma-manager.url = "github:nix-community/plasma-manager";
+    plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
+    plasma-manager.inputs.home-manager.follows = "home-manager";
   };
 
   outputs = inputs@{
@@ -34,10 +38,6 @@
     in {
       nixosConfigurations = {
         nixos = lib.nixosSystem {
-          # No `system = ...` here anymore — passing `system` straight into
-          # nixosSystem is the deprecated antipattern that produced the
-          # evaluation warning. Setting nixpkgs.hostPlatform as a module
-          # value below is the current, non-deprecated way to declare it.
           specialArgs = {
             inherit helium-flake;
           };

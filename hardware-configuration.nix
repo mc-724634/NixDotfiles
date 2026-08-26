@@ -16,6 +16,7 @@
   fileSystems."/" =
     { device = "/dev/mapper/luks-bf6cf5c5-2572-48ec-ac11-70b12ae93142";
       fsType = "btrfs";
+      options = [ "compress=zstd" ];
     };
 
   boot.initrd.luks.devices."luks-bf6cf5c5-2572-48ec-ac11-70b12ae93142".device = "/dev/disk/by-uuid/bf6cf5c5-2572-48ec-ac11-70b12ae93142";
