@@ -81,7 +81,7 @@ in
       os = {
         disabled = false;
         symbols = {
-          NixOS = " ";
+          NixOS = "";
         };
       };
     };

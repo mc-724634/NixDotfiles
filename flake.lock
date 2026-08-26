@@ -94,6 +94,22 @@
         "type": "indirect"
       }
     },
+    "plasma-gnome-pager-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782427693,
+        "narHash": "sha256-Ey3uJdGndxDTGvkgnJkyWWrC1wTCys+6pqLxc2RQUrw=",
+        "owner": "KenanSalar",
+        "repo": "plasma-gnome-pager",
+        "rev": "db475cef4a3eea30d7461e0337532e9223356f3a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "KenanSalar",
+        "repo": "plasma-gnome-pager",
+        "type": "github"
+      }
+    },
     "plasma-manager": {
       "inputs": {
         "home-manager": [
@@ -123,8 +139,10 @@
         "helium-flake": "helium-flake",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
+        "plasma-gnome-pager-src": "plasma-gnome-pager-src",
         "plasma-manager": "plasma-manager",
-        "spicetify-nix": "spicetify-nix"
+        "spicetify-nix": "spicetify-nix",
+        "split-clock-src": "split-clock-src"
       }
     },
     "spicetify-nix": {
@@ -145,6 +163,22 @@
       "original": {
         "owner": "Gerg-L",
         "repo": "spicetify-nix",
+        "type": "github"
+      }
+    },
+    "split-clock-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787681521,
+        "narHash": "sha256-v5Z9C0TvT8QyoDcTaKcwDwyO3udEs+Wv/o+ztyALg1w=",
+        "owner": "PlasmaDrifter",
+        "repo": "Widget-simplesplitclock",
+        "rev": "47e9cd6adc62f5d2ac192eb0133954d92fe93076",
+        "type": "github"
+      },
+      "original": {
+        "owner": "PlasmaDrifter",
+        "repo": "Widget-simplesplitclock",
         "type": "github"
       }
     },
