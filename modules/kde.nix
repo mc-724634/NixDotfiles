@@ -20,7 +20,7 @@ let
     installPhase = ''
       mkdir -p $out/share/plasma/plasmoids
       pkgdir=$(dirname "$(find . -name metadata.json | head -n1)")
-      cp -r "$pkgdir" "$out/share/plasma/plasmoids/split-clock"
+      cp -r "$pkgdir" "$out/share/plasma/plasmoids/local.widget.simplesplitclock"
     '';
   };
 in
