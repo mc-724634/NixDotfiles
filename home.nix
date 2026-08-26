@@ -376,6 +376,7 @@ in
       kdeglobals.Sounds.Theme = "modern-minimal-ui-sounds-v1.2";
 
       kwinrc."org.kde.kdecoration2".theme = "Klassy";
+      kwinrc."org.kde.kdecoration2".library = "org.kde.klassy";
       kwinrc."org.kde.kdecoration2".BorderSize = "None";
       kwinrc."org.kde.kdecoration2".BorderSizeAuto = false;
       kwinrc."org.kde.kdecoration2".ButtonsOnLeft = "MFS";
