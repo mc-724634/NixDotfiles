@@ -81,9 +81,11 @@ in
     settings = {
       line_break.disabled = false;
 
-      os.disabled = false;
-      os.symbols = {
-        "NixOS" = "";
+      os = {
+        disabled = false;
+        symbols = {
+          nix = "";
+        };
       };
     };
   };
