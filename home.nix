@@ -72,20 +72,22 @@ in
     };
   };
 
-  programs.starship = {
-    enable = true;
-    enableZshIntegration = true;
-    presets = [ "catppuccin-powerline" ];
+programs.starship = {
+  enable = true;
+  enableZshIntegration = true;
+  presets = [ "catppuccin-powerline" ];
 
-    settings = {
-      line_break.disabled = false;
+  settings = {
+    line_break.disabled = false;
 
-      os.disabled = false;
-      os.symbols = {
-        nix = "";
+    os = {
+      disabled = false;
+      symbols = {
+        NixOS = "";
       };
     };
   };
+};
 
   programs.kitty = {
     enable = true;
