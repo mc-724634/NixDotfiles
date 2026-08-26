@@ -1,5 +1,32 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
+let
+  plasmaGnomePager = pkgs.stdenvNoCC.mkDerivation {
+    pname = "plasma-gnome-pager";
+    version = "unstable";
+    src = inputs.plasma-gnome-pager-src;
+    dontBuild = true;
+    installPhase = ''
+      mkdir -p $out/share/plasma/plasmoids
+      pkgdir=$(dirname "$(find . -name metadata.json | head -n1)")
+      cp -r "$pkgdir" "$out/share/plasma/plasmoids/com.github.kenansalar.plasma-gnome-pager"
+    '';
+  };
+
+  splitClock = pkgs.stdenvNoCC.mkDerivation {
+    pname = "split-clock";
+    version = "unstable";
+    src = inputs.split-clock-src;
+    dontBuild = true;
+    installPhase = ''
+      mkdir -p $out/share/plasma/plasmoids
+      pkgdir=$(dirname "$(find . -name metadata.json | head -n1)")
+      cp -r "$pkgdir" "$out/share/plasma/plasmoids/split-clock"
+    '';
+  };
+in
 {
+  home.packages = [ plasmaGnomePager splitClock ];
+
   home.activation.seedKdeConfig =
     config.lib.dag.entryAfter [ "writeBoundary" ] (
       let

@@ -23,6 +23,16 @@
     plasma-manager.url = "github:nix-community/plasma-manager";
     plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
     plasma-manager.inputs.home-manager.follows = "home-manager";
+
+    plasma-gnome-pager-src = {
+      url = "github:KenanSalar/plasma-gnome-pager";
+      flake = false;
+    };
+
+    split-clock-src = {
+      url = "github:PlasmaDrifter/Widget-simplesplitclock";
+      flake = false;
+    };
   };
 
   outputs = inputs@{
