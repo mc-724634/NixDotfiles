@@ -200,6 +200,7 @@
     wayvr
     xrizer
     sbctl
+    unrar
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
