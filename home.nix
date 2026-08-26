@@ -75,14 +75,15 @@ in
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
+
     presets = [ "catppuccin-powerline" ];
+
     settings = {
       line_break.disabled = false;
-    os = {
-      disabled = false;
-      symbols = {
-        nix = "";
-      };
+
+      os.disabled = false;
+      os.symbols = {
+        "NixOS" = "";
       };
     };
   };
