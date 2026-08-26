@@ -47,8 +47,8 @@
   };
 
   # KDE icons
-  xdg.dataFile."icons/Papirus-Light" = {
-    source = ../extras/kde/icons/Papirus-Light;
+  xdg.dataFile."icons/Papirus-Dark" = {
+    source = ../extras/kde/icons/Papirus-Dark;
     force = true;
   };
 
@@ -69,4 +69,15 @@
     source = ../extras/kde/wallpapers/cat-vibin.png;
     force = true;
   };
+
+  xdg.dataFile."plasma/look-and-feel/org.mc.desktoptheme" = {
+    source = ../extras/kde/look-and-feel/org.mc.desktoptheme;
+    recursive = true;
+    force = true;
+  };
+
+  home.activation.applyGlobalTheme =
+    config.lib.dag.entryAfter [ "seedKdeConfig" ] ''
+      ${pkgs.kdePackages.plasma-workspace}/bin/plasma-apply-lookandfeel --apply org.mc.desktoptheme || true
+    '';
 }

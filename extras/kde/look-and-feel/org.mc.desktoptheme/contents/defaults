@@ -1,0 +1,11 @@
+[kdeglobals][General]
+ColorScheme=CatppuccinMacchiatoFlamingo
+
+[kdeglobals][Icons]
+Theme=Papirus-Dark
+
+[kdeglobals][Sounds]
+Theme=modern-minimal-ui-sounds-v1.2
+
+[Wallpaper]
+Image=cat-vibin
