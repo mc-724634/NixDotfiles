@@ -35,10 +35,12 @@ in
           { dest = "plasmashellrc"; src = ../extras/kde/configs/plasmashellrc; }
           { dest = "plasma-org.kde.plasma.desktop-appletsrc";
             src = ../extras/kde/configs/plasma-org.kde.plasma.desktop-appletsrc; }
+          { dest = "klassy/klassyrc"; src = ../extras/kde/klassy/klassyrc; }
+          { dest = "klassy/windecopresetsrc"; src = ../extras/kde/klassy/windecopresetsrc; }
         ];
         seedOne = { dest, src }: ''
           if [ ! -e "$HOME/.config/${dest}" ]; then
-            mkdir -p "$HOME/.config"
+            mkdir -p "$(dirname "$HOME/.config/${dest}")"
             cp ${src} "$HOME/.config/${dest}"
             chmod 600 "$HOME/.config/${dest}"
           fi
@@ -49,11 +51,6 @@ in
 
   xdg.dataFile."color-schemes/CatppuccinMacchiatoFlamingo.colors" = {
     source = ../extras/kde/themes/CatppuccinMacchiatoFlamingo.colors;
-    force = true;
-  };
-
-  xdg.dataFile."icons/Papirus-Dark" = {
-    source = ../extras/kde/icons/Papirus-Dark;
     force = true;
   };
 

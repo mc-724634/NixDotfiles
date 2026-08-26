@@ -1,0 +1,13 @@
+[ButtonColors]
+CloseButtonIconColorActive=AsSelected
+CloseButtonIconColorInactive=AsSelected
+
+[Global]
+LookAndFeelSet=org.mc.desktoptheme
+RefreshedConfig=6.5.3
+
+[ShadowStyle]
+ShadowColor=24,25,38
+
+[Windeco]
+ButtonIconStyle=StyleSystemIconTheme
