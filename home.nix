@@ -78,11 +78,11 @@ in
     presets = [ "catppuccin-powerline" ];
     settings = {
       line_break.disabled = false;
-      os = {
-        disabled = false;
-        symbols = {
-          NixOS = "";
-        };
+    os = {
+      disabled = false;
+      symbols = {
+        nix = "";
+      };
       };
     };
   };
