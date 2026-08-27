@@ -39,6 +39,9 @@ in
     krita
     inputs.appgrid.packages.${pkgs.stdenv.hostPlatform.system}.default
     pkgs.papirus-icon-theme
+    kdePackages.partitionmanager
+    gnome-boxes
+    kamoso
   ];
 
   home.file = {

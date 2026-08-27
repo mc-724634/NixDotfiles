@@ -189,8 +189,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     zsh
-    kdePackages.partitionmanager
-    gnome-boxes
     wayvr
     xrizer
     sbctl
