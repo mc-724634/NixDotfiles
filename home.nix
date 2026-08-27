@@ -41,7 +41,7 @@ in
     pkgs.papirus-icon-theme
     kdePackages.partitionmanager
     gnome-boxes
-    kamoso
+    kdePackages.kamoso
   ];
 
   home.file = {
