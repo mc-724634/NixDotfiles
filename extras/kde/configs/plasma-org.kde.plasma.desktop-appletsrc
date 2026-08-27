@@ -57,7 +57,7 @@ DialogHeight=630
 DialogWidth=810
 
 [Containments][48][Applets][49][Configuration][General]
-customButtonImage=0ad
+customButtonImage=distributor-logo-nixos
 useCustomButtonImage=true
 
 [Containments][48][Applets][50]

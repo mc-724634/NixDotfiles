@@ -393,6 +393,7 @@ in
 
       plasma-localerc.Formats.LANG = "en_US.UTF-8";
       plasmanotifyrc.Notifications.PopupPosition = "TopCenter";
+      plasmanotifyrc.DoNotDisturb.WhenFullscreen = false;
 
       ksplashrc.KSplash.Engine = "none";
       ksplashrc.KSplash.Theme = "None";
