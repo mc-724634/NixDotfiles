@@ -40,10 +40,6 @@ DialogWidth=810
 fontColor=202,211,245
 fontSize=28
 
-[Containments][48][Applets][101][Configuration]
-popupHeight=432
-popupWidth=433
-
 [Containments][48][Applets][49]
 immutability=1
 plugin=dev.xarbit.appgrid

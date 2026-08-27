@@ -31,7 +31,6 @@ in
     config.lib.dag.entryAfter [ "writeBoundary" ] (
       let
         seeds = [
-          { dest = "kwinrc"; src = ../extras/kde/configs/kwinrc; }
           { dest = "plasmashellrc"; src = ../extras/kde/configs/plasmashellrc; }
           { dest = "plasma-org.kde.plasma.desktop-appletsrc";
             src = ../extras/kde/configs/plasma-org.kde.plasma.desktop-appletsrc; }
