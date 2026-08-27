@@ -33,6 +33,7 @@ in
     retroarch
     steam-rom-manager
     vscode
+    python3
     orca-slicer
     klassy
     easyeffects
