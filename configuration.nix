@@ -142,12 +142,6 @@
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.plasma-login-manager.enable = true;
 
-  services.displayManager.plasma-login-manager.settings = {
-    "Greeter/Wallpaper/org.kde.image/General" = {
-      Image = "file://${./extras/kde/wallpapers/cat-vibin.png}";
-    };
-  };
-
   services.desktopManager.plasma6.enable = true;
 
   # Configure keymap in X11
