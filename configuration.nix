@@ -131,6 +131,8 @@
 
   programs.partition-manager.enable = true;
 
+  programs.nix-ld.enable = true;
+
   services.hardware.openrgb = {
     enable = true;
     package = pkgs.openrgb-with-all-plugins; # optional, gets you extra device plugins
