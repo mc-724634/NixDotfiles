@@ -32,7 +32,7 @@ in
     dolphin-emu
     retroarch
     steam-rom-manager
-    vscodium
+    vscode
     orca-slicer
     klassy
     easyeffects
