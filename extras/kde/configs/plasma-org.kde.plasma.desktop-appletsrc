@@ -28,6 +28,22 @@ location=5
 plugin=org.kde.panel
 wallpaperplugin=org.kde.image
 
+[Containments][48][Applets][100]
+immutability=1
+plugin=local.widget.simplesplitclock
+
+[Containments][48][Applets][100][Configuration][ConfigDialog]
+DialogHeight=630
+DialogWidth=810
+
+[Containments][48][Applets][100][Configuration][General]
+fontColor=202,211,245
+fontSize=28
+
+[Containments][48][Applets][101][Configuration]
+popupHeight=432
+popupWidth=433
+
 [Containments][48][Applets][49]
 immutability=1
 plugin=dev.xarbit.appgrid
@@ -41,7 +57,7 @@ DialogHeight=630
 DialogWidth=810
 
 [Containments][48][Applets][49][Configuration][General]
-customButtonImage=distributor-logo-nixos
+customButtonImage=0ad
 useCustomButtonImage=true
 
 [Containments][48][Applets][50]
@@ -55,18 +71,6 @@ DialogWidth=810
 [Containments][48][Applets][50][Configuration][General]
 dynamicWorkspaces=true
 pillClickAction=3
-
-[Containments][48][Applets][51]
-immutability=1
-plugin=split-clock
-
-[Containments][48][Applets][51][Configuration]
-popupHeight=450
-popupWidth=560
-
-[Containments][48][Applets][51][Configuration][ConfigDialog]
-DialogHeight=630
-DialogWidth=810
 
 [Containments][48][Applets][52]
 activityId=
@@ -172,12 +176,8 @@ plugin=org.kde.plasma.panelspacer
 immutability=1
 plugin=org.kde.plasma.panelspacer
 
-[Containments][48][Applets][99]
-immutability=1
-plugin=org.kde.plasma.marginsseparator
-
 [Containments][48][General]
-AppletOrder=49;50;69;99;51;68;52
+AppletOrder=49;50;69;100;68;52
 
 [Containments][97]
 activityId=
