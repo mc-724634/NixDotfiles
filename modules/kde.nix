@@ -38,6 +38,7 @@ in
           { dest = "klassy/klassyrc"; src = ../extras/kde/klassy/klassyrc; }
           { dest = "klassy/windecopresetsrc"; src = ../extras/kde/klassy/windecopresetsrc; }
           { dest = "plasma_workspace.notifyrc"; src = ../extras/kde/configs/plasma_workspace.notifyrc; }
+          { dest = "appgridrc"; src = ../extras/kde/configs/appgridrc; }
         ];
         seedOne = { dest, src }: ''
           if [ ! -e "$HOME/.config/${dest}" ]; then
