@@ -180,7 +180,7 @@
   users.users."mc" = {
     isNormalUser = true;
     description = "mc";
-    extraGroups = [ "networkmanager" "wheel" "libvirtd" ];
+    extraGroups = [ "networkmanager" "wheel" "libvirtd" "dialout" ];
   };
 
   # Install firefox.
@@ -197,6 +197,7 @@
     xrizer
     sbctl
     unrar
+    arduino-ide
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
