@@ -367,6 +367,8 @@ in
     };
 
     configFile = {
+      kcminputrc.Keyboard.NumLock = 0;
+
       kdeglobals.General.ColorScheme = "CatppuccinMacchiatoFlamingo";
       kdeglobals.General.AccentColor = "138,173,244";
       kdeglobals.General.LastUsedCustomAccentColor = "138,173,244";
