@@ -81,8 +81,6 @@
     enable = true;
   };
 
-  programs.chromium.enablePlasmaBrowserIntegration = true;
-
   programs.steam = {
     enable = true;
   };
