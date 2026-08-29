@@ -46,11 +46,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787301512,
-        "narHash": "sha256-VYbNaWAcwK9G+mq3jmqyCu6t4zUNUOTT8PXB3pj7XgA=",
+        "lastModified": 1787946871,
+        "narHash": "sha256-3z28UlKh02RAkyLKsUOxD+l20WG6Qo+vzg1FCs6OkEw=",
         "owner": "oxcl",
         "repo": "nix-flake-helium-browser",
-        "rev": "4fe9ac832466143224203f896a3a38aa8c73b611",
+        "rev": "ef8847b8907e95335afa529daa6a71fc0e9ff107",
         "type": "github"
       },
       "original": {
@@ -82,11 +82,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1787525875,
-        "narHash": "sha256-025An4mAUD6c++o1CFnUhajUJZQJSXRjIxhIGbsPOQ8=",
-        "rev": "a3b98866eecd08edac6e61a3081e69540a35020f",
+        "lastModified": 1787848966,
+        "narHash": "sha256-pbm8BrmtI4lOXt2syJ3FP12LjybYuiTdUO0GQrbQMk0=",
+        "rev": "d57af924f160a5084293c71c2043f058bd1cdb60",
         "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/26.05/nixos-26.05.8334.a3b98866eecd/nixexprs.tar.xz"
+        "url": "https://releases.nixos.org/nixos/26.05/nixos-26.05.8538.d57af924f160/nixexprs.tar.xz"
       },
       "original": {
         "id": "nixpkgs",
@@ -97,11 +97,11 @@
     "plasma-gnome-pager-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1782427693,
-        "narHash": "sha256-Ey3uJdGndxDTGvkgnJkyWWrC1wTCys+6pqLxc2RQUrw=",
+        "lastModified": 1787770687,
+        "narHash": "sha256-jzVnmixS4tPHhb+hzoZBoX2rPi+t+unydLaMGgiikNY=",
         "owner": "KenanSalar",
         "repo": "plasma-gnome-pager",
-        "rev": "db475cef4a3eea30d7461e0337532e9223356f3a",
+        "rev": "fede9a4a74c32740e37ac77d38477a308a506555",
         "type": "github"
       },
       "original": {
