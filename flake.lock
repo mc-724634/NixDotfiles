@@ -21,24 +21,6 @@
         "type": "github"
       }
     },
-    "bedrock-on-linux": {
-      "inputs": {
-        "nixpkgs": "nixpkgs"
-      },
-      "locked": {
-        "lastModified": 1788032016,
-        "narHash": "sha256-hte+zClEOm4gFanN9n2oiR4fP69fwxMY+eFn4AtGYCA=",
-        "owner": "Wyze3306",
-        "repo": "BedrockOnLinux",
-        "rev": "a7a5294e36c95562d745c2c150f5367fde724f9c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Wyze3306",
-        "repo": "BedrockOnLinux",
-        "type": "github"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1781825982,
@@ -198,22 +180,6 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1787900134,
-        "narHash": "sha256-VYXO0XZlgj06dxJZRhrD3WoSsvq/c7+/Akyoa22pefw=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "83199d0d373dd3ac2b9a1996b1d0263f76ab7a4c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
         "lastModified": 1787962033,
         "narHash": "sha256-SYbFPw4Je7tTpsl5qPqmmxPWuQyA9AGddCDieY5QG5A=",
         "rev": "c5c4a43b0e8056328ec4529f735cabdb8f1942bb",
@@ -226,7 +192,7 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_3": {
+    "nixpkgs_2": {
       "locked": {
         "lastModified": 1787900134,
         "narHash": "sha256-VYXO0XZlgj06dxJZRhrD3WoSsvq/c7+/Akyoa22pefw=",
@@ -245,14 +211,14 @@
     "nur": {
       "inputs": {
         "flake-parts": "flake-parts",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1788093986,
-        "narHash": "sha256-Ghe5Ct7g7SNx+J6nHoLEnH0LzV47zU/0ALyRW5X3w6M=",
+        "lastModified": 1788094645,
+        "narHash": "sha256-QzrcQEewygxgupzIoRC/AVyDDzvUWHREDQYDRrzBVeM=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "c5484583eebe32f9882be60f7fa87b24962245e2",
+        "rev": "ea7f70d148540360c58a4db41f42e1774ebf7e1d",
         "type": "github"
       },
       "original": {
@@ -326,11 +292,10 @@
     "root": {
       "inputs": {
         "appgrid": "appgrid",
-        "bedrock-on-linux": "bedrock-on-linux",
         "helium-flake": "helium-flake",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nur": "nur",
         "plasma-gnome-pager-src": "plasma-gnome-pager-src",
         "plasma-manager": "plasma-manager",
