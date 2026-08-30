@@ -24,7 +24,6 @@ in
           --set LD_PRELOAD ${pkgs.pkgsRocm.rocmPackages.clr.comgr or pkgs.pkgsRocm.rocmPackages.clr}/lib/libamd_comgr.so.3
       '';
     }))
-  ];
 
     git
     wget
