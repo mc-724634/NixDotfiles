@@ -17,14 +17,6 @@ in
   home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
-    (pkgs.pkgsRocm.blender.overrideAttrs (old: {
-      nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ pkgs.makeWrapper ];
-      postFixup = (old.postFixup or "") + ''
-        wrapProgram $out/bin/blender \
-          --set LD_PRELOAD ${pkgs.pkgsRocm.rocmPackages.clr.comgr or pkgs.pkgsRocm.rocmPackages.clr}/lib/libamd_comgr.so.3
-      '';
-    }))
-
     git
     wget
     hyfetch
@@ -45,6 +37,7 @@ in
     klassy
     easyeffects
     krita
+    pkgs.pkgsRocm.blender
     inputs.appgrid.packages.${pkgs.stdenv.hostPlatform.system}.default
     pkgs.papirus-icon-theme
     gnome-boxes
