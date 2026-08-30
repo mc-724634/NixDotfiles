@@ -43,7 +43,7 @@ in
     gnome-boxes
     kdePackages.kamoso
     open-scq30
-    bedrock-on-linux.packages.x86_64-linux.default
+    inputs.bedrock-on-linux.packages.x86_64-linux.default
   ];
 
   home.file = {

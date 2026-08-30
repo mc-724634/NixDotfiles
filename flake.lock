@@ -21,6 +21,26 @@
         "type": "github"
       }
     },
+    "bedrock-on-linux": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788032016,
+        "narHash": "sha256-hte+zClEOm4gFanN9n2oiR4fP69fwxMY+eFn4AtGYCA=",
+        "owner": "Wyze3306",
+        "repo": "BedrockOnLinux",
+        "rev": "a7a5294e36c95562d745c2c150f5367fde724f9c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Wyze3306",
+        "repo": "BedrockOnLinux",
+        "type": "github"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1781825982,
@@ -292,6 +312,7 @@
     "root": {
       "inputs": {
         "appgrid": "appgrid",
+        "bedrock-on-linux": "bedrock-on-linux",
         "helium-flake": "helium-flake",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
