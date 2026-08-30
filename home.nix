@@ -43,7 +43,7 @@ in
     gnome-boxes
     kdePackages.kamoso
     open-scq30
-    hip
+    haskellPackages.hip
   ];
 
   home.file = {
