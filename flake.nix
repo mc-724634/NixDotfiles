@@ -32,7 +32,7 @@
     bedrock-on-linux.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = inputs@{
-    self, nixpkgs, home-manager, spicetify-nix, helium-flake, lanzaboote, nur, ...
+    self, nixpkgs, home-manager, spicetify-nix, helium-flake, lanzaboote, nur, bedrock-on-linux, ...
   }:
     let
       lib = nixpkgs.lib;
