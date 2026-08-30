@@ -5,11 +5,11 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       helium-flake.nixosModules.default
-      nur.overlays.default
     ];
 
   nixpkgs.overlays = [
     helium-flake.overlays.default
+    nur.overlays.default
   ];
 
   boot.plymouth = {
