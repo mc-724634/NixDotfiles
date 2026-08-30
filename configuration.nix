@@ -134,6 +134,10 @@
     variant = "";
   };
 
+  systemd.tmpfiles.rules = [
+    "L+ /opt/rocm/hip - - - - ${pkgs.rocmPackages.clr}"
+  ];
+
   services.printing.enable = true;
 
   services.pulseaudio.enable = false;
