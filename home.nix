@@ -43,6 +43,7 @@ in
     gnome-boxes
     kdePackages.kamoso
     nur.repos.quriosity.BedrockNix
+    open-scq30
   ];
 
   home.file = {
