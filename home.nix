@@ -43,6 +43,7 @@ in
     gnome-boxes
     kdePackages.kamoso
     open-scq30
+    hip
   ];
 
   home.file = {
