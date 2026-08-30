@@ -28,6 +28,8 @@
     };
     lanzaboote.url = "github:nix-community/lanzaboote/v1.1.0";
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
+    bedrock-on-linux.url = "github:Wyze3306/BedrockOnLinux";
+    bedrock-on-linux.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = inputs@{
     self, nixpkgs, home-manager, spicetify-nix, helium-flake, lanzaboote, nur, ...
@@ -38,7 +40,7 @@
       nixosConfigurations = {
         nixos = lib.nixosSystem {
           specialArgs = {
-            inherit helium-flake nur;
+            inherit helium-flake nur bedrock-on-linux;
           };
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
