@@ -42,6 +42,7 @@ in
     pkgs.papirus-icon-theme
     gnome-boxes
     kdePackages.kamoso
+    nur.repos.quriosity.BedrockNix
   ];
 
   home.file = {

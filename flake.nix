@@ -17,6 +17,7 @@
     plasma-manager.url = "github:nix-community/plasma-manager";
     plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
     plasma-manager.inputs.home-manager.follows = "home-manager";
+    nur.url = "github:nix-community/NUR";
     plasma-gnome-pager-src = {
       url = "github:KenanSalar/plasma-gnome-pager";
       flake = false;
@@ -29,13 +30,7 @@
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = inputs@{
-    self,
-    nixpkgs,
-    home-manager,
-    spicetify-nix,
-    helium-flake,
-    lanzaboote,
-    ...
+    self, nixpkgs, home-manager, spicetify-nix, helium-flake, lanzaboote, nur, ...
   }:
     let
       lib = nixpkgs.lib;
@@ -43,7 +38,7 @@
       nixosConfigurations = {
         nixos = lib.nixosSystem {
           specialArgs = {
-            inherit helium-flake;
+            inherit helium-flake nur;
           };
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
