@@ -1,4 +1,4 @@
-{ config, pkgs, lib, helium-flake, nur ... }:
+{ config, pkgs, lib, helium-flake, nur, ... }:
 
 {
   imports =
