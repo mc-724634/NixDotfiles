@@ -30,7 +30,7 @@
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = inputs@{
-    self, nixpkgs, home-manager, spicetify-nix, helium-flake, lanzaboote, nur, bedrock-on-linux, ...
+    self, nixpkgs, home-manager, spicetify-nix, helium-flake, lanzaboote, nur, ...
   }:
     let
       lib = nixpkgs.lib;
@@ -38,7 +38,7 @@
       nixosConfigurations = {
         nixos = lib.nixosSystem {
           specialArgs = {
-            inherit helium-flake nur bedrock-on-linux;
+            inherit helium-flake nur;
           };
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
