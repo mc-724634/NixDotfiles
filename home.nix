@@ -24,7 +24,7 @@ in
     haruna
     vesktop
     telegram-desktop
-    blender
+    pkgs.pkgsRocm.blender
     prismlauncher
     heroic
     godot
@@ -43,7 +43,6 @@ in
     gnome-boxes
     kdePackages.kamoso
     open-scq30
-    rocmPackages.rpp-hip
   ];
 
   home.file = {
