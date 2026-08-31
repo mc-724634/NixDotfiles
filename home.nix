@@ -37,7 +37,7 @@ in
     klassy
     easyeffects
     krita
-    pkgs.pkgsRocm.blender
+    pkgs.blender-rocm
     inputs.appgrid.packages.${pkgs.stdenv.hostPlatform.system}.default
     pkgs.papirus-icon-theme
     gnome-boxes
