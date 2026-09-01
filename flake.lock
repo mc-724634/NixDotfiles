@@ -194,11 +194,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1787900134,
-        "narHash": "sha256-VYXO0XZlgj06dxJZRhrD3WoSsvq/c7+/Akyoa22pefw=",
+        "lastModified": 1788179007,
+        "narHash": "sha256-hn1oU2rue2SYK8dAr8+WNZWtbsz1S2W5mnHlSEuh3bo=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "83199d0d373dd3ac2b9a1996b1d0263f76ab7a4c",
+        "rev": "34ab99075ac4f7e40cf037eef32cb1c360bb85e9",
         "type": "github"
       },
       "original": {
@@ -214,11 +214,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1788094645,
-        "narHash": "sha256-QzrcQEewygxgupzIoRC/AVyDDzvUWHREDQYDRrzBVeM=",
+        "lastModified": 1788260615,
+        "narHash": "sha256-tRm8UQxG246kzjpMuKd+8kqEAb9yxDOcVqFu7GcUMos=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "ea7f70d148540360c58a4db41f42e1774ebf7e1d",
+        "rev": "5f61b998074a0f91cd9e76377e00f506415094d4",
         "type": "github"
       },
       "original": {
@@ -230,11 +230,11 @@
     "plasma-gnome-pager-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1787770687,
-        "narHash": "sha256-jzVnmixS4tPHhb+hzoZBoX2rPi+t+unydLaMGgiikNY=",
+        "lastModified": 1788203616,
+        "narHash": "sha256-Z3ZoO33FLDTvKfeBL2aryF41ofQcYz2wFROT7tW3pqQ=",
         "owner": "KenanSalar",
         "repo": "plasma-gnome-pager",
-        "rev": "fede9a4a74c32740e37ac77d38477a308a506555",
+        "rev": "1d471393704e025fbf25b7cc65850410eb98088d",
         "type": "github"
       },
       "original": {
