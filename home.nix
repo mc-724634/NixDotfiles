@@ -115,7 +115,7 @@ in
     enable = true;
 
     workspace = {
-      iconTheme = "Yet Another Monochrome Icon Set";
+      iconTheme = "yet-another-monochrome-icon-set";
       cursor.theme = "Bibata-Catppuccin-Macchiato";
       wallpaper = "${config.home.homeDirectory}/.local/share/wallpapers/cat-vibin.png";
     };
