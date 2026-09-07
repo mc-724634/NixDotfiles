@@ -1,12 +1,9 @@
-{ stdenvNoCC, fetchzip, gtk3, lib }:
+{ stdenvNoCC, gtk3, lib }:
 
 stdenvNoCC.mkDerivation {
   pname = "yet-another-monochrome-icon-set";
   version = "1.4.2";
-  src = fetchzip {
-    url = "https://github.com/googIyEYES/YAMIS/raw/main/monochrome-icon-theme.tar.gz";
-    hash = "sha256-Sk7GyTnPDFBCK80a9jNdlcyetkISA+OkxfrwPjXAuVM=";
-  };
+  src = ./yet-another-monochrome-icon-set.tar.gz;
   nativeBuildInputs = [ gtk3 ];
   dontBuild = true;
   installPhase = ''
