@@ -5,7 +5,7 @@ stdenvNoCC.mkDerivation {
   version = "1.4.2";
   src = fetchzip {
     url = "https://github.com/googIyEYES/YAMIS/raw/main/monochrome-icon-theme.tar.gz";
-    hash = "";
+    hash = "sha256-Sk7GyTnPDFBCK80a9jNdlcyetkISA+OkxfrwPjXAuVM=";
   };
   nativeBuildInputs = [ gtk3 ];
   dontBuild = true;
