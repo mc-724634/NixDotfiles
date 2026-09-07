@@ -39,7 +39,7 @@ in
     krita
     pkgs.blender-rocm
     inputs.appgrid.packages.${pkgs.stdenv.hostPlatform.system}.default
-    pkgs.papirus-icon-theme
+    (pkgs.callPackage ./pkgs/yamis-icon-theme.nix { })
     gnome-boxes
     kdePackages.kamoso
     open-scq30
@@ -115,7 +115,7 @@ in
     enable = true;
 
     workspace = {
-      iconTheme = "Papirus-Dark";
+      iconTheme = "Yet Another Monochrome Icon Set";
       cursor.theme = "Bibata-Catppuccin-Macchiato";
       wallpaper = "${config.home.homeDirectory}/.local/share/wallpapers/cat-vibin.png";
     };
