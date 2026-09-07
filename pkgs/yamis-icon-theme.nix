@@ -4,8 +4,8 @@ stdenvNoCC.mkDerivation {
   pname = "yet-another-monochrome-icon-set";
   version = "1.4.2";
   src = fetchzip {
-    url = "https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set/get/master.tar.gz";
-    hash = ""; # nix will tell you the correct hash on first build failure
+    url = "https://github.com/googIyEYES/YAMIS/raw/main/monochrome-icon-theme.tar.gz";
+    hash = "";
   };
   nativeBuildInputs = [ gtk3 ];
   dontBuild = true;
