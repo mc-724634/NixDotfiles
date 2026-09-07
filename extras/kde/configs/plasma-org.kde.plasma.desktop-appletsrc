@@ -53,7 +53,7 @@ DialogHeight=630
 DialogWidth=810
 
 [Containments][48][Applets][49][Configuration][General]
-customButtonImage=distributor-logo-nixos
+customButtonImage=nix-snowflake-white
 useCustomButtonImage=true
 
 [Containments][48][Applets][50]
