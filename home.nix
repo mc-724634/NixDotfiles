@@ -18,6 +18,7 @@ in
 
   home.packages = with pkgs; [
     git
+    gcc
     wget
     hyfetch
     kdePackages.kcalc
