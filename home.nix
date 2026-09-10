@@ -31,7 +31,7 @@ in
     dolphin-emu
     retroarch
     steam-rom-manager
-    clion
+    vscodium
     python3
     orca-slicer
     klassy
