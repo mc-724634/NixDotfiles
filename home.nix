@@ -44,7 +44,7 @@ in
     gnome-boxes
     kdePackages.kamoso
     open-scq30
-    pkgs.claude-code
+    claude-code
   ];
 
   home.file = {
