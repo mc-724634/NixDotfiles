@@ -28,6 +28,7 @@
     };
     lanzaboote.url = "github:nix-community/lanzaboote/v1.1.0";
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
+    nix-claude-code.url = "github:ryoppippi/nix-claude-code";
   };
   outputs = inputs@{
     self, nixpkgs, home-manager, spicetify-nix, helium-flake, lanzaboote, nur, ...
