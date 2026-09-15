@@ -46,7 +46,7 @@ in
     open-scq30
     claude-code
     wine
-    wine-tricks
+    winetricks
   ];
 
   home.file = {
