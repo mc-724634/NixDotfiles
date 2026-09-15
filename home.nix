@@ -45,6 +45,8 @@ in
     kdePackages.kamoso
     open-scq30
     claude-code
+    wine
+    wine-tricks
   ];
 
   home.file = {
