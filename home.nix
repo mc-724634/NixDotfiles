@@ -47,6 +47,7 @@ in
     claude-code
     wine
     winetricks
+    xautoclick
   ];
 
   home.file = {
