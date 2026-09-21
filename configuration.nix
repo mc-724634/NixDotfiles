@@ -40,6 +40,8 @@
     "splash"
   ];
 
+  boot.loader.timeout = 0;
+
   boot.initrd.systemd.enable = true;
 
   # Lanzaboote replaces systemd-boot's own enable.
