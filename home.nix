@@ -49,6 +49,7 @@ in
     winetricks
     xautoclick
     bedrock-on-linux.packages.x86_64-linux.default
+    xcb-util-cursor
   ];
 
   home.file = {
