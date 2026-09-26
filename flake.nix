@@ -21,6 +21,9 @@
     plasma-gnome-pager-src = {
       url = "github:KenanSalar/plasma-gnome-pager";
       flake = false;
+      };
+    bedrock-on-linux = {
+      url = "github:Wyze3306/BedrockOnLinux";
     };
     split-clock-src = {
       url = "github:PlasmaDrifter/Widget-simplesplitclock";
@@ -30,7 +33,7 @@
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = inputs@{
-    self, nixpkgs, home-manager, spicetify-nix, helium-flake, lanzaboote, nur, ...
+    self, nixpkgs, home-manager, spicetify-nix, helium-flake, lanzaboote, bedrock-on-linux, nur, ...
   }:
     let
       lib = nixpkgs.lib;
@@ -51,6 +54,7 @@
               home-manager.extraSpecialArgs = {
                 inherit inputs;
                 inherit spicetify-nix;
+                inherit bedrock-on-linux;
               };
               home-manager.users.mc = ./home.nix;
             }
