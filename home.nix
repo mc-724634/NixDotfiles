@@ -1,4 +1,4 @@
-{ config, pkgs, spicetify-nix, inputs, bedrock-on-linux, ... }:
+{ config, pkgs, spicetify-nix, inputs, ... }:
 let
   shellAliases = {
     clear = "printf '\\033[2J\\033[3J\\033[H'";
@@ -48,8 +48,6 @@ in
     wine
     winetricks
     xautoclick
-    bedrock-on-linux.packages.x86_64-linux.default
-    xcb-util-cursor
   ];
 
   home.file = {
