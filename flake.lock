@@ -21,24 +21,6 @@
         "type": "github"
       }
     },
-    "bedrock-on-linux": {
-      "inputs": {
-        "nixpkgs": "nixpkgs"
-      },
-      "locked": {
-        "lastModified": 1789658051,
-        "narHash": "sha256-jglFsi6DVzeBP/rCpZTq1gq0/9kodXABofOoGGImJxM=",
-        "owner": "Wyze3306",
-        "repo": "BedrockOnLinux",
-        "rev": "f6a76188ea8df3c369fd335386cbc7faa71fa334",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Wyze3306",
-        "repo": "BedrockOnLinux",
-        "type": "github"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1781825982,
@@ -198,22 +180,6 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1790323409,
-        "narHash": "sha256-VVTPf+Hyd5ebpjBMHmrLMSBIeW6ls48Bqtosj7CNKLA=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "e94cb152ed51bd6e24eb4a41f1460252beb52cd2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
         "lastModified": 1789344334,
         "narHash": "sha256-it+7kNGnOOHBCEnl4SfZ7QtfGziH3EryzHqwvJpjAfg=",
         "rev": "c3eea5b2156db11c7eeeada3dc737711255b253e",
@@ -226,7 +192,7 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_3": {
+    "nixpkgs_2": {
       "locked": {
         "lastModified": 1789286504,
         "narHash": "sha256-eiEK7cKZORNEvX0GeF3RtNEF/JXhgf2RqSp3230q13E=",
@@ -245,7 +211,7 @@
     "nur": {
       "inputs": {
         "flake-parts": "flake-parts",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_2"
       },
       "locked": {
         "lastModified": 1789519389,
@@ -326,11 +292,10 @@
     "root": {
       "inputs": {
         "appgrid": "appgrid",
-        "bedrock-on-linux": "bedrock-on-linux",
         "helium-flake": "helium-flake",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nur": "nur",
         "plasma-gnome-pager-src": "plasma-gnome-pager-src",
         "plasma-manager": "plasma-manager",
