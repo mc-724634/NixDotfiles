@@ -47,7 +47,6 @@ in
     wine
     winetricks
     retroarch
-    tor-browser
   ];
 
   home.file = {
