@@ -30,7 +30,6 @@ in
     godot
     cemu
     dolphin-emu
-    retroarch
     steam-rom-manager
     vscode
     python3
@@ -47,6 +46,8 @@ in
     claude-code
     wine
     winetricks
+    retroarch
+    tor-browser
   ];
 
   home.file = {
