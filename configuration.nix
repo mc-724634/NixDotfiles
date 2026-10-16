@@ -79,6 +79,9 @@
     memoryMax = 8 * 1024 * 1024 * 1024; # 8 GiB
   };
 
+  services.lact.enable = true;
+  systemd.services.lactd.path = [ "/run/wrappers" ];
+
   boot.kernel.sysctl = {
     "vm.swappiness" = 100;
   };
@@ -104,8 +107,6 @@
   ];
 
   programs.gamemode.enable = true;
-
-  services.lact.enable = true;
 
   virtualisation.libvirtd.enable = true;
 
