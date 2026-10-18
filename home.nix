@@ -47,6 +47,7 @@ in
     wine
     winetricks
     retroarch
+    printrun
   ];
 
   home.file = {
