@@ -34,12 +34,15 @@
   # Use latest zen kernel.
   boot.kernelPackages = pkgs.linuxPackages_zen;
 
-  boot.kernelParams = [
-    "amdgpu.ppfeaturemask=0xffffffff"
-    "quiet"
-    "splash"
-  ];
+boot.kernelParams = [
+  "quiet"
+  "splash"
+];
 
+hardware.amdgpu.overdrive = {
+  enable = true;
+  ppfeaturemask = "0xffffffff";
+};
   boot.loader.timeout = 0;
 
   boot.initrd.systemd.enable = true;
@@ -135,6 +138,8 @@
     package = pkgs.openrgb-with-all-plugins;
     motherboard = "amd";
   };
+
+  programs.kdeconnect.enable = true;
 
   services.xserver.enable = false;
 
