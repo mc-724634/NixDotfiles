@@ -8,15 +8,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1792316064,
-        "narHash": "sha256-b8dH32+0awd8q7N27V03ZBLWj8DN8mj0pRboBYAoLvI=",
+        "lastModified": 1792315159,
+        "narHash": "sha256-wwpec0KKdy5v+i3KxS7c2DJs6O5zCGCfT22gp5NXQ7Q=",
         "owner": "xarbit",
         "repo": "plasma6-applet-appgrid",
-        "rev": "427c889233c612e17b7e78c2b6480175082485f8",
+        "rev": "1ae7bc48bc9c876a3738d357729282f45c93b5cf",
         "type": "github"
       },
       "original": {
         "owner": "xarbit",
+        "ref": "v1.9.6",
         "repo": "plasma6-applet-appgrid",
         "type": "github"
       }
