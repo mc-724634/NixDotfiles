@@ -48,6 +48,7 @@ in
     winetricks
     retroarch
     printrun
+    freecad
   ];
 
   home.file = {
