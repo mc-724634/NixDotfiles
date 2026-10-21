@@ -12,7 +12,7 @@
       "github:oxcl/nix-flake-helium-browser";
     helium-flake.inputs.nixpkgs.follows = "nixpkgs";
     appgrid.url =
-      "github:xarbit/plasma6-applet-appgrid/v1.9.6";
+      "github:xarbit/plasma6-applet-appgrid/711c9b1170b212d595e3c6c49e6a25c60c48bb44";
     appgrid.inputs.nixpkgs.follows = "nixpkgs";
     plasma-manager.url = "github:nix-community/plasma-manager";
     plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
