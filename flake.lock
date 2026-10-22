@@ -8,17 +8,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1792315159,
-        "narHash": "sha256-wwpec0KKdy5v+i3KxS7c2DJs6O5zCGCfT22gp5NXQ7Q=",
+        "lastModified": 1787478866,
+        "narHash": "sha256-HSAmuUlVMrnDlNucNlICqQ2qrBCfzKQzR1tGv4dJJN4=",
         "owner": "xarbit",
         "repo": "plasma6-applet-appgrid",
-        "rev": "1ae7bc48bc9c876a3738d357729282f45c93b5cf",
+        "rev": "711c9b1170b212d595e3c6c49e6a25c60c48bb44",
         "type": "github"
       },
       "original": {
         "owner": "xarbit",
-        "ref": "v1.9.6",
         "repo": "plasma6-applet-appgrid",
+        "rev": "711c9b1170b212d595e3c6c49e6a25c60c48bb44",
         "type": "github"
       }
     },
@@ -215,11 +215,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1792539170,
-        "narHash": "sha256-EEpkL6T1yXud3YhScrkvW7fCDNZ4hLjUXo9YOJt+8vs=",
+        "lastModified": 1792632140,
+        "narHash": "sha256-gSl4onGzwzOayxwPmE0nTt/wflGfWU/afuxFsmtClVM=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "ad963eb7d7afa30875ebc4bf007001163eb83d08",
+        "rev": "1d1a12ab73998f58d380655a14c39953568613f6",
         "type": "github"
       },
       "original": {
