@@ -46,7 +46,7 @@ in
     claude-code
     wine
     winetricks
-    retroarch
+    (pkgs.retroarch.withCores (cores: with cores; [ bsnes ]))
     printrun
     freecad
   ];

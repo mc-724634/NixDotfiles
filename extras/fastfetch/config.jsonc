@@ -13,9 +13,9 @@
     },
   },
   "display": {
-    "separator": " \u001b[38;2;198;160;246m\u001b[0m ",
+    "separator": " \u001b[38;2;139;213;202m\u001b[0m ",
     "constants": [
-      "\u001b[38;2;240;198;198m─────────────────\u001b[0m", // {$1}, used in Custom module
+      "\u001b[38;2;139;213;202m─────────────────\u001b[0m", // {$1}, used in Custom module
     ],
     "key": {
       "type": "icon",
@@ -26,35 +26,17 @@
     {
       "type": "custom", // HardwareStart
       // {#1} is equivalent to `\u001b[1m`. {#} is equivalent to `\u001b[m`
-      "format": "\u001b[38;2;240;198;198m┌\u001b[0m{$1} \u001b[38;2;198;160;246mHardware Information\u001b[0m {$1}\u001b[38;2;240;198;198m┐\u001b[0m",
+      "format": "\u001b[38;2;139;213;202m┌\u001b[0m{$1} \u001b[38;2;145;215;227mHardware Information\u001b[0m {$1}\u001b[38;2;139;213;202m┐\u001b[0m",
     },
-    {
-      "type": "host",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "cpu",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "gpu",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "disk",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "memory",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "display",
-      "keyColor": "#f5bde6",
-    },
+    { "type": "host", "keyColor": "#7dc4e4" },
+    { "type": "cpu", "keyColor": "#7dc4e4" },
+    { "type": "gpu", "keyColor": "#7dc4e4" },
+    { "type": "disk", "keyColor": "#7dc4e4" },
+    { "type": "memory", "keyColor": "#7dc4e4" },
+    { "type": "display", "keyColor": "#7dc4e4" },
     {
       "type": "custom", // InformationEnd
-      "format": "\u001b[38;2;240;198;198m└\u001b[0m{$1}\u001b[38;2;240;198;198m──────────────────────\u001b[0m{$1}\u001b[38;2;240;198;198m┘\u001b[0m",
+      "format": "\u001b[38;2;139;213;202m└\u001b[0m{$1}\u001b[38;2;139;213;202m──────────────────────\u001b[0m{$1}\u001b[38;2;139;213;202m┘\u001b[0m",
     },
     {
       "type": "custom", // Separator
@@ -62,63 +44,24 @@
     },
     {
       "type": "custom", // SoftwareStart
-      "format": "\u001b[38;2;240;198;198m┌\u001b[0m{$1} \u001b[38;2;198;160;246mSoftware Information\u001b[0m {$1}\u001b[38;2;240;198;198m┐\u001b[0m",
+      "format": "\u001b[38;2;139;213;202m┌\u001b[0m{$1} \u001b[38;2;145;215;227mSoftware Information\u001b[0m {$1}\u001b[38;2;139;213;202m┐\u001b[0m",
     },
-    {
-      "type": "os",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "kernel",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "lm",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "de",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "wm",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "shell",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "terminal",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "font",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "theme",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "icons",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "packages",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "uptime",
-      "keyColor": "#f5bde6",
-    },
-    {
-      "type": "locale",
-      "keyColor": "#f5bde6",
-    },
+    { "type": "os", "keyColor": "#7dc4e4" },
+    { "type": "kernel", "keyColor": "#7dc4e4" },
+    { "type": "lm", "keyColor": "#7dc4e4" },
+    { "type": "de", "keyColor": "#7dc4e4" },
+    { "type": "wm", "keyColor": "#7dc4e4" },
+    { "type": "shell", "keyColor": "#7dc4e4" },
+    { "type": "terminal", "keyColor": "#7dc4e4" },
+    { "type": "font", "keyColor": "#7dc4e4" },
+    { "type": "theme", "keyColor": "#7dc4e4" },
+    { "type": "icons", "keyColor": "#7dc4e4" },
+    { "type": "packages", "keyColor": "#7dc4e4" },
+    { "type": "uptime", "keyColor": "#7dc4e4" },
+    { "type": "locale", "keyColor": "#7dc4e4" },
     {
       "type": "custom", // InformationEnd
-      "format": "\u001b[38;2;240;198;198m└\u001b[0m{$1}\u001b[38;2;240;198;198m──────────────────────\u001b[0m{$1}\u001b[38;2;240;198;198m┘\u001b[0m",
+      "format": "\u001b[38;2;139;213;202m└\u001b[0m{$1}\u001b[38;2;139;213;202m──────────────────────\u001b[0m{$1}\u001b[38;2;139;213;202m┘\u001b[0m",
     },
     {
       "type": "colors",
