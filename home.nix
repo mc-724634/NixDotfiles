@@ -50,6 +50,7 @@ in
     printrun
     freecad
     eden
+    ark
     unrar
   ];
 
