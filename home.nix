@@ -49,6 +49,8 @@ in
     (pkgs.retroarch.withCores (cores: with cores; [ bsnes ]))
     printrun
     freecad
+    eden
+    unrar
   ];
 
   home.file = {

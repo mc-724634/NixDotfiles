@@ -13,9 +13,9 @@
     },
   },
   "display": {
-    "separator": " \u001b[38;2;139;213;202m\u001b[0m ",
+    "separator": " \u001b[38;2;139;213;202m\uf061\u001b[0m ",
     "constants": [
-      "\u001b[38;2;139;213;202m─────────────────\u001b[0m", // {$1}, used in Custom module
+      "\u001b[38;2;125;196;228m─────────────────\u001b[0m", // {$1}, used in Custom module
     ],
     "key": {
       "type": "icon",
@@ -26,7 +26,7 @@
     {
       "type": "custom", // HardwareStart
       // {#1} is equivalent to `\u001b[1m`. {#} is equivalent to `\u001b[m`
-      "format": "\u001b[38;2;139;213;202m┌\u001b[0m{$1} \u001b[38;2;145;215;227mHardware Information\u001b[0m {$1}\u001b[38;2;139;213;202m┐\u001b[0m",
+      "format": "\u001b[38;2;125;196;228m┌\u001b[0m{$1} \u001b[38;2;145;215;227mHardware Information\u001b[0m {$1}\u001b[38;2;125;196;228m┐\u001b[0m",
     },
     { "type": "host", "keyColor": "#7dc4e4" },
     { "type": "cpu", "keyColor": "#7dc4e4" },
@@ -36,7 +36,7 @@
     { "type": "display", "keyColor": "#7dc4e4" },
     {
       "type": "custom", // InformationEnd
-      "format": "\u001b[38;2;139;213;202m└\u001b[0m{$1}\u001b[38;2;139;213;202m──────────────────────\u001b[0m{$1}\u001b[38;2;139;213;202m┘\u001b[0m",
+      "format": "\u001b[38;2;125;196;228m└\u001b[0m{$1}\u001b[38;2;125;196;228m──────────────────────\u001b[0m{$1}\u001b[38;2;125;196;228m┘\u001b[0m",
     },
     {
       "type": "custom", // Separator
@@ -44,7 +44,7 @@
     },
     {
       "type": "custom", // SoftwareStart
-      "format": "\u001b[38;2;139;213;202m┌\u001b[0m{$1} \u001b[38;2;145;215;227mSoftware Information\u001b[0m {$1}\u001b[38;2;139;213;202m┐\u001b[0m",
+      "format": "\u001b[38;2;125;196;228m┌\u001b[0m{$1} \u001b[38;2;145;215;227mSoftware Information\u001b[0m {$1}\u001b[38;2;125;196;228m┐\u001b[0m",
     },
     { "type": "os", "keyColor": "#7dc4e4" },
     { "type": "kernel", "keyColor": "#7dc4e4" },
@@ -61,7 +61,7 @@
     { "type": "locale", "keyColor": "#7dc4e4" },
     {
       "type": "custom", // InformationEnd
-      "format": "\u001b[38;2;139;213;202m└\u001b[0m{$1}\u001b[38;2;139;213;202m──────────────────────\u001b[0m{$1}\u001b[38;2;139;213;202m┘\u001b[0m",
+      "format": "\u001b[38;2;125;196;228m└\u001b[0m{$1}\u001b[38;2;125;196;228m──────────────────────\u001b[0m{$1}\u001b[38;2;125;196;228m┘\u001b[0m",
     },
     {
       "type": "colors",
