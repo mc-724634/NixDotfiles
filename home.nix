@@ -44,14 +44,11 @@ in
     kdePackages.kamoso
     open-scq30
     claude-code
-    wine
-    winetricks
+    bottles
     (pkgs.retroarch.withCores (cores: with cores; [ bsnes ]))
     printrun
     freecad
     eden
-    ark
-    unrar
   ];
 
   home.file = {
