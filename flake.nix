@@ -11,21 +11,7 @@
     helium-flake.url =
       "github:oxcl/nix-flake-helium-browser";
     helium-flake.inputs.nixpkgs.follows = "nixpkgs";
-    appgrid.url =
-      "github:xarbit/plasma6-applet-appgrid/711c9b1170b212d595e3c6c49e6a25c60c48bb44";
-    appgrid.inputs.nixpkgs.follows = "nixpkgs";
-    plasma-manager.url = "github:nix-community/plasma-manager";
-    plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
-    plasma-manager.inputs.home-manager.follows = "home-manager";
     nur.url = "github:nix-community/NUR";
-    plasma-gnome-pager-src = {
-      url = "github:KenanSalar/plasma-gnome-pager";
-      flake = false;
-    };
-    split-clock-src = {
-      url = "github:PlasmaDrifter/Widget-simplesplitclock";
-      flake = false;
-    };
     lanzaboote.url = "github:nix-community/lanzaboote/v1.1.0";
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
   };

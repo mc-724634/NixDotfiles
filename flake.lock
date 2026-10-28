@@ -1,27 +1,5 @@
 {
   "nodes": {
-    "appgrid": {
-      "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1787478866,
-        "narHash": "sha256-HSAmuUlVMrnDlNucNlICqQ2qrBCfzKQzR1tGv4dJJN4=",
-        "owner": "xarbit",
-        "repo": "plasma6-applet-appgrid",
-        "rev": "711c9b1170b212d595e3c6c49e6a25c60c48bb44",
-        "type": "github"
-      },
-      "original": {
-        "owner": "xarbit",
-        "repo": "plasma6-applet-appgrid",
-        "rev": "711c9b1170b212d595e3c6c49e6a25c60c48bb44",
-        "type": "github"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1781825982,
@@ -71,24 +49,6 @@
       "original": {
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "type": "github"
-      }
-    },
-    "flake-utils": {
-      "inputs": {
-        "systems": "systems"
-      },
-      "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
         "type": "github"
       }
     },
@@ -228,45 +188,6 @@
         "type": "github"
       }
     },
-    "plasma-gnome-pager-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1791566711,
-        "narHash": "sha256-6q6eEM8raQ0qiaiNeE7+Iq1XhnNN1wjLCzVZiJMEyIo=",
-        "owner": "KenanSalar",
-        "repo": "plasma-gnome-pager",
-        "rev": "b640569ce0d17f7e72934b1db165bf5e6162b927",
-        "type": "github"
-      },
-      "original": {
-        "owner": "KenanSalar",
-        "repo": "plasma-gnome-pager",
-        "type": "github"
-      }
-    },
-    "plasma-manager": {
-      "inputs": {
-        "home-manager": [
-          "home-manager"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1785762349,
-        "narHash": "sha256-jZhZkzAwc7f3exzcTDJWP2WCAchCv0iNC3UF/QsahdQ=",
-        "owner": "nix-community",
-        "repo": "plasma-manager",
-        "rev": "a19a2a029fa180911bd89c554dca1616e10f4c1d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "plasma-manager",
-        "type": "github"
-      }
-    },
     "pre-commit": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -292,16 +213,12 @@
     },
     "root": {
       "inputs": {
-        "appgrid": "appgrid",
         "helium-flake": "helium-flake",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
-        "plasma-gnome-pager-src": "plasma-gnome-pager-src",
-        "plasma-manager": "plasma-manager",
-        "spicetify-nix": "spicetify-nix",
-        "split-clock-src": "split-clock-src"
+        "spicetify-nix": "spicetify-nix"
       }
     },
     "rust-overlay": {
@@ -343,37 +260,6 @@
       "original": {
         "owner": "Gerg-L",
         "repo": "spicetify-nix",
-        "type": "github"
-      }
-    },
-    "split-clock-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1791562405,
-        "narHash": "sha256-NQXYewffQ6ic4p9nftR/3a8ZFe6EXScoV52qnBTGLkg=",
-        "owner": "PlasmaDrifter",
-        "repo": "Widget-simplesplitclock",
-        "rev": "62981600557a84ae39d486d19a429acd74520ae2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "PlasmaDrifter",
-        "repo": "Widget-simplesplitclock",
-        "type": "github"
-      }
-    },
-    "systems": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
         "type": "github"
       }
     },

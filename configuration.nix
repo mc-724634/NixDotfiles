@@ -105,8 +105,9 @@ hardware.amdgpu.overdrive = {
     enable = true;
   };
 
-  environment.plasma6.excludePackages = with pkgs.kdePackages; [
-   konsole
+  # Skip GNOME's default terminal (kitty is used instead).
+  environment.gnome.excludePackages = with pkgs; [
+    gnome-console
   ];
 
   programs.gamemode.enable = true;
@@ -129,8 +130,6 @@ hardware.amdgpu.overdrive = {
     };
   };
 
-  programs.partition-manager.enable = true;
-
   programs.nix-ld.enable = true;
 
   services.hardware.openrgb = {
@@ -139,13 +138,18 @@ hardware.amdgpu.overdrive = {
     motherboard = "amd";
   };
 
-  programs.kdeconnect.enable = true;
+  # KDE Connect protocol, GNOME front-end (GSConnect). Opens the needed
+  # firewall ports; the extension is enabled in home.nix.
+  programs.kdeconnect = {
+    enable = true;
+    package = pkgs.gnomeExtensions.gsconnect;
+  };
 
   services.xserver.enable = false;
 
-  services.displayManager.plasma-login-manager.enable = true;
+  services.displayManager.gdm.enable = true;
 
-  services.desktopManager.plasma6.enable = true;
+  services.desktopManager.gnome.enable = true;
 
   services.xserver.xkb = {
     layout = "us";
