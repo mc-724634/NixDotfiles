@@ -188,6 +188,22 @@
         "type": "github"
       }
     },
+    "orchis-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789349530,
+        "narHash": "sha256-bSC22YKkVovmaOT2fNGXgW3RJZHt7pNUYgxQwkmpTPA=",
+        "owner": "vinceliuice",
+        "repo": "Orchis-theme",
+        "rev": "a4c48a425e63808345e824495964bd9c2f462e04",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vinceliuice",
+        "repo": "Orchis-theme",
+        "type": "github"
+      }
+    },
     "pre-commit": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -218,6 +234,7 @@
         "lanzaboote": "lanzaboote",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
+        "orchis-src": "orchis-src",
         "spicetify-nix": "spicetify-nix"
       }
     },
