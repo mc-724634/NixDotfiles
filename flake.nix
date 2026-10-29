@@ -46,7 +46,6 @@
               };
               home-manager.users.mc = ./home.nix;
             }
-            }
           ];
         };
       };
