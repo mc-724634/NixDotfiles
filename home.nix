@@ -3,6 +3,11 @@ let
   shellAliases = {
     clear = "printf '\\033[2J\\033[3J\\033[H'";
   };
+  # Orchis from upstream (nixpkgs ships an older release); pinned in flake.lock.
+  orchis = pkgs.orchis-theme.overrideAttrs (_: {
+    version = "git";
+    src = inputs.orchis-src;
+  });
 in
 {
   imports = [
@@ -42,7 +47,7 @@ in
     freecad
     eden
     gnome-tweaks
-    tela-icon-theme
+    gnomeExtensions.user-themes
   ];
 
   home.file = {
@@ -110,12 +115,27 @@ in
       size = 12;
     };
   };
-  
-    home.pointerCursor = {
+
+  home.pointerCursor = {
     package = pkgs.bibata-cursors;
     name = "Bibata-Modern-Classic";
     size = 24;
     gtk.enable = true;
+  };
+
+  # Applies the theme, icons and cursor to GTK apps and GNOME (Home Manager
+  # also writes the matching org.gnome.desktop.interface dconf keys).
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Orchis-Dark";
+      package = orchis;
+    };
+    iconTheme = {
+      name = "Tela";
+      package = pkgs.tela-icon-theme;
+    };
+    colorScheme = "dark";
   };
 
   xdg.dataFile."sounds/modern-minimal-ui-sounds-v1.2" = {
@@ -126,14 +146,10 @@ in
   # GNOME settings, translated from the old Plasma shortcuts/behaviour.
   # Anything not listed here is left at GNOME defaults.
   dconf.settings = {
-      "org/gnome/desktop/interface" = {
-      icon-theme = "Tela";
-    };
-
     "org/gnome/desktop/sound" = {
       theme-name = "modern-minimal-ui-sounds-v1.2";
     };
-  
+
     "org/gnome/desktop/wm/preferences" = {
       focus-mode = "sloppy";            # focus follows mouse
       num-workspaces = 2;
@@ -150,7 +166,15 @@ in
     };
 
     "org/gnome/shell" = {
-      enabled-extensions = [ "gsconnect@andyholmes.github.io" ];
+      enabled-extensions = [
+        "gsconnect@andyholmes.github.io"
+        "user-theme@gnome-shell-extensions.gcampax.github.com"
+      ];
+    };
+
+    # Orchis shell theme (needs the User Themes extension above).
+    "org/gnome/shell/extensions/user-theme" = {
+      name = "Orchis-Dark";
     };
 
     # Free up Super+1..9 (GNOME uses them to launch dock apps by default).
@@ -206,7 +230,7 @@ in
     };
 
     # App launchers (Super+T kitty, Super+W browser, Super+Ctrl+W private window)
-        "org/gnome/settings-daemon/plugins/media-keys" = {
+    "org/gnome/settings-daemon/plugins/media-keys" = {
       custom-keybindings = [
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/kitty/"
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/helium/"
@@ -219,7 +243,7 @@ in
       command = "kitty";
       binding = "<Super>t";
     };
-        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/files" = {
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/files" = {
       name = "Files";
       command = "nautilus";
       binding = "<Super>e";

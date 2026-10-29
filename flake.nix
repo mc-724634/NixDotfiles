@@ -12,6 +12,10 @@
       "github:oxcl/nix-flake-helium-browser";
     helium-flake.inputs.nixpkgs.follows = "nixpkgs";
     nur.url = "github:nix-community/NUR";
+    orchis-src = {
+      url = "github:vinceliuice/Orchis-theme";
+      flake = false;
+    };
     lanzaboote.url = "github:nix-community/lanzaboote/v1.1.0";
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
   };
