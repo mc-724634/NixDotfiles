@@ -38,16 +38,14 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.useGlobalPkgs = true;
-              home-manager.backupFileExtension = "backup";
               home-manager.overwriteBackup = true;
-              home-manager.useUserPackages = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
                 inherit inputs;
                 inherit spicetify-nix;
               };
               home-manager.users.mc = ./home.nix;
+            }
             }
           ];
         };
