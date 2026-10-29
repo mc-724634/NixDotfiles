@@ -41,6 +41,8 @@ in
     printrun
     freecad
     eden
+    gnome-tweaks
+    tela-icon-theme
   ];
 
   home.file = {
@@ -108,10 +110,30 @@ in
       size = 12;
     };
   };
+  
+    home.pointerCursor = {
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Classic";
+    size = 24;
+    gtk.enable = true;
+  };
+
+  xdg.dataFile."sounds/modern-minimal-ui-sounds-v1.2" = {
+    source = ./extras/sounds/modern-minimal-ui-sounds-v1.2;
+    force = true;
+  };
 
   # GNOME settings, translated from the old Plasma shortcuts/behaviour.
   # Anything not listed here is left at GNOME defaults.
   dconf.settings = {
+      "org/gnome/desktop/interface" = {
+      icon-theme = "Tela";
+    };
+
+    "org/gnome/desktop/sound" = {
+      theme-name = "modern-minimal-ui-sounds-v1.2";
+    };
+  
     "org/gnome/desktop/wm/preferences" = {
       focus-mode = "sloppy";            # focus follows mouse
       num-workspaces = 2;
@@ -184,17 +206,23 @@ in
     };
 
     # App launchers (Super+T kitty, Super+W browser, Super+Ctrl+W private window)
-    "org/gnome/settings-daemon/plugins/media-keys" = {
+        "org/gnome/settings-daemon/plugins/media-keys" = {
       custom-keybindings = [
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/kitty/"
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/helium/"
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/helium-private/"
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/files/"
       ];
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/kitty" = {
       name = "Terminal";
       command = "kitty";
       binding = "<Super>t";
+    };
+        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/files" = {
+      name = "Files";
+      command = "nautilus";
+      binding = "<Super>e";
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/helium" = {
       name = "Browser";
