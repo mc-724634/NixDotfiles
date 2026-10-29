@@ -181,6 +181,8 @@ in
       enabled-extensions = [
         "gsconnect@andyholmes.github.io"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
+        "blur-my-shell@aunetx"
+        "dash-to-dock@micxgx.gmail.com"
       ];
     };
 
