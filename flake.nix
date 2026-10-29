@@ -38,6 +38,10 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.backupFileExtension = "backup";
+              home-manager.useGlobalPkgs = true;
+              home-manager.backupFileExtension = "backup";
+              home-manager.overwriteBackup = true;
+              home-manager.useUserPackages = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
                 inherit inputs;
