@@ -47,7 +47,6 @@ in
     freecad
     eden
     gnome-tweaks
-    gnomeExtensions.user-themes
   ];
 
   home.file = {
@@ -143,11 +142,19 @@ in
     force = true;
   };
 
+  # Put the theme where both GTK and the GNOME Shell User Themes extension
+  # look for it (~/.local/share/themes), so it never depends on XDG_DATA_DIRS.
+  xdg.dataFile."themes/Orchis-Dark" = {
+    source = "${orchis}/share/themes/Orchis-Dark";
+    force = true;
+  };
+
   # GNOME settings, translated from the old Plasma shortcuts/behaviour.
   # Anything not listed here is left at GNOME defaults.
   dconf.settings = {
     "org/gnome/desktop/sound" = {
       theme-name = "modern-minimal-ui-sounds-v1.2";
+      event-sounds = true;
     };
 
     "org/gnome/desktop/wm/preferences" = {
@@ -166,6 +173,7 @@ in
     };
 
     "org/gnome/shell" = {
+      disable-user-extensions = false;
       enabled-extensions = [
         "gsconnect@andyholmes.github.io"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
