@@ -183,7 +183,19 @@ in
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "blur-my-shell@aunetx"
         "dash-to-dock@micxgx.gmail.com"
+        "dash-to-panel@jderose9.github.com"
       ];
+    };
+
+    # Dash to Panel as a status-only bar on the left edge; Dash to Dock keeps
+    # handling apps. (panel-position is the global fallback, panel-positions
+    # is per-monitor.) Experimental: the two extensions are not designed to
+    # run together.
+    "org/gnome/shell/extensions/dash-to-panel" = {
+      panel-position = "LEFT";
+      panel-positions = "{\"0\":\"LEFT\"}";
+      show-running-apps = false;
+      show-favorites = false;
     };
 
     # Orchis shell theme (needs the User Themes extension above).
