@@ -135,6 +135,10 @@ in
       package = pkgs.tela-icon-theme;
     };
     colorScheme = "dark";
+
+    # Since HM 26.05, GTK4/libadwaita apps (Files, Settings, ...) are only themed
+    # if this is set explicitly; it writes ~/.config/gtk-4.0/gtk.css.
+    gtk4.theme = config.gtk.theme;
   };
 
   xdg.dataFile."sounds/modern-minimal-ui-sounds-v1.2" = {
