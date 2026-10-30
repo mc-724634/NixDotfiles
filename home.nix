@@ -92,7 +92,6 @@ in
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
-    presets = [ "catppuccin-powerline" ];
 
     settings = {
       line_break.disabled = false;
@@ -106,14 +105,19 @@ in
     };
   };
 
-  programs.kitty = {
-    enable = true;
-    themeFile = "Catppuccin-Macchiato";
-    font = {
-      name = "Hack";
-      size = 12;
-    };
+programs.ghostty = {
+  enable = true;
+
+  enableZshIntegration = true;
+
+  settings = {
+    theme = "Catppuccin Frappe";
+    font-size = 12;
+    window-padding-x = 10;
+    window-padding-y = 10;
+    confirm-close-surface = false;
   };
+};
 
   home.pointerCursor = {
     package = pkgs.bibata-cursors;
