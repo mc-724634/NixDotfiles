@@ -182,8 +182,60 @@ in
         "gsconnect@andyholmes.github.io"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "blur-my-shell@aunetx"
-        "aztaskbar@aztaskbar.gitlab.com"
+        "dash-to-dock@micxgx.gmail.com"
+        "appindicatorsupport@rgcjonas.gmail.com"
+        "tilingshell@ferrarodomenico.com"
       ];
+    };
+
+    # Dash to Dock (settings captured from the live setup with `dconf dump`).
+    "org/gnome/shell/extensions/dash-to-dock" = {
+      always-center-icons = false;
+      animation-time = 0.2;
+      apply-custom-theme = false;
+      apply-glossy-effect = false;
+      autohide = true;
+      autohide-in-fullscreen = false;
+      background-opacity = 0.8;
+      custom-theme-customize-running-dots = false;
+      custom-theme-running-dots-border-color = "rgb(255,255,255)";
+      custom-theme-running-dots-color = "rgb(255,255,255)";
+      custom-theme-shrink = true;
+      dash-max-icon-size = 42;
+      disable-overview-on-startup = true;
+      dock-fixed = false;
+      dock-position = "LEFT";
+      extend-height = false;
+      height-fraction = 0.9;
+      hide-delay = 0.2;
+      hide-tooltip = false;
+      hot-keys = false;
+      icon-size-fixed = false;
+      intellihide = true;
+      intellihide-mode = "FOCUS_APPLICATION_WINDOWS";
+      isolate-workspaces = false;
+      multi-monitor = false;
+      preferred-monitor = -2;
+      preferred-monitor-by-connector = "DP-1";
+      pressure-threshold = 100.0;
+      require-pressure-to-show = true;
+      running-indicator-dominant-color = false;
+      running-indicator-style = "DOTS";
+      scroll-action = "cycle-windows";
+      show-apps-at-top = true;
+      show-delay = 0.25;
+      show-dock-urgent-notify = true;
+      show-favorites = true;
+      show-mounts = true;
+      show-mounts-network = false;
+      show-show-apps-button = false;
+      show-trash = false;
+      unity-backlit-items = false;
+    };
+
+    # System tray: keep tray icons in colour (default is greyscale).
+    "org/gnome/shell/extensions/appindicator" = {
+      icon-saturation = 0.0;
     };
 
     # Orchis shell theme (needs the User Themes extension above).
