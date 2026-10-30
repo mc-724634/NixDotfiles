@@ -111,7 +111,6 @@ programs.ghostty = {
   enableZshIntegration = true;
 
   settings = {
-    theme = "Catppuccin Frappe";
     font-size = 12;
     window-padding-x = 10;
     window-padding-y = 10;
