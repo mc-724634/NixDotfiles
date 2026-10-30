@@ -78,33 +78,6 @@ in
       ];
     };
 
-  programs.zsh = {
-    enable = true;
-    shellAliases = shellAliases;
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
-    oh-my-zsh = {
-      enable = true;
-      plugins = [ "git" ];
-    };
-  };
-
-  programs.starship = {
-    enable = true;
-    enableZshIntegration = true;
-
-    settings = {
-      line_break.disabled = false;
-
-      os = {
-        disabled = false;
-        symbols = {
-          NixOS = "";
-        };
-      };
-    };
-  };
-
 programs.ghostty = {
   enable = true;
 
