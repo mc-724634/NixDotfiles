@@ -4,10 +4,14 @@ let
     clear = "printf '\\033[2J\\033[3J\\033[H'";
   };
   # Orchis from upstream (nixpkgs ships an older release); pinned in flake.lock.
-  orchis = pkgs.orchis-theme.overrideAttrs (_: {
+  # "macos" tweak = macOS-style window buttons.
+  orchis = (pkgs.orchis-theme.override { tweaks = [ "macos" ]; }).overrideAttrs (_: {
     version = "git";
     src = inputs.orchis-src;
   });
+  # Colour variant (Purple accent, dark). Used for GTK, the shell theme and the
+  # ~/.local/share/themes link so they can never get out of sync.
+  orchisTheme = "Orchis-Purple-Dark";
 in
 {
   imports = [
@@ -78,18 +82,42 @@ in
       ];
     };
 
-programs.ghostty = {
-  enable = true;
-
-  enableZshIntegration = true;
-
-  settings = {
-    font-size = 12;
-    window-padding-x = 10;
-    window-padding-y = 10;
-    confirm-close-surface = false;
+  programs.zsh = {
+    enable = true;
+    shellAliases = shellAliases;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ "git" ];
+    };
   };
-};
+
+  programs.starship = {
+    enable = true;
+    enableZshIntegration = true;
+    presets = [ "catppuccin-powerline" ];
+
+    settings = {
+      line_break.disabled = false;
+
+      os = {
+        disabled = false;
+        symbols = {
+          NixOS = "";
+        };
+      };
+    };
+  };
+
+  programs.kitty = {
+    enable = true;
+    themeFile = "Catppuccin-Macchiato";
+    font = {
+      name = "Hack";
+      size = 12;
+    };
+  };
 
   home.pointerCursor = {
     package = pkgs.bibata-cursors;
@@ -103,7 +131,7 @@ programs.ghostty = {
   gtk = {
     enable = true;
     theme = {
-      name = "Orchis-Dark";
+      name = orchisTheme;
       package = orchis;
     };
     iconTheme = {
@@ -124,8 +152,8 @@ programs.ghostty = {
 
   # Put the theme where both GTK and the GNOME Shell User Themes extension
   # look for it (~/.local/share/themes), so it never depends on XDG_DATA_DIRS.
-  xdg.dataFile."themes/Orchis-Dark" = {
-    source = "${orchis}/share/themes/Orchis-Dark";
+  xdg.dataFile."themes/${orchisTheme}" = {
+    source = "${orchis}/share/themes/${orchisTheme}";
     force = true;
   };
 
@@ -140,7 +168,7 @@ programs.ghostty = {
     "org/gnome/desktop/wm/preferences" = {
       focus-mode = "sloppy";            # focus follows mouse
       num-workspaces = 2;
-      button-layout = ":minimize,maximize,close";
+            button-layout = ":minimize,maximize,close";   # close on the far right, like Windows/your old setup
     };
 
     "org/gnome/mutter" = {
@@ -209,14 +237,14 @@ programs.ghostty = {
       unity-backlit-items = false;
     };
 
-    # System tray: keep tray icons in colour (default is greyscale).
+    # System tray icons: greyscale (0.0) or colour (1.0).
     "org/gnome/shell/extensions/appindicator" = {
       icon-saturation = 0.0;
     };
 
     # Orchis shell theme (needs the User Themes extension above).
     "org/gnome/shell/extensions/user-theme" = {
-      name = "Orchis-Dark";
+      name = orchisTheme;
     };
 
     # Free up Super+1..9 (GNOME uses them to launch dock apps by default).
