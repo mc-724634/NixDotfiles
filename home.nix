@@ -182,16 +182,8 @@ in
         "gsconnect@andyholmes.github.io"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "blur-my-shell@aunetx"
-        "bottom-dash-panel@fthx"
+        "aztaskbar@aztaskbar.gitlab.com"
       ];
-    };
-
-    # Bottom taskbar: full-width, always visible, doesn't recolour the top bar.
-    "org/gnome/shell/extensions/bottom-dash-panel" = {
-      panel-mode = true;
-      auto-hide = false;
-      overlap-windows = false;
-      sync-color = false;
     };
 
     # Orchis shell theme (needs the User Themes extension above).

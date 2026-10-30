@@ -186,7 +186,7 @@ hardware.amdgpu.overdrive = {
     arduino-ide
     gnomeExtensions.user-themes # lets GNOME Shell load the Orchis shell theme
     gnomeExtensions.blur-my-shell
-    gnomeExtensions.bottom-dash-panel # favourites + running apps in a bottom bar
+    gnomeExtensions.app-icons-taskbar # favourites + running apps on the panel; can sit at the bottom
   ];
 
   system.stateVersion = "26.05";
