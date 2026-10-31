@@ -27,9 +27,9 @@
     theme = "spinner";
   };
 
-  environment.shells = with pkgs; [ zsh ];
-  users.defaultUserShell = pkgs.zsh;
-  programs.zsh.enable = true;
+  # fish is the login shell (programs.fish.enable also registers it in /etc/shells).
+  programs.fish.enable = true;
+  users.defaultUserShell = pkgs.fish;
 
   # Use latest zen kernel.
   boot.kernelPackages = pkgs.linuxPackages_zen;
@@ -105,9 +105,13 @@ hardware.amdgpu.overdrive = {
     enable = true;
   };
 
-  # Skip GNOME's default terminal (kitty is used instead).
+  # Skip GNOME's default terminal (Ghostty is used instead).
   environment.gnome.excludePackages = with pkgs; [
     gnome-console
+  ];
+
+  fonts.packages = with pkgs; [
+    hack-font # Ghostty font (see modules/shell.nix)
   ];
 
   programs.gamemode.enable = true;
@@ -149,6 +153,11 @@ hardware.amdgpu.overdrive = {
 
   services.displayManager.gdm.enable = true;
 
+  # Give the GDM login screen the same monitor layout as the desktop.
+  systemd.tmpfiles.rules = [
+    "L+ /run/gdm/.config/monitors.xml - - - - ${./extras/monitors.xml}"
+  ];
+
   services.desktopManager.gnome.enable = true;
 
   services.xserver.xkb = {
@@ -178,7 +187,6 @@ hardware.amdgpu.overdrive = {
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
-    zsh
     wayvr
     xrizer
     sbctl
@@ -189,6 +197,7 @@ hardware.amdgpu.overdrive = {
     gnomeExtensions.dash-to-dock
     gnomeExtensions.appindicator # system tray (KStatusNotifierItem + legacy tray icons)
     gnomeExtensions.tiling-shell # KDE/Windows-style window snapping zones
+    gnome-system-monitor # Ctrl+Shift+Esc (shortcut defined in modules/gnome.nix)
   ];
 
   system.stateVersion = "26.05";
