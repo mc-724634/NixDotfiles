@@ -39,6 +39,10 @@ in
       temperature-unit = "fahrenheit";
     };
 
+    "org/gnome/desktop/a11y/applications" = {
+      screen-reader-enabled = false;
+    };
+
     "org/gnome/desktop/a11y/magnifier" = {
       cross-hairs-length = 58;
     };
@@ -86,8 +90,16 @@ in
       accent-color = "green";
       clock-format = "12h";
       clock-show-weekday = true;
+      cursor-blink = true;
+      cursor-blink-time = 1000;
+      document-font-name = "Noto Sans  10";
+      enable-animations = true;
       enable-hot-corners = false;
+      font-name = "Noto Sans  10";
+      monospace-font-name = "Hack  10";
+      scaling-factor = (mkUint32 1);
       text-scaling-factor = 1.0;
+      toolbar-style = "text";
       toolkit-accessibility = false;
     };
 
@@ -98,7 +110,7 @@ in
 
     "org/gnome/desktop/peripherals/mouse" = {
       natural-scroll = false;
-      speed = 0.191358024691358;
+      speed = 0.191358;
     };
 
     "org/gnome/desktop/peripherals/touchpad" = {
@@ -156,10 +168,10 @@ in
       switch-to-workspace-right = [ "<Super><Control>Right" ];
       switch-windows = [ "<Alt>Tab" "<Super>Tab" ];
       switch-windows-backward = [ "<Shift><Alt>Tab" "<Shift><Super>Tab" ];
-      unmaximize = [ ];
     };
 
     "org/gnome/desktop/wm/preferences" = {
+      action-double-click-titlebar = "toggle-maximize";
       button-layout = ":minimize,maximize,close";
       focus-mode = "sloppy";
       num-workspaces = 2;
@@ -334,9 +346,15 @@ in
     "org/gnome/shell/extensions/tilingshell" = {
       edge-tiling-mode = "default";
       enable-autotiling = false;
+      enable-blur-selected-tilepreview = true;
+      enable-blur-snap-assistant = true;
+      enable-directional-focus-tiled-only = false;
+      enable-screen-edges-windows-suggestions = false;
       enable-snap-assist = false;
+      enable-snap-assistant-windows-suggestions = false;
       enable-tiling-system = true;
       enable-tiling-system-windows-suggestions = false;
+      enable-window-border = false;
       layouts-json = ''
         [
           {"id":"Layout 1","tiles":[
@@ -367,8 +385,10 @@ in
           ]}
         ]
       '';
+      quarter-tiling-threshold = (mkUint32 1);
       selected-layouts = [ [ "322203" "322203" ] [ "322203" "322203" ] ];
       show-indicator = false;
+      span-multiple-tiles-activation-key = [ "1" ];
       top-edge-maximize = false;
       window-use-custom-border-color = false;
     };
@@ -397,6 +417,15 @@ in
 
     "org/gtk/settings/file-chooser" = {
       clock-format = "12h";
+      date-format = "regular";
+      location-mode = "path-bar";
+      show-hidden = false;
+      show-size-column = true;
+      show-type-column = true;
+      sort-column = "name";
+      sort-directories-first = false;
+      sort-order = "ascending";
+      type-format = "category";
     };
 
     # Custom shortcuts (Super+T terminal, Super+W browser, Super+E files, Super+I settings, Ctrl+Shift+Esc system monitor).

@@ -88,7 +88,7 @@ in
       package = orchis;
     };
     iconTheme = {
-      name = "Tela";
+      name = "Tela-purple-dark";
       package = pkgs.tela-icon-theme;
     };
     colorScheme = "dark";

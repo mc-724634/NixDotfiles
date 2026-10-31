@@ -111,7 +111,8 @@ hardware.amdgpu.overdrive = {
   ];
 
   fonts.packages = with pkgs; [
-    hack-font # Ghostty font (see modules/shell.nix)
+    hack-font # monospace font (Ghostty + GNOME)
+    noto-fonts # "Noto Sans", the interface/document font set in GNOME
   ];
 
   programs.gamemode.enable = true;
