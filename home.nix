@@ -50,6 +50,7 @@ in
     freecad
     eden
     gnome-tweaks
+    azahar
   ];
 
   home.sessionVariables = {
