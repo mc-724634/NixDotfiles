@@ -105,7 +105,7 @@ in
 
     "org/gnome/desktop/peripherals/keyboard" = {
       numlock-state = true;
-      remember-numlock-state = false;
+      remember-numlock-state = true;
     };
 
     "org/gnome/desktop/peripherals/mouse" = {
