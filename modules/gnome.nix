@@ -103,6 +103,12 @@ in
       toolkit-accessibility = false;
     };
 
+    # Lock-screen notifications are what make GNOME switch the display back on,
+    # so they are turned off. (Per-app control: Settings -> Notifications.)
+    "org/gnome/desktop/notifications" = {
+      show-in-lock-screen = false;
+    };
+
     "org/gnome/desktop/peripherals/keyboard" = {
       numlock-state = true;
       remember-numlock-state = true;
@@ -137,7 +143,6 @@ in
     # Window / workspace shortcuts.
     "org/gnome/desktop/wm/keybindings" = {
       close = [ "<Super>q" ];
-      maximize = [ "<Super>Page_Up" ];
       minimize = [ "<Super>Page_Down" ];
       move-to-workspace-1 = [ "<Super><Control>1" ];
       move-to-workspace-10 = [ "<Super><Control>0" ];
@@ -178,10 +183,6 @@ in
       resize-with-right-button = true;
     };
 
-    "org/gnome/epiphany" = {
-      ask-for-default = false;
-    };
-
     "org/gnome/mutter" = {
       dynamic-workspaces = false;
       overlay-key = "Super_L";
@@ -208,6 +209,7 @@ in
         "dash-to-dock@micxgx.gmail.com"
         "appindicatorsupport@rgcjonas.gmail.com"
         "tilingshell@ferrarodomenico.com"
+        "Rounded_Corners@lennart-k"
       ];
       favorite-apps = [
         "helium.desktop"
@@ -343,6 +345,11 @@ in
     };
 
     # Tiling Shell (window snapping zones).
+    # Rounded screen corners on every monitor.
+    "org/gnome/shell/extensions/lennart-k/rounded_corners" = {
+      corner-radius = 12;
+    };
+
     "org/gnome/shell/extensions/tilingshell" = {
       edge-tiling-mode = "default";
       enable-autotiling = false;
@@ -389,6 +396,7 @@ in
       selected-layouts = [ [ "322203" "322203" ] [ "322203" "322203" ] ];
       show-indicator = false;
       span-multiple-tiles-activation-key = [ "1" ];
+      span-window-all-tiles = [ "<Super>Page_Up" ]; # "maximize" that keeps the gaps
       top-edge-maximize = false;
       window-use-custom-border-color = false;
     };

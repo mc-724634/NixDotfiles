@@ -109,8 +109,11 @@
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
-  # Skip GNOME's default terminal (Ghostty is used instead).
-  environment.gnome.excludePackages = with pkgs; [ gnome-console ];
+  # Skip GNOME's default terminal (Ghostty is used instead) and GNOME Web.
+  environment.gnome.excludePackages = with pkgs; [
+    gnome-console
+    epiphany
+  ];
 
   # Give the GDM login screen the same monitor layout as the desktop.
   systemd.tmpfiles.rules = [
@@ -121,6 +124,17 @@
     hack-font # monospace font (Ghostty + GNOME)
     noto-fonts # "Noto Sans", the interface/document font set in GNOME
   ];
+
+  # The generic families (what apps get when they ask for "sans-serif",
+  # "serif" or "monospace"). Plasma used to set these; GNOME doesn't.
+  fonts.fontconfig.defaultFonts = {
+    sansSerif = [ "Noto Sans" ];
+    serif = [ "Noto Serif" ];
+    monospace = [ "Hack" "Noto Sans Mono" ];
+  };
+
+  # Makes system fonts visible to Flatpak apps.
+  fonts.fontDir.enable = true;
 
   # ── Audio ───────────────────────────────────────────────────────────────
   security.rtkit.enable = true;
@@ -173,6 +187,7 @@
     gnomeExtensions.dash-to-dock
     gnomeExtensions.appindicator # system tray (KStatusNotifierItem + legacy tray icons)
     gnomeExtensions.tiling-shell # KDE/Windows-style window snapping zones
+    gnomeExtensions.rounded-corners # rounded screen corners
   ];
 
   # ── Nix ─────────────────────────────────────────────────────────────────
