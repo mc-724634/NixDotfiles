@@ -1,4 +1,4 @@
-{ config, pkgs, spicetify-nix, inputs, ... }:
+{ config, pkgs, inputs, ... }:
 let
   # Orchis from upstream (nixpkgs ships an older release); pinned in flake.lock.
   # "macos" tweak = macOS-style window buttons.
@@ -12,7 +12,7 @@ let
 in
 {
   imports = [
-    spicetify-nix.homeManagerModules.default
+    inputs.spicetify-nix.homeManagerModules.default
     ./modules/fastfetch.nix
     ./modules/shell.nix   # fish, starship, ghostty
     ./modules/gnome.nix   # dconf settings, wallpaper, display layout, default apps
@@ -23,44 +23,53 @@ in
   home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
+    # Development
     git
     gcc
     wget
-    hyfetch
+    python3
+    vscode
+    claude-code
+
+    # Chat
     vesktop
     telegram-desktop
+
+    # Games & emulation
     prismlauncher
     heroic
-    godot
+    bottles
     cemu
     dolphin-emu
-    steam-rom-manager
-    vscode
-    python3
-    orca-slicer
-    easyeffects
-    krita
-    pkgs.blender-rocm
-    gnome-boxes
-    open-scq30
-    claude-code
-    bottles
-    (pkgs.retroarch.withCores (cores: with cores; [ bsnes ]))
-    printrun
-    freecad
     eden
-    gnome-tweaks
     azahar
-    cisco-packet-tracer_9
-  ];
+    steam-rom-manager
+    (retroarch.withCores (cores: with cores; [ bsnes ]))
 
-  home.sessionVariables = {
-    # EDITOR = "emacs";
-  };
+    # Creative, 3D & printing
+    krita
+    blender-rocm
+    godot
+    freecad
+    orca-slicer
+    printrun
+
+    # Audio
+    easyeffects
+    open-scq30
+
+    # Networking
+    cisco-packet-tracer_9
+
+    # System & fun
+    gnome-boxes
+    gnome-tweaks
+    hyfetch
+  ];
 
   programs.spicetify =
     let
-      spicePkgs = spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+      spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
     in
     {
       enable = true;
@@ -110,6 +119,4 @@ in
     source = "${orchis}/share/themes/${orchisTheme}";
     force = true;
   };
-
-  programs.home-manager.enable = true;
 }

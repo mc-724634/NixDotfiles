@@ -1,16 +1,17 @@
-{ config, pkgs, lib, helium-flake, nur, ... }:
+{ pkgs, lib, helium-flake, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      helium-flake.nixosModules.default
-    ];
+  imports = [
+    ./hardware-configuration.nix
+    helium-flake.nixosModules.default
+  ];
+
+  nixpkgs.config.allowUnfree = true;
 
   nixpkgs.overlays = [
     helium-flake.overlays.default
-    nur.overlays.default
     (final: prev: {
+      # Blender built with ROCm (AMD GPU) support.
       blender-rocm = prev.symlinkJoin {
         name = "blender-rocm";
         paths = [ prev.pkgsRocm.blender ];
@@ -22,58 +23,30 @@
     })
   ];
 
+  # ── Boot ────────────────────────────────────────────────────────────────
+  boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelParams = [ "quiet" "splash" ];
+  boot.kernel.sysctl."vm.swappiness" = 100;
+
   boot.plymouth = {
     enable = true;
     theme = "spinner";
   };
 
-  # fish is the login shell (programs.fish.enable also registers it in /etc/shells).
-  programs.fish.enable = true;
-  users.defaultUserShell = pkgs.fish;
-
-  # Use latest zen kernel.
-  boot.kernelPackages = pkgs.linuxPackages_zen;
-
-boot.kernelParams = [
-  "quiet"
-  "splash"
-];
-
-hardware.amdgpu.overdrive = {
-  enable = true;
-  ppfeaturemask = "0xffffffff";
-};
-  boot.loader.timeout = 0;
-
+  # The systemd initrd is required for TPM2 unlocking of the LUKS volume.
   boot.initrd.systemd.enable = true;
-
-  # Lanzaboote replaces systemd-boot's own enable.
-  boot.loader.systemd-boot.enable = lib.mkForce false;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  boot.lanzaboote = {
-    enable = true;
-    pkiBundle = "/var/lib/sbctl";
-  };
-
   boot.initrd.luks.devices."luks-bf6cf5c5-2572-48ec-ac11-70b12ae93142".crypttabExtraOpts = [
     "tpm2-device=auto"
   ];
 
-  networking.hostName = "nixos";
-
-  networking.networkmanager.enable = true;
-
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
-
-  networking.firewall = {
+  boot.loader.timeout = 0;
+  boot.loader.efi.canTouchEfiVariables = true;
+  # Lanzaboote (Secure Boot) replaces systemd-boot's own enable.
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.lanzaboote = {
     enable = true;
+    pkiBundle = "/var/lib/sbctl";
   };
-
-  time.timeZone = "America/New_York";
-
-  i18n.defaultLocale = "en_US.UTF-8";
 
   zramSwap = {
     enable = true;
@@ -82,48 +55,34 @@ hardware.amdgpu.overdrive = {
     memoryMax = 8 * 1024 * 1024 * 1024; # 8 GiB
   };
 
-  services.lact.enable = true;
-  systemd.services.lactd.path = [ "/run/wrappers" ];
-
-  boot.kernel.sysctl = {
-    "vm.swappiness" = 100;
-  };
-
+  # ── Hardware ────────────────────────────────────────────────────────────
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
   };
-  hardware.amdgpu.opencl.enable = true;
 
-  services.flatpak.enable = true;
-
-  programs.helium = {
-    enable = true;
+  hardware.amdgpu = {
+    opencl.enable = true;
+    overdrive = {
+      enable = true;
+      ppfeaturemask = "0xffffffff";
+    };
   };
 
-  programs.steam = {
+  hardware.bluetooth.enable = true;
+
+  services.lact.enable = true;
+  systemd.services.lactd.path = [ "/run/wrappers" ];
+
+  services.hardware.openrgb = {
     enable = true;
+    package = pkgs.openrgb-with-all-plugins;
+    motherboard = "amd";
   };
 
-  # Skip GNOME's default terminal (Ghostty is used instead).
-  environment.gnome.excludePackages = with pkgs; [
-    gnome-console
-  ];
-
-  fonts.packages = with pkgs; [
-    hack-font # monospace font (Ghostty + GNOME)
-    noto-fonts # "Noto Sans", the interface/document font set in GNOME
-  ];
-
-  programs.gamemode.enable = true;
-
-  virtualisation.libvirtd.enable = true;
-
-  services.wivrn = {
-    enable = true;
-    openFirewall = true;
-    autoStart = false;
-  };
+  # ── Networking ──────────────────────────────────────────────────────────
+  networking.hostName = "nixos";
+  networking.networkmanager.enable = true;
 
   services.avahi = {
     enable = true;
@@ -135,40 +94,35 @@ hardware.amdgpu.overdrive = {
     };
   };
 
-  programs.nix-ld.enable = true;
-
-  services.hardware.openrgb = {
-    enable = true;
-    package = pkgs.openrgb-with-all-plugins;
-    motherboard = "amd";
-  };
-
   # KDE Connect protocol, GNOME front-end (GSConnect). Opens the needed
-  # firewall ports; the extension is enabled in home.nix.
+  # firewall ports; the extension itself is enabled in modules/gnome.nix.
   programs.kdeconnect = {
     enable = true;
     package = pkgs.gnomeExtensions.gsconnect;
   };
 
-  services.xserver.enable = false;
+  # ── Locale ──────────────────────────────────────────────────────────────
+  time.timeZone = "America/New_York";
+  i18n.defaultLocale = "en_US.UTF-8";
 
+  # ── Desktop (GNOME) ─────────────────────────────────────────────────────
   services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
+
+  # Skip GNOME's default terminal (Ghostty is used instead).
+  environment.gnome.excludePackages = with pkgs; [ gnome-console ];
 
   # Give the GDM login screen the same monitor layout as the desktop.
   systemd.tmpfiles.rules = [
     "L+ /run/gdm/.config/monitors.xml - - - - ${./extras/monitors.xml}"
   ];
 
-  services.desktopManager.gnome.enable = true;
+  fonts.packages = with pkgs; [
+    hack-font # monospace font (Ghostty + GNOME)
+    noto-fonts # "Noto Sans", the interface/document font set in GNOME
+  ];
 
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
-  services.printing.enable = true;
-
-  services.pulseaudio.enable = false;
+  # ── Audio ───────────────────────────────────────────────────────────────
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -177,31 +131,52 @@ hardware.amdgpu.overdrive = {
     pulse.enable = true;
   };
 
-  users.users."mc" = {
+  # ── Services & programs ─────────────────────────────────────────────────
+  services.flatpak.enable = true;
+  services.printing.enable = true;
+  virtualisation.libvirtd.enable = true;
+
+  services.wivrn = {
+    enable = true;
+    openFirewall = true;
+    autoStart = false;
+  };
+
+  programs.helium.enable = true;
+  programs.steam.enable = true;
+  programs.gamemode.enable = true;
+  programs.nix-ld.enable = true;
+
+  # fish is the login shell (programs.fish.enable also registers it in /etc/shells).
+  programs.fish.enable = true;
+  users.defaultUserShell = pkgs.fish;
+
+  # ── User ────────────────────────────────────────────────────────────────
+  users.users.mc = {
     isNormalUser = true;
     description = "mc";
     extraGroups = [ "networkmanager" "wheel" "libvirtd" "dialout" ];
   };
 
-  programs.firefox.enable = false;
-
-  nixpkgs.config.allowUnfree = true;
-
+  # ── System packages ─────────────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
     wayvr
     xrizer
     sbctl
     unrar
     arduino-ide
-    gnomeExtensions.user-themes # lets GNOME Shell load the Orchis shell theme
+    gnome-system-monitor # Ctrl+Shift+Esc (shortcut defined in modules/gnome.nix)
+
+    # GNOME Shell extensions (enabled declaratively in modules/gnome.nix)
+    gnomeExtensions.user-themes # loads the Orchis shell theme
     gnomeExtensions.blur-my-shell
     gnomeExtensions.dash-to-dock
     gnomeExtensions.appindicator # system tray (KStatusNotifierItem + legacy tray icons)
     gnomeExtensions.tiling-shell # KDE/Windows-style window snapping zones
-    gnome-system-monitor # Ctrl+Shift+Esc (shortcut defined in modules/gnome.nix)
   ];
 
-  system.stateVersion = "26.05";
+  # ── Nix ─────────────────────────────────────────────────────────────────
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   nix.gc = {
     automatic = true;
@@ -209,8 +184,10 @@ hardware.amdgpu.overdrive = {
     options = "--delete-older-than 14d";
   };
 
-  nix.optimise.automatic = true;
-  nix.optimise.dates = [ "weekly" ];
+  nix.optimise = {
+    automatic = true;
+    dates = [ "weekly" ];
+  };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  system.stateVersion = "26.05";
 }

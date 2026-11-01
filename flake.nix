@@ -1,53 +1,44 @@
 {
-  description = "Nixos flake";
+  description = "NixOS flake";
+
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-26.05";
-    home-manager.url =
-      "github:nix-community/home-manager/release-26.05";
+
+    home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    spicetify-nix.url =
-      "github:Gerg-L/spicetify-nix";
+
+    spicetify-nix.url = "github:Gerg-L/spicetify-nix";
     spicetify-nix.inputs.nixpkgs.follows = "nixpkgs";
-    helium-flake.url =
-      "github:oxcl/nix-flake-helium-browser";
+
+    helium-flake.url = "github:oxcl/nix-flake-helium-browser";
     helium-flake.inputs.nixpkgs.follows = "nixpkgs";
-    nur.url = "github:nix-community/NUR";
+
+    lanzaboote.url = "github:nix-community/lanzaboote/v1.1.0";
+    lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Orchis GTK/shell theme, built from upstream (the nixpkgs release is older).
     orchis-src = {
       url = "github:vinceliuice/Orchis-theme";
       flake = false;
     };
-    lanzaboote.url = "github:nix-community/lanzaboote/v1.1.0";
-    lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = inputs@{
-    self, nixpkgs, home-manager, spicetify-nix, helium-flake, lanzaboote, nur, ...
-  }:
-    let
-      lib = nixpkgs.lib;
-    in {
-      nixosConfigurations = {
-        nixos = lib.nixosSystem {
-          specialArgs = {
-            inherit helium-flake nur;
-          };
-          modules = [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
-            ./configuration.nix
-            home-manager.nixosModules.home-manager
-            lanzaboote.nixosModules.lanzaboote
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.overwriteBackup = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = {
-                inherit inputs;
-                inherit spicetify-nix;
-              };
-              home-manager.users.mc = ./home.nix;
-            }
-          ];
-        };
-      };
+
+  outputs = inputs@{ nixpkgs, home-manager, helium-flake, lanzaboote, ... }: {
+    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+      specialArgs = { inherit helium-flake; };
+      modules = [
+        ./configuration.nix
+        home-manager.nixosModules.home-manager
+        lanzaboote.nixosModules.lanzaboote
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "backup";
+          home-manager.overwriteBackup = true;
+          home-manager.extraSpecialArgs = { inherit inputs; };
+          home-manager.users.mc = ./home.nix;
+        }
+      ];
     };
+  };
 }

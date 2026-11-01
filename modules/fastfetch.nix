@@ -1,10 +1,7 @@
-{ config, pkgs, ... }:
+{ ... }:
 
 {
-  programs.fastfetch = {
-    enable = true;
-  };
+  programs.fastfetch.enable = true;
 
-  home.file.".config/fastfetch/config.jsonc".source =
-    ../extras/fastfetch/config.jsonc;
+  xdg.configFile."fastfetch/config.jsonc".source = ../extras/fastfetch/config.jsonc;
 }
