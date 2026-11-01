@@ -51,6 +51,7 @@ in
     eden
     gnome-tweaks
     azahar
+    cisco-packet-tracer_9
   ];
 
   home.sessionVariables = {
