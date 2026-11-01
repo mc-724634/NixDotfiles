@@ -347,7 +347,7 @@ in
     # Tiling Shell (window snapping zones).
     # Rounded screen corners on every monitor.
     "org/gnome/shell/extensions/lennart-k/rounded_corners" = {
-      corner-radius = 12;
+      corner-radius = 18;
     };
 
     "org/gnome/shell/extensions/tilingshell" = {
