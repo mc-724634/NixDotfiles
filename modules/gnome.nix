@@ -1,7 +1,16 @@
 { config, lib, ... }:
 
 let
-  inherit (lib.hm.gvariant) mkUint32 mkTuple;
+  inherit (lib.hm.gvariant) mkUint32 mkTuple mkArray mkVariant mkDictionaryEntry type;
+
+  # Builds an `a{sv}` dictionary (what Rounded Window Corners stores its settings in).
+  sv = type.dictionaryEntryOf [ type.string type.variant ];
+  dict = entries:
+    mkArray sv (lib.mapAttrsToList (k: v: mkDictionaryEntry [ k (mkVariant v) ]) entries);
+
+  # Radius of Orchis' own window corners (its `window.csd` rule = 18px). The
+  # Rounded Window Corners extension uses the same value for every other window.
+  windowRadius = 18;
   wallpaper = "${config.home.homeDirectory}/.local/share/backgrounds/wallpaper.png";
 in
 {
@@ -210,6 +219,8 @@ in
         "appindicatorsupport@rgcjonas.gmail.com"
         "tilingshell@ferrarodomenico.com"
         "Rounded_Corners@lennart-k"
+        "rounded-window-corners@fxgn"
+        "notification-timeout@chlumskyvaclav.gmail.com"
       ];
       favorite-apps = [
         "helium.desktop"
@@ -348,6 +359,37 @@ in
     # Rounded screen corners on every monitor.
     "org/gnome/shell/extensions/lennart-k/rounded_corners" = {
       corner-radius = 18;
+    };
+
+    # Notifications leave the screen after `timeout` ms even if you never touch the
+    # mouse (GNOME alone waits for activity first). always-normal also times out
+    # "critical" ones.
+    "org/gnome/shell/extensions/notification-timeout" = {
+      always-normal = true;
+      ignore-idle = true;
+      timeout = 5000;
+    };
+
+    # Rounds every window that is not already rounded by libadwaita, to match them.
+    # settings-version must stay set, otherwise the extension resets these values.
+    "org/gnome/shell/extensions/rounded-window-corners-reborn" = {
+      settings-version = mkUint32 9;
+      global-rounded-corner-settings = dict {
+        borderColor = [ 0.5 0.5 0.5 1.0 ];
+        borderRadius = mkUint32 windowRadius;
+        enabled = true;
+        keepRoundedCorners = dict {
+          fullscreen = false;
+          maximized = false;
+        };
+        padding = dict {
+          bottom = mkUint32 1;
+          left = mkUint32 1;
+          right = mkUint32 1;
+          top = mkUint32 1;
+        };
+        smoothing = 0;
+      };
     };
 
     "org/gnome/shell/extensions/tilingshell" = {

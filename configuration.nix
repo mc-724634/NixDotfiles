@@ -188,6 +188,8 @@
     gnomeExtensions.appindicator # system tray (KStatusNotifierItem + legacy tray icons)
     gnomeExtensions.tiling-shell # KDE/Windows-style window snapping zones
     gnomeExtensions.rounded-corners # rounded screen corners
+    gnomeExtensions.rounded-window-corners-reborn # rounds windows libadwaita doesn't
+    gnomeExtensions.notification-timeout # banners time out without waiting for the mouse
   ];
 
   # ── Nix ─────────────────────────────────────────────────────────────────
