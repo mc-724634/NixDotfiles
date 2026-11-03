@@ -1,66 +1,52 @@
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+
   "logo": {
+    "type": "auto",
+    "source": "~/.config/fastfetch/nixos-logo.png",
+    "width": 30,
+    "height": 15,
     "padding": {
-      "top": 2,
-      "left": 2,
-      "right": 2,
-    },
+      "top": 1,
+      "right": 3
+    }
   },
+
   "display": {
-    "separator": " \uf061 ",
-    "constants": [
-      "─────────────────", // {$1}, used in Custom module
-    ],
+    "separator": "  ",
     "key": {
-      "type": "icon",
-      "paddingLeft": 2,
+      "type": "string",
+      "width": 12
     },
+    "color": {
+      "keys": "magenta",
+      "title": "cyan",
+      "output": "white",
+      "separator": "bright_black"
+    },
+    "percent": {
+      "type": 9
+    }
   },
+
   "modules": [
-    {
-      "type": "custom", // HardwareStart
-      "format": "┌{$1} Hardware Information {$1}┐",
-    },
-    "host",
-    "cpu",
-    "gpu",
-    "disk",
-    "memory",
-    "display",
-    {
-      "type": "custom", // HardwareEnd
-      "format": "└{$1}──────────────────────{$1}┘",
-    },
-    {
-      "type": "custom", // Separator
-      "format": "",
-    },
-    {
-      "type": "custom", // SoftwareStart
-      "format": "┌{$1} Software Information {$1}┐",
-    },
+    "title",
+    "separator",
     "os",
+    "host",
     "kernel",
-    "lm",
+    "uptime",
+    "packages",
+    "shell",
+    "display",
     "de",
     "wm",
-    "shell",
     "terminal",
-    "font",
-    "theme",
-    "icons",
-    "packages",
-    "uptime",
-    "locale",
-    {
-      "type": "custom", // SoftwareEnd
-      "format": "└{$1}──────────────────────{$1}┘",
-    },
-    {
-      "type": "colors",
-      "symbol": "circle",
-      "paddingLeft": 21,
-    },
-  ],
+    "break",
+    "cpu",
+    "gpu",
+    "memory",
+    "swap",
+    "disk"
+  ]
 }
