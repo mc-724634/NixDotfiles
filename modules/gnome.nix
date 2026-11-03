@@ -24,6 +24,23 @@ in
     run install -Dm644 ${../extras/monitors.xml} "$HOME/.config/monitors.xml"
   '';
 
+  # ── Files: right-click → New Document ──────────────────────────────────
+  # Nautilus only offers "New Document" when a Templates folder is configured and
+  # contains files. The files are copied in (not symlinked): Nautilus would
+  # otherwise create read-only links into the Nix store.
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+    projects = null;
+  };
+
+  home.activation.fileTemplates = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run mkdir -p "$HOME/Templates"
+    for f in ${../extras/templates}/*; do
+      run install -m644 "$f" "$HOME/Templates/$(basename "$f")"
+    done
+  '';
+
   # ── default applications (Settings → Apps → Default Apps) ──────────────
   xdg.mimeApps = {
     enable = true;
@@ -188,12 +205,12 @@ in
       action-double-click-titlebar = "toggle-maximize";
       button-layout = ":minimize,maximize,close";
       focus-mode = "sloppy";
-      num-workspaces = 2;
+      num-workspaces = 2; # only used when dynamic-workspaces is off
       resize-with-right-button = true;
     };
 
     "org/gnome/mutter" = {
-      dynamic-workspaces = false;
+      dynamic-workspaces = true;
       overlay-key = "Super_L";
       workspaces-only-on-primary = true;
     };
@@ -221,6 +238,7 @@ in
         "Rounded_Corners@lennart-k"
         "rounded-window-corners@fxgn"
         "notification-timeout@chlumskyvaclav.gmail.com"
+        "display-brightness-ddcutil@themightydeity.github.com"
       ];
       favorite-apps = [
         "helium.desktop"
@@ -359,6 +377,12 @@ in
     # Rounded screen corners on every monitor.
     "org/gnome/shell/extensions/lennart-k/rounded_corners" = {
       corner-radius = 18;
+    };
+
+    # Brightness sliders for external monitors over DDC/CI (needs ddcutil and
+    # hardware.i2c in configuration.nix). NixOS has no /usr/bin, hence the path.
+    "org/gnome/shell/extensions/display-brightness-ddcutil" = {
+      ddcutil-binary-path = "/run/current-system/sw/bin/ddcutil";
     };
 
     # Notifications leave the screen after `timeout` ms even if you never touch the

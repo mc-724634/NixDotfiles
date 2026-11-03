@@ -44,6 +44,7 @@ in
     eden
     azahar
     steam-rom-manager
+    inputs.bedrock-on-linux.packages.${pkgs.stdenv.hostPlatform.system}.default
     (retroarch.withCores (cores: with cores; [ bsnes ]))
 
     # Creative, 3D & printing

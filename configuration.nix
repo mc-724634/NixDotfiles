@@ -71,6 +71,9 @@
 
   hardware.bluetooth.enable = true;
 
+  # DDC/CI access for the monitor brightness sliders (loads i2c-dev, adds the udev rule).
+  hardware.i2c.enable = true;
+
   services.lact.enable = true;
   systemd.services.lactd.path = [ "/run/wrappers" ];
 
@@ -169,7 +172,7 @@
   users.users.mc = {
     isNormalUser = true;
     description = "mc";
-    extraGroups = [ "networkmanager" "wheel" "libvirtd" "dialout" ];
+    extraGroups = [ "networkmanager" "wheel" "libvirtd" "dialout" "i2c" ];
   };
 
   # ── System packages ─────────────────────────────────────────────────────
@@ -180,6 +183,7 @@
     unrar
     arduino-ide
     gnome-system-monitor # Ctrl+Shift+Esc (shortcut defined in modules/gnome.nix)
+    ddcutil # used by the brightness-slider extension
 
     # GNOME Shell extensions (enabled declaratively in modules/gnome.nix)
     gnomeExtensions.user-themes # loads the Orchis shell theme
@@ -190,6 +194,7 @@
     gnomeExtensions.rounded-corners # rounded screen corners
     gnomeExtensions.rounded-window-corners-reborn # rounds windows libadwaita doesn't
     gnomeExtensions.notification-timeout # banners time out without waiting for the mouse
+    gnomeExtensions.brightness-control-using-ddcutil # brightness sliders for each monitor
   ];
 
   # ── Nix ─────────────────────────────────────────────────────────────────

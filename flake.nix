@@ -16,6 +16,11 @@
     lanzaboote.url = "github:nix-community/lanzaboote/v1.1.0";
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
 
+    # Minecraft Bedrock launcher (downloads the game with your own Microsoft account).
+    # Deliberately NOT following our nixpkgs: it is written for nixos-unstable
+    # (it calls steam-run.override, which does not exist on 26.05).
+    bedrock-on-linux.url = "git+https://github.com/Wyze3306/BedrockOnLinux";
+
     # Orchis GTK/shell theme, built from upstream (the nixpkgs release is older).
     orchis-src = {
       url = "github:vinceliuice/Orchis-theme";

@@ -14,7 +14,7 @@ GNOME desktop with the Orchis theme, fish + Ghostty, fully declarative.
 | `modules/gnome.nix` | Every GNOME setting (dconf): Settings app, shortcuts, extension settings; plus wallpaper, display layout and default apps |
 | `modules/shell.nix` | fish (with the oh-my-zsh git aliases as abbreviations), Starship, Ghostty |
 | `modules/fastfetch.nix` | fastfetch |
-| `extras/` | Files the config installs: wallpaper, `monitors.xml`, sound theme, fastfetch config |
+| `extras/` | Files the config installs: wallpaper, `monitors.xml`, sound theme, fastfetch config, Nautilus file templates (`templates/`) |
 
 ## Rebuild
 
@@ -46,5 +46,13 @@ window sizes/history, and anything holding secrets.
   `nix flake update orchis-src`. Change the colour by editing `orchisTheme` in `home.nix`.
 - GNOME extensions are installed in `configuration.nix` and switched on in
   `modules/gnome.nix` (`enabled-extensions`); add a package there when enabling a new one.
+- Minecraft Bedrock comes from the `bedrock-on-linux` input. It deliberately does **not**
+  follow our nixpkgs: it is written for nixos-unstable and fails to evaluate on 26.05.
+  Update it with `nix flake update bedrock-on-linux`.
+- Right-click → New Document in Files lists the files in `extras/templates/` (copied to
+  `~/Templates` on every rebuild; copied rather than symlinked so new files are writable).
+  Add a file there to add a template.
+- Monitor brightness sliders use DDC/CI (`ddcutil`); the monitor must have DDC/CI enabled
+  in its on-screen menu.
 - `extras/monitors.xml` is copied to `~/.config/monitors.xml` on activation (and used by
   GDM), so the display layout resets to the repo's version on each rebuild.
