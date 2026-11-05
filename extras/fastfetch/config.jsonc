@@ -9,7 +9,7 @@
     "width": 30,
     "height": 15,
     "padding": {
-      "top": 1,
+      "top": 4,
       "right": 3
     }
   },
@@ -56,7 +56,11 @@
     // Desktop
     "de",
     "wm",
-    "display",
+    {
+      "type": "display",
+      "key": "Display",
+      "format": "{1}x{2} (@{3})"
+    },
     "theme",
     "icons",
     "font",

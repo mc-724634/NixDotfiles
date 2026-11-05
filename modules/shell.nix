@@ -282,7 +282,7 @@
       # Window background of the Orchis-Purple-Dark theme (@window_bg_color), instead
       # of Ghostty's own blue-grey default (#282C34). Content areas such as lists
       # and text views use the slightly lighter #2C2C2C if you prefer that.
-      background = "#212121";
+      background = "#2C2C2C";
       window-padding-x = 10;
       window-padding-y = 10;
       confirm-close-surface = false;
