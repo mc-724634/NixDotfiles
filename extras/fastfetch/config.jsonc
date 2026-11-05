@@ -1,6 +1,8 @@
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
 
+  // NixOS logo (installed by modules/fastfetch.nix). "auto" draws it as an image
+  // in Ghostty and falls back to the built-in logo if the file is missing.
   "logo": {
     "type": "auto",
     "source": "~/.config/fastfetch/nixos-logo.png",
@@ -32,21 +34,43 @@
   "modules": [
     "title",
     "separator",
+
+    // System
     "os",
+    {
+      // Distro age: fastfetch has no age module, but the root filesystem's
+      // creation date is the day this install was made.
+      "type": "disk",
+      "folders": "/",
+      "key": "Age",
+      "format": "{days} days"
+    },
     "host",
     "kernel",
     "uptime",
     "packages",
     "shell",
-    "display",
-    "de",
-    "wm",
     "terminal",
     "break",
+
+    // Desktop
+    "de",
+    "wm",
+    "display",
+    "theme",
+    "icons",
+    "font",
+    "break",
+
+    // Hardware
     "cpu",
     "gpu",
     "memory",
     "swap",
-    "disk"
+    {
+      "type": "disk",
+      "folders": "/",
+      "key": "Disk"
+    }
   ]
 }

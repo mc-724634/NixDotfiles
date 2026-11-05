@@ -222,6 +222,7 @@ in
     "org/gnome/settings-daemon/plugins/color" = {
       night-light-enabled = false;
       night-light-schedule-automatic = false;
+      night-light-schedule-from = 20.0;
     };
 
     # Shell: favourites and which extensions are switched on (all installed via Nix, see configuration.nix).
@@ -382,7 +383,19 @@ in
     # Brightness sliders for external monitors over DDC/CI (needs ddcutil and
     # hardware.i2c in configuration.nix). NixOS has no /usr/bin, hence the path.
     "org/gnome/shell/extensions/display-brightness-ddcutil" = {
+      button-location = 1;
       ddcutil-binary-path = "/run/current-system/sw/bin/ddcutil";
+      ddcutil-sleep-multiplier = 40.0;
+      decrease-brightness-shortcut = [ "<Control>XF86MonBrightnessDown" ];
+      disable-display-state-check = false;
+      hide-system-indicator = true;
+      increase-brightness-shortcut = [ "<Control>XF86MonBrightnessUp" ];
+      position-system-menu = 3.0;
+      show-all-slider = false;
+      show-display-name = false;
+      show-internal-slider = false;
+      show-value-label = false;
+      step-change-keyboard = 2.0;
     };
 
     # Notifications leave the screen after `timeout` ms even if you never touch the
@@ -464,6 +477,7 @@ in
       span-multiple-tiles-activation-key = [ "1" ];
       span-window-all-tiles = [ "<Super>Page_Up" ]; # "maximize" that keeps the gaps
       top-edge-maximize = false;
+      window-border-width = mkUint32 3;
       window-use-custom-border-color = false;
     };
 
