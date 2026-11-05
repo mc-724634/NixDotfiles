@@ -59,7 +59,7 @@
     {
       "type": "display",
       "key": "Display",
-      "format": "{1}x{2} (@{3})"
+      "format": "{1}x{2} @{3}hz"
     },
     "theme",
     "icons",
