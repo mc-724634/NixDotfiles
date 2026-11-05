@@ -65,7 +65,7 @@
     opencl.enable = true;
     overdrive = {
       enable = true;
-      ppfeaturemask = "0xffffffff";
+      ppfeaturemask = "0xffff7fff";
     };
   };
 
