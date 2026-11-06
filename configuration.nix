@@ -160,6 +160,16 @@
     packages = [
       "org.vinegarhq.Sober" # Roblox client
     ];
+
+    # Sandboxed apps otherwise can't see the host theme/icon files, and GTK3
+    # ignores GNOME's theme entirely unless told to via GTK_THEME. GTK4/
+    # libadwaita apps still won't pick up Orchis itself (GTK4 removed support
+    # for theme engines; they only follow accent colour + light/dark via the
+    # portal), but this covers every GTK3 app and the icon set for both.
+    overrides.settings.global = {
+      Context.filesystems = [ "xdg-data/themes:ro" "xdg-data/icons:ro" ];
+      Environment.GTK_THEME = "Orchis-Purple-Dark"; # must match `orchisTheme` in home.nix
+    };
   };
   services.printing.enable = true;
   virtualisation.libvirtd.enable = true;

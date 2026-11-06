@@ -60,6 +60,14 @@ window sizes/history, and anything holding secrets.
   `uninstallUnmanaged = true` means any app installed by hand with `flatpak install` gets
   removed on the next `nixos-rebuild switch` — add it to `services.flatpak.packages` instead
   of running `flatpak install` directly. `flathub` is the only remote.
+- Flatpak sandboxing hides the host's theme/icon files and ignores `GTK_THEME` by default,
+  so sandboxed GTK3 apps would otherwise fall back to stock Adwaita. `services.flatpak.
+  overrides` (`configuration.nix`) grants read-only access to `~/.local/share/{themes,icons}`
+  and sets `GTK_THEME` globally for every flatpak app. Tela is mirrored to
+  `~/.local/share/icons` in `home.nix` for this (it otherwise only lives in the per-user Nix
+  profile, which that override can't see); Orchis is already there (see above). GTK4/
+  libadwaita apps still won't match Orchis itself — GTK4 dropped theme-engine support and
+  only follows accent colour + light/dark mode via the desktop portal.
 - GNOME dropped native login/logout sounds years ago; `modules/gnome.nix` recreates them
   with a `systemd.user` service (`login-logout-sound`) that plays `desktop-login` on start
   and `desktop-logout` on `ExecStop`. It depends on `pipewire`/`wireplumber` so audio is

@@ -124,4 +124,13 @@ in
     source = "${orchis}/share/themes/${orchisTheme}";
     force = true;
   };
+
+  # Same reasoning, for the icon theme: Tela otherwise only lives in the
+  # per-user Nix profile, a path Flatpak's "xdg-data/icons" filesystem
+  # override (configuration.nix) can't see. Put it at ~/.local/share/icons
+  # too so sandboxed apps can read it.
+  xdg.dataFile."icons/Tela-purple-dark" = {
+    source = "${pkgs.tela-icon-theme}/share/icons/Tela-purple-dark";
+    force = true;
+  };
 }
