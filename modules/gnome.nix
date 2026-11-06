@@ -12,6 +12,18 @@ let
   # Rounded Window Corners extension uses the same value for every other window.
   windowRadius = 18;
   wallpaper = "${config.home.homeDirectory}/.local/share/backgrounds/wallpaper.png";
+
+  # Waits for logind's shutdown-or-reboot signal, then plays the logout sound.
+  # See the comment on shutdown-sound below for why this exists.
+  shutdownSoundScript = pkgs.writeShellScript "shutdown-reboot-sound" ''
+    ${pkgs.dbus}/bin/dbus-monitor --system "type='signal',interface='org.freedesktop.login1.Manager',member='PrepareForShutdown'" |
+    while read -r line; do
+      if [[ "$line" == *"boolean true"* ]]; then
+        ${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play --id=desktop-logout
+        break
+      fi
+    done
+  '';
 in
 {
   # ── login/logout sounds ─────────────────────────────────────────────────
@@ -32,6 +44,30 @@ in
       RemainAfterExit = true;
       ExecStart = "${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play --id=desktop-login";
       ExecStop = "${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play --id=desktop-logout";
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
+  # Poweroff and reboot don't give graphical-session.target time to stop
+  # gracefully before the session's audio goes away, so the ExecStop above
+  # never gets heard for either (only a plain logout, where the system keeps
+  # running, is slow enough for it). Instead, hold a logind shutdown-delay
+  # inhibitor for the whole session and play the sound the instant logind
+  # announces a shutdown/reboot is starting — this blocks the shutdown for
+  # as long as the sound takes (well under logind's default 5s cap) and
+  # guarantees PipeWire is still alive to play it.
+  systemd.user.services.shutdown-reboot-sound = {
+    Unit = {
+      Description = "Play the logout sound before poweroff/reboot";
+      After = [ "graphical-session.target" "pipewire.service" "wireplumber.service" ];
+    };
+    Service = {
+      Type = "simple";
+      Restart = "always";
+      RestartSec = 0;
+      ExecStart = "${pkgs.systemd}/bin/systemd-inhibit --what=shutdown --mode=delay --who='GNOME logout sound' --why='Play the logout sound before poweroff/reboot' ${shutdownSoundScript}";
     };
     Install = {
       WantedBy = [ "graphical-session.target" ];
