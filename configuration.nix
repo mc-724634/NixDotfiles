@@ -149,7 +149,18 @@
   };
 
   # ── Services & programs ─────────────────────────────────────────────────
-  services.flatpak.enable = true;
+  # Declarative flatpaks (nix-flatpak): apps installed/removed to match this
+  # list on every rebuild, so nothing lingers from a manual `flatpak install`.
+  services.flatpak = {
+    enable = true;
+    uninstallUnmanaged = true;
+    remotes = [
+      { name = "flathub"; location = "https://flathub.org/repo/flathub.flatpakrepo"; }
+    ];
+    packages = [
+      "org.vinegarhq.Sober" # Roblox client
+    ];
+  };
   services.printing.enable = true;
   virtualisation.libvirtd.enable = true;
 

@@ -136,6 +136,22 @@
         "type": "github"
       }
     },
+    "nix-flatpak": {
+      "locked": {
+        "lastModified": 1791644091,
+        "narHash": "sha256-nw4/Nzl13+A45km82FF4rXo9O7fGfXNk98UqyTRozog=",
+        "owner": "gmodena",
+        "repo": "nix-flatpak",
+        "rev": "7c7c1739cf476c2f85642f441f967cd91f479d2c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gmodena",
+        "ref": "v0.8.0",
+        "repo": "nix-flatpak",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1792502884,
@@ -211,6 +227,7 @@
         "helium-flake": "helium-flake",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
+        "nix-flatpak": "nix-flatpak",
         "nixpkgs": "nixpkgs_2",
         "orchis-src": "orchis-src",
         "spicetify-nix": "spicetify-nix"
