@@ -15,10 +15,17 @@ let
 
   # Waits for logind's shutdown-or-reboot signal, then plays the logout sound.
   # See the comment on shutdown-sound below for why this exists.
+  #
+  # Uses `busctl wait` rather than `dbus-monitor` because the latter lacks
+  # permission to install a real match on the system bus here and falls back
+  # to eavesdropping mode, adding latency to how fast it notices the signal.
+  # That latency ate into logind's InhibitDelayMaxSec budget below, so the
+  # sound was sometimes still starting (cold PipeWire, no RTKit) when logind
+  # gave up waiting on the inhibitor and the real shutdown began underneath it.
   shutdownSoundScript = pkgs.writeShellScript "shutdown-reboot-sound" ''
-    ${pkgs.dbus}/bin/dbus-monitor --system "type='signal',interface='org.freedesktop.login1.Manager',member='PrepareForShutdown'" |
-    while read -r line; do
-      if [[ "$line" == *"boolean true"* ]]; then
+    while :; do
+      signal=$(${pkgs.systemd}/bin/busctl wait --system /org/freedesktop/login1 org.freedesktop.login1.Manager PrepareForShutdown)
+      if [[ "$signal" == "b true" ]]; then
         ${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play --id=desktop-logout
         break
       fi
@@ -56,8 +63,9 @@ in
   # running, is slow enough for it). Instead, hold a logind shutdown-delay
   # inhibitor for the whole session and play the sound the instant logind
   # announces a shutdown/reboot is starting — this blocks the shutdown for
-  # as long as the sound takes (well under logind's default 5s cap) and
-  # guarantees PipeWire is still alive to play it.
+  # as long as the sound takes (well under logind's InhibitDelayMaxSec, raised
+  # to 10s in configuration.nix) and guarantees PipeWire is still alive to
+  # play it.
   systemd.user.services.shutdown-reboot-sound = {
     Unit = {
       Description = "Play the logout sound before poweroff/reboot";
