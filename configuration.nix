@@ -164,19 +164,32 @@
   # or gnome-shell plays them anymore. Recreate it with a udev rule (fires once per
   # physical USB device, not per interface) that starts a templated system service
   # playing the sound as the desktop user.
+  #
+  # Unlike login-logout-sound (a `systemd --user` unit, which inherits the full
+  # graphical session environment), this is a plain `systemd.services` unit started
+  # by PID1 — it never sees XDG_DATA_DIRS, DBUS_SESSION_BUS_ADDRESS, DISPLAY, etc.
+  # `canberra-gtk-play --id=` needs exactly that session environment to resolve the
+  # configured sound theme via GTK/GSettings, so under this service it always failed
+  # silently ("File or data not found") even though the sound files are right there.
+  # Pointing `--file=` straight at this theme's .oga sidesteps theme resolution
+  # entirely, so it only needs PipeWire (via XDG_RUNTIME_DIR) to actually play.
   systemd.services."usb-sound@" = {
     description = "Play a sound on USB device %i";
     serviceConfig = {
       Type = "oneshot";
       User = "mc";
       Environment = "XDG_RUNTIME_DIR=/run/user/1000";
-      ExecStart = "${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play --id=device-%i";
+      ExecStart = "${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play --file=${./extras/sounds/modern-minimal-ui-sounds-v1.2/stereo}/device-%i.oga";
     };
   };
 
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", TAG+="systemd", ENV{SYSTEMD_WANTS}+="usb-sound@added.service"
-    ACTION=="remove", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", TAG+="systemd", ENV{SYSTEMD_WANTS}+="usb-sound@removed.service"
+    # SYSTEMD_WANTS only fires when a device unit *becomes active* (systemd.device(5)) —
+    # it's never acted on for "remove", since the device unit is going inactive, not
+    # active. Start the service straight from the udev worker instead; --no-block keeps
+    # the rule itself fast since it only queues the job rather than waiting on it.
+    ACTION=="remove", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", RUN+="${pkgs.systemd}/bin/systemctl --no-block start usb-sound@removed.service"
   '';
 
   # ── Services & programs ─────────────────────────────────────────────────

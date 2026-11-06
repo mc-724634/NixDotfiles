@@ -88,7 +88,15 @@ window sizes/history, and anything holding secrets.
   - `configuration.nix` adds a templated system service (`usb-sound@`) that plays
     `device-added`/`device-removed`, started by a `udev` rule matching real USB device
     plug/unplug (`SUBSYSTEM=="usb"`, `DEVTYPE=="usb_device"`, so it fires once per physical
-    device rather than once per USB interface).
+    device rather than once per USB interface). Unlike `login-logout-sound`, this is a
+    plain system unit (udev can only start those), so it never gets the graphical
+    session's environment — `canberra-gtk-play --id=` needs that to resolve the sound
+    theme via GTK/GSettings and silently fails without it. It plays the file directly
+    (`--file=`) instead, which only needs PipeWire to work. The `add` and `remove` udev
+    rules also can't use the same trigger mechanism: `ENV{SYSTEMD_WANTS}` only fires when
+    a device unit *becomes active* (`systemd.device(5)`), so it works for `add` but is a
+    silent no-op for `remove` (the device unit is going inactive). The `remove` rule uses
+    `RUN+="systemctl --no-block start ..."` from the udev worker instead.
 - Minecraft Bedrock comes from the `bedrock-on-linux` input. It deliberately does **not**
   follow our nixpkgs: it is written for nixos-unstable and fails to evaluate on 26.05.
   Update it with `nix flake update bedrock-on-linux`.
