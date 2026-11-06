@@ -159,6 +159,26 @@
     };
   };
 
+  # Like desktop-login/-logout (see modules/gnome.nix), GNOME dropped native
+  # device-added/device-removed sounds years ago; nothing in gnome-settings-daemon
+  # or gnome-shell plays them anymore. Recreate it with a udev rule (fires once per
+  # physical USB device, not per interface) that starts a templated system service
+  # playing the sound as the desktop user.
+  systemd.services."usb-sound@" = {
+    description = "Play a sound on USB device %i";
+    serviceConfig = {
+      Type = "oneshot";
+      User = "mc";
+      Environment = "XDG_RUNTIME_DIR=/run/user/1000";
+      ExecStart = "${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play --id=device-%i";
+    };
+  };
+
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", TAG+="systemd", ENV{SYSTEMD_WANTS}+="usb-sound@added.service"
+    ACTION=="remove", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", TAG+="systemd", ENV{SYSTEMD_WANTS}+="usb-sound@removed.service"
+  '';
+
   # ── Services & programs ─────────────────────────────────────────────────
   # Declarative flatpaks (nix-flatpak): apps installed/removed to match this
   # list on every rebuild, so nothing lingers from a manual `flatpak install`.

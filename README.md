@@ -75,15 +75,20 @@ window sizes/history, and anything holding secrets.
   fully apply to Sober.
 - PipeWire's `module-x11-bell` (the old X11 system-bell-to-sound bridge) crashes the whole
   PipeWire server on an X11/XWayland I/O error — this took GNOME's own sound daemon down with
-  it, silently killing event sounds (USB connect/disconnect, etc.) for the rest of the
-  session even after PipeWire itself recovered. `configuration.nix` disables the module
-  entirely via `services.pipewire.extraConfig.pipewire`, since it's only the legacy bell beep.
-- GNOME dropped native login/logout sounds years ago; `modules/gnome.nix` recreates them
-  with a `systemd.user` service (`login-logout-sound`) that plays `desktop-login` on start
-  and `desktop-logout` on `ExecStop`. It depends on `pipewire`/`wireplumber` so audio is
-  still alive when it stops. One side effect: since it's a normal systemd user unit,
-  `home-manager switch` restarts it mid-session, so you'll hear logout+login play back to
-  back on every rebuild, not just on an actual login/logout.
+  it, silently killing event sounds for the rest of the session even after PipeWire itself
+  recovered. `configuration.nix` disables the module entirely via
+  `services.pipewire.extraConfig.pipewire`, since it's only the legacy bell beep.
+- GNOME dropped native login/logout and USB device-added/removed sounds years ago; nothing
+  in gnome-settings-daemon or gnome-shell plays them anymore, so both are recreated by hand:
+  - `modules/gnome.nix` adds a `systemd.user` service (`login-logout-sound`) that plays
+    `desktop-login` on start and `desktop-logout` on `ExecStop`. It depends on
+    `pipewire`/`wireplumber` so audio is still alive when it stops. One side effect: since
+    it's a normal systemd user unit, `home-manager switch` restarts it mid-session, so you'll
+    hear logout+login play back to back on every rebuild, not just on an actual login/logout.
+  - `configuration.nix` adds a templated system service (`usb-sound@`) that plays
+    `device-added`/`device-removed`, started by a `udev` rule matching real USB device
+    plug/unplug (`SUBSYSTEM=="usb"`, `DEVTYPE=="usb_device"`, so it fires once per physical
+    device rather than once per USB interface).
 - Minecraft Bedrock comes from the `bedrock-on-linux` input. It deliberately does **not**
   follow our nixpkgs: it is written for nixos-unstable and fails to evaluate on 26.05.
   Update it with `nix flake update bedrock-on-linux`.
