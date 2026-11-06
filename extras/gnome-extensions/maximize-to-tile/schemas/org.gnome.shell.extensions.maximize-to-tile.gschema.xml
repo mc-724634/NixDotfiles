@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.maximize-to-tile" path="/org/gnome/shell/extensions/maximize-to-tile/">
+    <key name="gap" type="i">
+      <default>8</default>
+      <summary>Gap left around a window maximized via any native path</summary>
+      <description>
+        Pixel gap kept around a window's edges when it is maximized through
+        the titlebar button, double-click-titlebar, a keybinding or the
+        window menu. The window is immediately unmaximized and resized to
+        the work area minus this gap, so it never enters Mutter's true
+        maximized state and keeps rounded corners, matching the look of
+        dragging a window to the screen's top edge under Tiling Shell.
+      </description>
+    </key>
+  </schema>
+</schemalist>

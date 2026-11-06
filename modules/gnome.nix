@@ -210,6 +210,7 @@ in
     };
 
     "org/gnome/mutter" = {
+      auto-maximize = false;
       dynamic-workspaces = true;
       overlay-key = "Super_L";
       workspaces-only-on-primary = true;
@@ -227,6 +228,7 @@ in
 
     # Shell: favourites and which extensions are switched on (all installed via Nix, see configuration.nix).
     "org/gnome/shell" = {
+      always-show-log-out = true; # Log Out entry vanishes from the power menu without this.
       disable-user-extensions = false;
       disabled-extensions = [ ];
       enabled-extensions = [
@@ -240,6 +242,7 @@ in
         "rounded-window-corners@fxgn"
         "notification-timeout@chlumskyvaclav.gmail.com"
         "display-brightness-ddcutil@themightydeity.github.com"
+        "maximize-to-tile@local"
       ];
       favorite-apps = [
         "helium.desktop"
@@ -378,6 +381,14 @@ in
     # Rounded screen corners on every monitor.
     "org/gnome/shell/extensions/lennart-k/rounded_corners" = {
       corner-radius = 18;
+    };
+
+    # Maximize To Tile (custom, source in extras/gnome-extensions, built by
+    # modules/maximize-to-tile.nix): gap kept around a window maximized via
+    # the titlebar button, double-click-titlebar, a keybinding or the window
+    # menu, so it matches Tiling Shell's own top-edge-drag gap/rounding.
+    "org/gnome/shell/extensions/maximize-to-tile" = {
+      gap = 8;
     };
 
     # Brightness sliders for external monitors over DDC/CI (needs ddcutil and

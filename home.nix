@@ -16,6 +16,7 @@ in
     ./modules/fastfetch.nix
     ./modules/shell.nix   # fish, starship, ghostty
     ./modules/gnome.nix   # dconf settings, wallpaper, display layout, default apps
+    ./modules/maximize-to-tile.nix   # custom extension: maximize button -> Tiling Shell-style tile
   ];
 
   home.username = "mc";

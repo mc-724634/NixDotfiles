@@ -1,0 +1,8 @@
+{
+  "uuid": "maximize-to-tile@local",
+  "name": "Maximize To Tile",
+  "description": "Redirects every native window maximize (titlebar button, double-click titlebar, keybinding, window menu) into a gapped full-workarea resize instead of a true Mutter maximize, so it looks and behaves like dragging a window to the screen's top edge under Tiling Shell.",
+  "shell-version": [ "50" ],
+  "settings-schema": "org.gnome.shell.extensions.maximize-to-tile",
+  "version-name": "1.0"
+}
