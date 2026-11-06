@@ -146,6 +146,17 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+
+    # module-x11-bell (redirects the old X11 system bell through libcanberra)
+    # crashes the whole PipeWire server on an X11/XWayland I/O error, taking
+    # every audio client down with it (including GNOME's own sound daemon,
+    # which doesn't reconnect, silently killing event sounds for the rest of
+    # the session). It's only the legacy bell beep, so just disable it.
+    extraConfig.pipewire."10-disable-x11-bell" = {
+      "context.properties" = {
+        "module.x11.bell" = false;
+      };
+    };
   };
 
   # ── Services & programs ─────────────────────────────────────────────────
@@ -168,7 +179,13 @@
     # portal), but this covers every GTK3 app and the icon set for both.
     overrides.settings.global = {
       Context.filesystems = [ "xdg-data/themes:ro" "xdg-data/icons:ro" ];
-      Environment.GTK_THEME = "Orchis-Purple-Dark"; # must match `orchisTheme` in home.nix
+      Environment = {
+        GTK_THEME = "Orchis-Purple-Dark"; # must match `orchisTheme` in home.nix
+        # Non-GTK (X11/XWayland, libXcursor) apps don't read GTK's cursor
+        # setting; this is what they actually consult.
+        XCURSOR_THEME = "Bibata-Modern-Classic";
+        XCURSOR_SIZE = "24";
+      };
     };
   };
   services.printing.enable = true;

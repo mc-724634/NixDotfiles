@@ -65,9 +65,19 @@ window sizes/history, and anything holding secrets.
   overrides` (`configuration.nix`) grants read-only access to `~/.local/share/{themes,icons}`
   and sets `GTK_THEME` globally for every flatpak app. Tela is mirrored to
   `~/.local/share/icons` in `home.nix` for this (it otherwise only lives in the per-user Nix
-  profile, which that override can't see); Orchis is already there (see above). GTK4/
-  libadwaita apps still won't match Orchis itself — GTK4 dropped theme-engine support and
-  only follows accent colour + light/dark mode via the desktop portal.
+  profile, which that override can't see); Orchis is already there (see above). The same
+  override also sets `XCURSOR_THEME`/`XCURSOR_SIZE`, since non-GTK (X11/XWayland) apps read
+  the cursor theme from there instead of GTK's own setting. GTK4/libadwaita apps still won't
+  match Orchis itself — GTK4 dropped theme-engine support and only follows accent colour +
+  light/dark mode via the desktop portal. Sober (`org.vinegarhq.Sober`) is a further step out:
+  it's a Godot/SDL app, not GTK at all, so its window chrome (drawn via `libdecor`) and cursor
+  handling may not follow any of this — confirmed working on GIMP (GTK3), not expected to
+  fully apply to Sober.
+- PipeWire's `module-x11-bell` (the old X11 system-bell-to-sound bridge) crashes the whole
+  PipeWire server on an X11/XWayland I/O error — this took GNOME's own sound daemon down with
+  it, silently killing event sounds (USB connect/disconnect, etc.) for the rest of the
+  session even after PipeWire itself recovered. `configuration.nix` disables the module
+  entirely via `services.pipewire.extraConfig.pipewire`, since it's only the legacy bell beep.
 - GNOME dropped native login/logout sounds years ago; `modules/gnome.nix` recreates them
   with a `systemd.user` service (`login-logout-sound`) that plays `desktop-login` on start
   and `desktop-logout` on `ExecStop`. It depends on `pipewire`/`wireplumber` so audio is
