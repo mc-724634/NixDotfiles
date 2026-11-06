@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   inherit (lib.hm.gvariant) mkUint32 mkTuple mkArray mkVariant mkDictionaryEntry type;
@@ -14,6 +14,30 @@ let
   wallpaper = "${config.home.homeDirectory}/.local/share/backgrounds/wallpaper.png";
 in
 {
+  # ── login/logout sounds ─────────────────────────────────────────────────
+  # gnome-session dropped its native login/logout sound hooks years ago (the
+  # USB connect/disconnect sounds still work because gnome-settings-daemon
+  # plays those itself). This recreates the old behaviour with a systemd user
+  # service: play desktop-login on start, desktop-logout on stop. The After=
+  # on pipewire/wireplumber keeps audio alive long enough for ExecStop to run
+  # on logout (systemd stops units in the reverse of their start order).
+  systemd.user.services.login-logout-sound = {
+    Unit = {
+      Description = "Play a sound on GNOME login/logout";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" "pipewire.service" "wireplumber.service" ];
+    };
+    Service = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play --id=desktop-login";
+      ExecStop = "${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play --id=desktop-logout";
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
   # ── wallpaper ──────────────────────────────────────────────────────────
   xdg.dataFile."backgrounds/wallpaper.png".source = ../extras/wallpapers/wallpaper.png;
 
