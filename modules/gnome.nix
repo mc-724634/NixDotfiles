@@ -12,25 +12,6 @@ let
   # Rounded Window Corners extension uses the same value for every other window.
   windowRadius = 18;
   wallpaper = "${config.home.homeDirectory}/.local/share/backgrounds/wallpaper.png";
-
-  # Waits for logind's shutdown-or-reboot signal, then plays the logout sound.
-  # See the comment on shutdown-sound below for why this exists.
-  #
-  # Uses `busctl wait` rather than `dbus-monitor` because the latter lacks
-  # permission to install a real match on the system bus here and falls back
-  # to eavesdropping mode, adding latency to how fast it notices the signal.
-  # That latency ate into logind's InhibitDelayMaxSec budget below, so the
-  # sound was sometimes still starting (cold PipeWire, no RTKit) when logind
-  # gave up waiting on the inhibitor and the real shutdown began underneath it.
-  shutdownSoundScript = pkgs.writeShellScript "shutdown-reboot-sound" ''
-    while :; do
-      signal=$(${pkgs.systemd}/bin/busctl wait --system /org/freedesktop/login1 org.freedesktop.login1.Manager PrepareForShutdown)
-      if [[ "$signal" == "b true" ]]; then
-        ${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play --id=desktop-logout
-        break
-      fi
-    done
-  '';
 in
 {
   # ── login/logout sounds ─────────────────────────────────────────────────
@@ -57,25 +38,31 @@ in
     };
   };
 
-  # Poweroff and reboot don't give graphical-session.target time to stop
-  # gracefully before the session's audio goes away, so the ExecStop above
-  # never gets heard for either (only a plain logout, where the system keeps
-  # running, is slow enough for it). Instead, hold a logind shutdown-delay
-  # inhibitor for the whole session and play the sound the instant logind
-  # announces a shutdown/reboot is starting — this blocks the shutdown for
-  # as long as the sound takes (well under logind's InhibitDelayMaxSec, raised
-  # to 10s in configuration.nix) and guarantees PipeWire is still alive to
-  # play it.
-  systemd.user.services.shutdown-reboot-sound = {
+  # On poweroff/reboot, GNOME's session manager reacts to logind's shutdown
+  # signal on its own and tears the session down right away — which is what
+  # stops this very target and fires ExecStop above. The trouble is logind
+  # doesn't wait for that teardown before killing PipeWire out from under it,
+  # so the goodbye sound gets cut off before it can be heard.
+  #
+  # Holding a logind shutdown-delay inhibitor for the whole session buys that
+  # teardown enough time to finish normally. (We previously also played the
+  # sound from this service, reacting to the same signal GNOME reacts to —
+  # that raced ExecStop's own playback of the same clip a few hundred ms
+  # apart, and the overlap is what made it sound distorted/bass-boosted.
+  # Letting ExecStop be the only thing that plays it fixed that.)
+  #
+  # `Before = login-logout-sound` ensures this inhibitor is only released
+  # (when this service stops) after login-logout-sound's ExecStop has
+  # finished, not at the same time as it.
+  systemd.user.services.shutdown-sound-grace-period = {
     Unit = {
-      Description = "Play the logout sound before poweroff/reboot";
-      After = [ "graphical-session.target" "pipewire.service" "wireplumber.service" ];
+      Description = "Hold off poweroff/reboot long enough for the logout sound to finish";
+      PartOf = [ "graphical-session.target" ];
+      Before = [ "login-logout-sound.service" ];
     };
     Service = {
       Type = "simple";
-      Restart = "always";
-      RestartSec = 0;
-      ExecStart = "${pkgs.systemd}/bin/systemd-inhibit --what=shutdown --mode=delay --who='GNOME logout sound' --why='Play the logout sound before poweroff/reboot' ${shutdownSoundScript}";
+      ExecStart = "${pkgs.systemd}/bin/systemd-inhibit --what=shutdown --mode=delay --who='GNOME logout sound' --why='Let the logout sound finish before poweroff/reboot' sleep infinity";
     };
     Install = {
       WantedBy = [ "graphical-session.target" ];

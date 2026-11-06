@@ -139,14 +139,6 @@
   # Makes system fonts visible to Flatpak apps.
   fonts.fontDir.enable = true;
 
-  # The shutdown/reboot sound (modules/gnome.nix) holds a logind shutdown-delay
-  # inhibitor and needs to detect the shutdown signal, then play the sound,
-  # inside this window — logind barges ahead the moment it elapses regardless
-  # of whether the inhibitor is still held. The default 5s was tight enough
-  # that the sound was sometimes still starting up (cold PipeWire, no RTKit)
-  # when logind gave up waiting and the real teardown began underneath it.
-  services.logind.settings.Login.InhibitDelayMaxSec = 10;
-
   # ── Audio ───────────────────────────────────────────────────────────────
   security.rtkit.enable = true;
   services.pipewire = {
