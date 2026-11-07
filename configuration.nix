@@ -112,14 +112,6 @@
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
-  # Mutter's hardware cursor plane doesn't always get redrawn in the GDM
-  # greeter's shell on amdgpu + atomic KMS, leaving a blank/white box where
-  # the cursor should be until it's moved. Forcing software cursor
-  # compositing avoids the GPU plane entirely. Set on the systemd unit
-  # (rather than environment.sessionVariables, which is only sourced via PAM
-  # for logged-in user sessions) so it reaches the greeter process itself.
-  systemd.services.display-manager.environment.MUTTER_DEBUG_DISABLE_HW_CURSORS = "1";
-
   # Skip GNOME's default terminal (Ghostty is used instead) and GNOME Web.
   environment.gnome.excludePackages = with pkgs; [
     gnome-console
@@ -136,6 +128,18 @@
   # The gdm user has no home-manager profile of its own, so this is set directly
   # on its dconf database rather than via `dconf.settings` like the rest of GNOME.
   services.displayManager.gdm.extraPackages = with pkgs; [ orchis-theme tela-icon-theme bibata-cursors ];
+
+  # The cursor-theme setting above only tells mutter *which* theme to load; it
+  # still has to find it. libXcursor's theme search path is hardcoded to
+  # ~/.icons, ~/.local/share/icons and /usr/share/icons — it never looks at
+  # XDG_DATA_DIRS, so putting bibata-cursors in extraPackages above doesn't
+  # help. In a normal session home-manager symlinks the theme into ~/.icons,
+  # but the gdm-greeter user has no home directory contents at all, so mutter
+  # can't locate Bibata there and falls back to a blank/white box cursor.
+  # Linking it into the system profile instead puts it on XCURSOR_PATH for
+  # every session (NixOS already adds /run/current-system/sw/share/icons to
+  # XCURSOR_PATH — see <nixpkgs/nixos/modules/config/xdg/icons.nix>; the
+  # package itself is added to environment.systemPackages below).
   programs.dconf.profiles.gdm.databases = [{
     settings."org/gnome/desktop/interface" = {
       accent-color = "purple";
@@ -285,6 +289,7 @@
 
   # ── System packages ─────────────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
+    bibata-cursors # on XCURSOR_PATH for every session, incl. the GDM greeter — see note above gdm.extraPackages
     wayvr
     xrizer
     sbctl
