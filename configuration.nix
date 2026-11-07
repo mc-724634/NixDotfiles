@@ -112,6 +112,10 @@
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
+  # RDP server for GNOME's built-in "Remote Desktop" screen sharing.
+  services.gnome.gnome-remote-desktop.enable = true;
+  networking.firewall.allowedTCPPorts = [ 3389 ];
+
   # Skip GNOME's default terminal (Ghostty is used instead) and GNOME Web.
   environment.gnome.excludePackages = with pkgs; [
     gnome-console
@@ -308,6 +312,7 @@
     gnomeExtensions.rounded-window-corners-reborn # rounds windows libadwaita doesn't
     gnomeExtensions.notification-timeout # banners time out without waiting for the mouse
     gnomeExtensions.brightness-control-using-ddcutil # brightness sliders for each monitor
+    gnomeExtensions.caffeine # "stay awake" coffee-cup toggle in the quick settings menu
     # KDE-style panel widget showing/controlling the current MPRIS player.
     # Patched: nixpkgs' build only declares shell-version support up to 49;
     # GNOME 50 isn't out yet upstream. The extension itself works fine on 50,

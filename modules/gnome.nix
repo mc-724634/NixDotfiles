@@ -299,6 +299,7 @@ in
         "display-brightness-ddcutil@themightydeity.github.com"
         "maximize-to-tile@local"
         "mediacontrols@cliffniff.github.com"
+        "caffeine@patapon.info"
       ];
       favorite-apps = [
         "helium.desktop"
