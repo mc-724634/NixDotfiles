@@ -190,6 +190,15 @@ in
       show-in-lock-screen = false;
     };
 
+    # Remote Desktop (RDP). services.gnome.gnome-remote-desktop.enable (configuration.nix)
+    # only starts the backend service; it still comes up disabled/view-only until this
+    # per-user switch is flipped in Settings. tls-cert/tls-key are left out since they're
+    # generated per-machine (same treatment as GSConnect's pairing cert below).
+    "org/gnome/desktop/remote-desktop/rdp" = {
+      enable = true;
+      view-only = false;
+    };
+
     "org/gnome/desktop/peripherals/keyboard" = {
       numlock-state = true;
       remember-numlock-state = true;
