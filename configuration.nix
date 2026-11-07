@@ -159,6 +159,12 @@
     };
   };
 
+  # modules/gnome.nix's shutdown-sound-grace-period holds a logind shutdown
+  # inhibitor so the 2.9s logout sound isn't cut off by poweroff/reboot.
+  # Default (5s) leaves only ~2.1s of headroom once session-teardown signal
+  # propagation eats into it; bumped by 1s of slack, not padded further.
+  services.logind.settings.Login.InhibitDelayMaxSec = 6;
+
   # Like desktop-login/-logout (see modules/gnome.nix), GNOME dropped native
   # device-added/device-removed sounds years ago; nothing in gnome-settings-daemon
   # or gnome-shell plays them anymore. Recreate it with a udev rule (fires once per
