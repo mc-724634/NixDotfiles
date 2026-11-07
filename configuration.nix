@@ -301,6 +301,7 @@
     arduino-ide
     gnome-system-monitor # Ctrl+Shift+Esc (shortcut defined in modules/gnome.nix)
     ddcutil # used by the brightness-slider extension
+    openssl # gnome-control-center shells out to this to generate the Remote Desktop TLS cert
 
     # GNOME Shell extensions (enabled declaratively in modules/gnome.nix)
     gnomeExtensions.user-themes # loads the Orchis shell theme
