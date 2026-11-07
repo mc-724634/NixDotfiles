@@ -112,11 +112,13 @@
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
-  # Mutter's hardware cursor plane doesn't always get redrawn when the lock
-  # screen's shield overlay is composited on amdgpu + atomic KMS, leaving a
-  # blank/white box where the cursor should be until it's moved. Forcing
-  # software cursor compositing avoids the GPU plane entirely.
-  environment.sessionVariables.MUTTER_DEBUG_DISABLE_HW_CURSORS = "1";
+  # Mutter's hardware cursor plane doesn't always get redrawn in the GDM
+  # greeter's shell on amdgpu + atomic KMS, leaving a blank/white box where
+  # the cursor should be until it's moved. Forcing software cursor
+  # compositing avoids the GPU plane entirely. Set on the systemd unit
+  # (rather than environment.sessionVariables, which is only sourced via PAM
+  # for logged-in user sessions) so it reaches the greeter process itself.
+  systemd.services.display-manager.environment.MUTTER_DEBUG_DISABLE_HW_CURSORS = "1";
 
   # Skip GNOME's default terminal (Ghostty is used instead) and GNOME Web.
   environment.gnome.excludePackages = with pkgs; [
