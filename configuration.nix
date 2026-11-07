@@ -308,6 +308,15 @@
     gnomeExtensions.rounded-window-corners-reborn # rounds windows libadwaita doesn't
     gnomeExtensions.notification-timeout # banners time out without waiting for the mouse
     gnomeExtensions.brightness-control-using-ddcutil # brightness sliders for each monitor
+    # KDE-style panel widget showing/controlling the current MPRIS player.
+    # Patched: nixpkgs' build only declares shell-version support up to 49;
+    # GNOME 50 isn't out yet upstream. The extension itself works fine on 50,
+    # it just hasn't been re-tagged, so this adds "50" to metadata.json.
+    (gnomeExtensions.media-controls.overrideAttrs (old: {
+      postInstall = (old.postInstall or "") + ''
+        sed -i 's/"49"/"49", "50"/' $out/share/gnome-shell/extensions/*/metadata.json
+      '';
+    }))
   ];
 
   # ── Nix ─────────────────────────────────────────────────────────────────

@@ -298,6 +298,7 @@ in
         "notification-timeout@chlumskyvaclav.gmail.com"
         "display-brightness-ddcutil@themightydeity.github.com"
         "maximize-to-tile@local"
+        "mediacontrols@cliffniff.github.com"
       ];
       favorite-apps = [
         "helium.desktop"
@@ -471,6 +472,14 @@ in
       always-normal = true;
       ignore-idle = true;
       timeout = 5000;
+    };
+
+    # KDE-style MPRIS panel widget.
+    "org/gnome/shell/extensions/mediacontrols" = {
+      scroll-labels = true; # default false: scroll track titles that don't fit instead of truncating
+      show-track-slider = true; # default false: show the seek/progress slider under the title
+      extension-position = "Left"; # default "Center": place the widget on the left side of the panel
+      extension-index = mkUint32 1; # default 0: order among other left-side panel widgets
     };
 
     # Rounds every window that is not already rounded by libadwaita, to match them.
