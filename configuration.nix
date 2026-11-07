@@ -116,6 +116,20 @@
   services.gnome.gnome-remote-desktop.enable = true;
   networking.firewall.allowedTCPPorts = [ 3389 ];
 
+  # services.gnome.gnome-remote-desktop only links the system-level
+  # gnome-remote-desktop{,-configuration}.service unit files in (systemd
+  # reports them as "linked", not "enabled"/"disabled") without wiring them
+  # into any target. gnome-control-center's System panel hides its entire
+  # "Remote Desktop" row unless that *system*-scope service reports
+  # "enabled" or "disabled" (see cc_get_service_state() in
+  # panels/system/cc-system-panel.c) — "linked" reads as "not found", so the
+  # row — and with it the actual on/off switch — never appears in Settings.
+  # The row itself still toggles the per-session (--user) RDP daemon we
+  # already have running; this only makes systemd recognize the system unit
+  # as properly installed so the panel stops hiding it.
+  systemd.services.gnome-remote-desktop.wantedBy = [ "graphical.target" ];
+  systemd.services.gnome-remote-desktop-configuration.wantedBy = [ "graphical.target" ];
+
   # Skip GNOME's default terminal (Ghostty is used instead) and GNOME Web.
   environment.gnome.excludePackages = with pkgs; [
     gnome-console
