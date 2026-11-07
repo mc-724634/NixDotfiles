@@ -286,6 +286,11 @@
       window-padding-x = 10;
       window-padding-y = 10;
       confirm-close-surface = false;
+
+      # Always open new windows in $HOME, instead of inheriting the cwd of
+      # whatever terminal window currently has focus.
+      working-directory = "home";
+      window-inherit-working-directory = false;
     };
   };
 }
