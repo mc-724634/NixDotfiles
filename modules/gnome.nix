@@ -168,7 +168,7 @@ in
 
     # Theme, icons and cursor come from the `gtk` block in home.nix; the rest is from Settings.
     "org/gnome/desktop/interface" = {
-      accent-color = "green";
+      accent-color = "purple";
       clock-format = "12h";
       clock-show-weekday = true;
       cursor-blink = true;
@@ -207,7 +207,7 @@ in
     "org/gnome/desktop/screensaver" = {
       color-shading-type = "solid";
       picture-options = "zoom";
-      picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/amber-l.jxl";
+      picture-uri = "file://${wallpaper}";
       primary-color = "#ff7800";
       secondary-color = "#000000";
     };
