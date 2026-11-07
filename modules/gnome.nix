@@ -557,6 +557,13 @@ in
       window-use-custom-border-color = false;
     };
 
+    # "Stay awake" coffee-cup toggle in quick settings.
+    "org/gnome/shell/extensions/caffeine" = {
+      cli-toggle = true; # default false: allow toggling via `gdbus`/CLI, not just the panel menu
+      enable-mpris = true; # default false: auto-inhibit sleep while any app is playing media (MPRIS)
+      show-notifications = false; # default true: no banner every time it's toggled on/off
+    };
+
     # Orchis shell theme (needs the User Themes extension).
     "org/gnome/shell/extensions/user-theme" = {
       name = config.gtk.theme.name;
