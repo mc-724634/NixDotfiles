@@ -123,6 +123,29 @@
     "L+ /run/gdm/.config/monitors.xml - - - - ${./extras/monitors.xml}"
   ];
 
+  # Match GDM's login screen to the Orchis theme (gtk/icon theme, purple accent,
+  # Bibata cursor, desktop wallpaper) so it fits with the rest of modules/gnome.nix.
+  # The gdm user has no home-manager profile of its own, so this is set directly
+  # on its dconf database rather than via `dconf.settings` like the rest of GNOME.
+  services.displayManager.gdm.extraPackages = with pkgs; [ orchis-theme tela-icon-theme bibata-cursors ];
+  programs.dconf.profiles.gdm.databases = [{
+    settings."org/gnome/desktop/interface" = {
+      accent-color = "purple";
+      color-scheme = "prefer-dark";
+      cursor-theme = "Bibata-Modern-Classic";
+      gtk-theme = "Orchis-Purple-Dark"; # must match `orchisTheme` in home.nix
+      icon-theme = "Tela-purple-dark";
+    };
+    settings."org/gnome/desktop/background" = {
+      color-shading-type = "solid";
+      picture-options = "zoom";
+      picture-uri = "file://${./extras/wallpapers/wallpaper.png}";
+      picture-uri-dark = "file://${./extras/wallpapers/wallpaper.png}";
+      primary-color = "#ff7800";
+      secondary-color = "#000000";
+    };
+  }];
+
   fonts.packages = with pkgs; [
     hack-font # monospace font (Ghostty + GNOME)
     noto-fonts # "Noto Sans", the interface/document font set in GNOME
