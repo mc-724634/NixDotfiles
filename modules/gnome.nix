@@ -460,7 +460,7 @@ in
       hot-keys = false;
       icon-size-fixed = false;
       intellihide = true;
-      intellihide-mode = "FOCUS_APPLICATION_WINDOWS";
+      intellihide-mode = "ALL_WINDOWS";
       isolate-workspaces = false;
       multi-monitor = false;
       preferred-monitor = -2;
