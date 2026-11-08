@@ -16,18 +16,38 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 // own reactivity/focusability is what stops it from being clicked into at all.
 //
 // Applying that on an "overview showing" event rather than unconditionally in
-// enable() matters: enable() runs very early in the session, around the same time
-// Dash to Dock's and ArcMenu's own "don't show the overview on startup" settings
-// are doing their thing. Reaching into Main.overview.searchEntry that early forces
-// the overview to realize/construct itself, which was reintroducing the overview-
-// on-login behaviour those settings are supposed to suppress. Waiting for the
-// first real "showing" avoids touching any of that startup-timing-sensitive code.
+// enable() matters: enable() runs very early in the session, and reaching into
+// Main.overview.searchEntry that early forces the overview to realize/construct
+// itself, which on its own was enough to make the overview visible on login.
+//
+// It's also the place to deal with the overview literally showing on login, a
+// problem that predates this extension: Dash to Dock and ArcMenu both try to
+// suppress that themselves (their own "don't show overview on startup" settings),
+// but their approach is pre-emptive - they flip Main.sessionMode.hasOverview to
+// false before GNOME's own startup-animation code checks it, which only works if
+// their enable() runs before that check does. Extension enabling
+// (ui/extensionSystem.js's _enableAllExtensions) is an async sequence that
+// interleaves with the independent (also async) startup-animation/background-load
+// chain in main.js/layout.js, so no amount of reordering enabled-extensions
+// reliably wins that race - confirmed by testing it, it didn't help.
+//
+// Reacting instead of pre-empting sidesteps the race entirely: GNOME's own
+// Overview._showDone() explicitly handles hide() being called while still in the
+// SHOWING state ("Handle any calls to hide* while we were showing"), so calling
+// Main.overview.hide() from inside our own "showing" handler is both supported and
+// not timing-sensitive - it runs after the overview has already decided to show,
+// however late that decision was made, and cancels it there.
 export default class DisableOverviewSearchExtension extends Extension {
     enable() {
         this._original = SearchController.prototype._shouldTriggerSearch;
         SearchController.prototype._shouldTriggerSearch = () => false;
 
-        this._showingId = Main.overview.connect('showing', () => this._applyHidden());
+        this._showingId = Main.overview.connect('showing', () => {
+            this._applyHidden();
+
+            if (Main.layoutManager._startingUp)
+                Main.overview.hide();
+        });
     }
 
     _applyHidden() {
