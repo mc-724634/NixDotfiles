@@ -300,6 +300,7 @@ in
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "blur-my-shell@aunetx"
         "dash-to-dock@micxgx.gmail.com"
+        "arcmenu@arcmenu.com"
         "appindicatorsupport@rgcjonas.gmail.com"
         "tilingshell@ferrarodomenico.com"
         "Rounded_Corners@lennart-k"
