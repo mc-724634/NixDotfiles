@@ -2,9 +2,69 @@
 let
   # Orchis from upstream (nixpkgs ships an older release); pinned in flake.lock.
   # "macos" tweak = macOS-style window buttons.
-  orchis = (pkgs.orchis-theme.override { tweaks = [ "macos" ]; }).overrideAttrs (_: {
+  orchis = (pkgs.orchis-theme.override { tweaks = [ "macos" ]; }).overrideAttrs (old: {
     version = "git";
     src = inputs.orchis-src;
+
+    # Orchis deliberately renders the QuickToggleMenu popup (Suspend/Restart/Power
+    # Off/Log Out, Night Light, etc.) as a white Material card with dark text
+    # (.quick-toggle-menu rules around "gnome-shell.css:1913") - confirmed by diffing
+    # against GNOME's own stock dark theme, which leaves that selector's background
+    # unset (inherits dark) entirely. That clashes with everything else in this setup
+    # being dark, so flip it back to match.
+    #
+    # ".quick-toggle-menu-container" (the outer wrapper) is never styled by Orchis at
+    # all and is left that way here too: it's only a BinLayout animation wrapper, and
+    # giving it its own opaque background made the real card's rounded corners
+    # (border-radius on ".quick-toggle-menu" below, untouched) invisible - same solid
+    # colour behind and in front leaves nothing for the rounding to contrast against.
+    #
+    # Every override selector below is prefixed with the ".quick-toggle-menu-container"
+    # ancestor class so it has strictly higher specificity than Orchis's own same-class
+    # rules: appending a same-specificity "!important" rule later in the file (tried
+    # first) did NOT win, confirmed live via Looking Glass (Main.panel.statusArea
+    # .quickSettings._system._systemItem.menu...get_theme_node()) - GNOME's St CSS
+    # engine doesn't reliably prefer later declarations on a specificity tie the way
+    # the CSS cascade does, so winning on specificity is the only reliable lever.
+    postInstall = (old.postInstall or "") + ''
+      cat >> $out/share/themes/${orchisTheme}/gnome-shell/gnome-shell.css <<'EOF'
+
+      .quick-toggle-menu-container .quick-toggle-menu,
+      .quick-toggle-menu-container .quick-toggle-menu:insensitive {
+        background-color: rgba(33, 33, 33, 0.97) !important;
+        color: #ffffff !important;
+      }
+
+      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item,
+      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item StLabel {
+        color: #ffffff !important;
+      }
+
+      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item:focus,
+      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item:hover,
+      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item.selected {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        color: #ffffff !important;
+      }
+
+      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item:active {
+        background-color: rgba(255, 255, 255, 0.3) !important;
+        color: #ffffff !important;
+      }
+
+      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item:insensitive {
+        color: rgba(255, 255, 255, 0.5) !important;
+      }
+
+      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item .popup-separator-menu-item-separator {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+      }
+
+      .quick-toggle-menu-container .quick-toggle-menu .header .icon {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+      }
+      EOF
+    '';
   });
   # Colour variant (Purple accent, dark). Used for GTK, the shell theme and the
   # ~/.local/share/themes link so they can never get out of sync.
