@@ -333,31 +333,42 @@ in
       tray-pos = "right";
     };
 
-    # Blur my Shell (internal pipeline definitions are left to the extension).
+    # Blur my Shell. Pipeline definitions (the actual blur/tint recipes each
+    # "pipeline" name below refers to) are left to the extension - "pipelines"
+    # is schema-default content (bundled presets, e.g. pipeline_migrated_dynamic_blur),
+    # not something generated per-install, so it doesn't need pinning here.
+    #
+    # Captured from the live dconf state after tweaking these in the extension's own
+    # preferences UI (Extensions app -> Blur my Shell -> gear icon), so a rebuild
+    # doesn't drop the changes.
     "org/gnome/shell/extensions/blur-my-shell/appfolder" = {
       blur = true;
-      brightness = 0.6;
-      sigma = 30;
+      pipeline = "pipeline_migrated_dynamic_blur";
     };
 
     "org/gnome/shell/extensions/blur-my-shell/applications" = {
       blur = false;
+      enable-all = false;
       pipeline = "pipeline_default";
     };
 
     "org/gnome/shell/extensions/blur-my-shell/coverflow-alt-tab" = {
-      pipeline = "pipeline_default";
+      pipeline = "pipeline_migrated_dynamic_blur";
     };
 
     "org/gnome/shell/extensions/blur-my-shell/dash-to-dock" = {
       blur = true;
-      brightness = 0.6;
       override-background = true;
-      pipeline = "pipeline_default_rounded";
-      sigma = 30;
-      static-blur = true;
-      style-dash-to-dock = 0;
+      pipeline = "pipeline_migrated_dynamic_blur";
+      static-blur = false;
+      style-dash-to-dock = 0; # transparent
       unblur-in-overview = false;
+    };
+
+    # Compatibility toggle for the (unused here) Dash to Panel extension; left at
+    # its default since the extension itself writes it regardless.
+    "org/gnome/shell/extensions/blur-my-shell/dash-to-panel" = {
+      blur-original-panel = true;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/hidetopbar" = {
@@ -365,31 +376,49 @@ in
     };
 
     "org/gnome/shell/extensions/blur-my-shell/lockscreen" = {
-      pipeline = "pipeline_default";
+      pipeline = "pipeline_migrated_dynamic_blur";
     };
 
     "org/gnome/shell/extensions/blur-my-shell/overview" = {
-      pipeline = "pipeline_default";
-      style-components = 1;
+      pipeline = "pipeline_migrated_dynamic_blur";
+      # Was 1 (light): blur-my-shell was forcibly painting the overview's dash/search
+      # result containers light regardless of the (dark) shell theme - 0 not styled,
+      # 1 light, 2 dark, 3 transparent, 4 automatic.
+      style-components = 2; # dark
     };
 
     "org/gnome/shell/extensions/blur-my-shell/panel" = {
       blur = true;
-      brightness = 0.6;
-      corner-radius = 0;
+      corner-radius = 18;
       force-light-text = false;
-      pipeline = "pipeline_default_rounded";
-      sigma = 30;
-      static-blur = true;
+      match-theme-in-overview = false;
+      override-background = true;
+      override-background-dynamically = false;
+      pipeline = "pipeline_migrated_dynamic_blur";
+      static-blur = false;
+      style-panel = 0; # transparent
+    };
+
+    # Quick settings, calendar/notifications, right-click menus, switchers and
+    # dialogs - added in blur-my-shell v77 (pinned above in configuration.nix;
+    # nixpkgs' v72 has no blur for these at all, just the theme's flat background).
+    # preserve-shell-theme keeps our own dark .quick-toggle-menu/popup-menu-content
+    # CSS (see home.nix) driving the colour, with blur-my-shell only adding the blur
+    # layer, instead of blur-my-shell's own style-popup tint replacing it.
+    "org/gnome/shell/extensions/blur-my-shell/popup" = {
+      blur = true;
+      override-background = true;
+      pipeline = "pipeline_migrated_dynamic_blur";
+      preserve-shell-theme = true;
+      style-popup = 0; # transparent (moot while preserve-shell-theme is on)
     };
 
     "org/gnome/shell/extensions/blur-my-shell/screenshot" = {
-      pipeline = "pipeline_default";
+      pipeline = "pipeline_migrated_dynamic_blur";
     };
 
     "org/gnome/shell/extensions/blur-my-shell/window-list" = {
-      brightness = 0.6;
-      sigma = 30;
+      pipeline = "pipeline_migrated_dynamic_blur";
     };
 
     # Dash to Dock.

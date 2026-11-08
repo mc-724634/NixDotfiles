@@ -77,6 +77,39 @@ let
         -e 's/#212121/#2C2C2C/g' \
         -e 's/rgba(33, 33, 33,/rgba(44, 44, 44,/g' \
         $out/share/themes/${orchisTheme}/gnome-shell/gnome-shell.css
+
+      # Orchis also renders the Activities overview's search entry as a white Material
+      # field with dark text (the "#overview .search-entry" family of rules around
+      # "gnome-shell.css:3000"), same deliberate pattern as the quick-toggle-menu card
+      # above - GNOME's own stock dark theme leaves it dark. The values being replaced
+      # here (e.g. "rgba(0, 0, 0, 0.75)") are reused for unrelated shadows elsewhere in
+      # the file, so this is scoped with sed address ranges to just these six rules
+      # instead of a global swap, and flips each one to the equivalent value the
+      # plain (non-overview) ".search-entry" rule above it already uses.
+      sed -i \
+        -e '/^#overview \.search-entry {$/,/^}$/ {
+          s/^  caret-color: rgba(0, 0, 0, 0.75);$/  caret-color: rgba(255, 255, 255, 0.7);/
+          s/^  color: rgba(0, 0, 0, 0.75);$/  color: rgba(255, 255, 255, 0.7);/
+          s/^  background-color: rgba(255, 255, 255, 0.75);$/  background-color: rgba(255, 255, 255, 0.12);/
+        }' \
+        -e '/^#overview \.search-entry:hover {$/,/^}$/ {
+          s/^  color: rgba(0, 0, 0, 0.75);$/  color: white;/
+          s/^  background-color: rgba(255, 255, 255, 0.85);$/  background-color: rgba(255, 255, 255, 0.18);/
+        }' \
+        -e '/^#overview \.search-entry:focus {$/,/^}$/ {
+          s/^  color: rgba(0, 0, 0, 0.85);$/  color: white;/
+          s/^  background-color: rgba(255, 255, 255, 0.95);$/  background-color: rgba(255, 255, 255, 0.24);/
+        }' \
+        -e '/^#overview \.search-entry \.search-entry-icon {$/,/^}$/ {
+          s/^  color: rgba(0, 0, 0, 0.65);$/  color: rgba(255, 255, 255, 0.7);/
+        }' \
+        -e '/^#overview \.search-entry:hover \.search-entry-icon, #overview \.search-entry:focus \.search-entry-icon {$/,/^}$/ {
+          s/^  color: rgba(0, 0, 0, 0.75);$/  color: white;/
+        }' \
+        -e '/^#overview \.search-entry StLabel\.hint-text {$/,/^}$/ {
+          s/^  color: rgba(0, 0, 0, 0.35);$/  color: rgba(255, 255, 255, 0.5);/
+        }' \
+        $out/share/themes/${orchisTheme}/gnome-shell/gnome-shell.css
     '';
   });
   # Colour variant (Purple accent, dark). Used for GTK, the shell theme and the
