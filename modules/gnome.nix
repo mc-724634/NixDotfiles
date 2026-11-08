@@ -472,6 +472,38 @@ in
       unity-backlit-items = false;
     };
 
+    # ArcMenu. Captured from the live dconf state after tweaking these in the
+    # extension's own preferences UI, so a rebuild doesn't drop the changes.
+    # pinned-apps deliberately left unset (default []): the live value had Firefox
+    # and GNOME Terminal pinned, but neither is installed here (Helium/Ghostty are
+    # used instead) - that's ArcMenu's own fallback favorites auto-populated from an
+    # empty list, not something actually chosen, so not worth persisting as-is.
+    "org/gnome/shell/extensions/arcmenu" = {
+      force-menu-location = "BottomCentered";
+      hide-overview-on-arcmenu-open = true;
+      hide-overview-on-startup = true;
+      menu-arrow-rise = mkTuple [ true (-1) ];
+      menu-button-appearance = "None";
+      menu-layout = "11";
+      pop-folders-data = mkArray (type.dictionaryEntryOf [ type.string type.string ])
+        (lib.mapAttrsToList (k: v: mkDictionaryEntry [ k v ]) {
+          "Library Home" = "Library Home";
+          "System" = "System";
+          "Utilities" = "Utilities";
+        });
+      power-options = [
+        (mkTuple [ 0 true ])
+        (mkTuple [ 1 true ])
+        (mkTuple [ 2 true ])
+        (mkTuple [ 3 true ])
+        (mkTuple [ 4 true ])
+        (mkTuple [ 5 false ])
+        (mkTuple [ 6 false ])
+        (mkTuple [ 7 false ])
+      ];
+      show-activities-button = true;
+    };
+
     # GSConnect (device pairing is deliberately NOT stored here).
     "org/gnome/shell/extensions/gsconnect" = {
       name = "nixos";
@@ -524,7 +556,7 @@ in
       scroll-labels = true; # default false: scroll track titles that don't fit instead of truncating
       show-track-slider = true; # default false: show the seek/progress slider under the title
       extension-position = "Left"; # default "Center": place the widget on the left side of the panel
-      extension-index = mkUint32 1; # default 0: order among other left-side panel widgets
+      extension-index = mkUint32 2; # default 0: order among other left-side panel widgets
     };
 
     # Rounds every window that is not already rounded by libadwaita, to match them.
