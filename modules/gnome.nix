@@ -318,6 +318,8 @@ in
         "mediacontrols@cliffniff.github.com"
         "caffeine@patapon.info"
         "disable-overview-search@local"
+        "pano@elhan.io"
+        "emoji-copy@felipeftn"
       ];
       favorite-apps = [
         "helium.desktop"
@@ -665,6 +667,12 @@ in
       switch-to-application-7 = [ ];
       switch-to-application-8 = [ ];
       switch-to-application-9 = [ ];
+      toggle-message-tray = [ "<Super>m" ]; # drop the default <Super>v so Pano can claim it below
+    };
+
+    # Windows/KDE-style clipboard history popup.
+    "org/gnome/shell/extensions/pano" = {
+      global-shortcut = [ "<Super>v" ];
     };
 
     "org/gnome/shell/weather" = {

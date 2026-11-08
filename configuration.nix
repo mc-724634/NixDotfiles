@@ -328,6 +328,8 @@
     gnomeExtensions.notification-timeout # banners time out without waiting for the mouse
     gnomeExtensions.brightness-control-using-ddcutil # brightness sliders for each monitor
     gnomeExtensions.caffeine # "stay awake" coffee-cup toggle in the quick settings menu
+    gnomeExtensions.pano # Windows/KDE-style clipboard history (Super+V, see modules/gnome.nix)
+    gnomeExtensions.emoji-copy # emoji picker popup (Super+., default keybind out of the box)
     # KDE-style panel widget showing/controlling the current MPRIS player.
     # Patched: nixpkgs' build only declares shell-version support up to 49;
     # GNOME 50 isn't out yet upstream. The extension itself works fine on 50,
