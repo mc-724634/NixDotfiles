@@ -143,6 +143,7 @@ in
     ./modules/shell.nix   # fish, starship, ghostty
     ./modules/gnome.nix   # dconf settings, wallpaper, display layout, default apps
     ./modules/maximize-to-tile.nix   # custom extension: maximize button -> Tiling Shell-style tile
+    ./modules/disable-overview-search.nix   # custom extension: typing in the overview does nothing
   ];
 
   home.username = "mc";

@@ -1,0 +1,7 @@
+{
+  "uuid": "disable-overview-search@local",
+  "name": "Disable Overview Search",
+  "description": "Makes typing in the Activities overview do nothing. ArcMenu is the launcher/search now, so the overview's own type-to-search (which activates on any keystroke, independent of whether the search box is visible) is disabled instead of just hidden.",
+  "shell-version": [ "50" ],
+  "version-name": "1.0"
+}

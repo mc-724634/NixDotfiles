@@ -328,14 +328,6 @@
     gnomeExtensions.notification-timeout # banners time out without waiting for the mouse
     gnomeExtensions.brightness-control-using-ddcutil # brightness sliders for each monitor
     gnomeExtensions.caffeine # "stay awake" coffee-cup toggle in the quick settings menu
-    # Only used for its "hide search in overview" mod (ArcMenu covers launching/search
-    # now); every other mod it bundles is disabled in modules/gnome.nix. nixpkgs ships
-    # v25 (shell-version up to 49 only); pinned to v27, which added GNOME 50/51 support.
-    (gnomeExtensions.gnome-40-ui-improvements.override {
-      version = 27;
-      sha256 = "sha256-KfAD9gHNLHZHaCwz74RudoVBB80trcmcVCEHJX1Lc7g=";
-      metadata = "ewogICJfZ2VuZXJhdGVkIjogIkdlbmVyYXRlZCBieSBTd2VldFRvb3RoLCBkbyBub3QgZWRpdCIsCiAgImRlc2NyaXB0aW9uIjogIlR1bmVzIGdub21lIDR4LCA1eCBPdmVydmlldyBVSSB0byBtYWtlIGl0IG1vcmUgdXNhYmxlLlxuXG5DaGFuZ2VzOlxuLSBTZWFyY2ggdGV4dGJveCBpcyBoaWRkZW4gYnkgZGVmYXVsdCBhbmQgc2hvd24gb25seSB3aGVuIHVzZXIgYmVnaW5zIHRvIHR5cGUtdG8tc2VhcmNoXG4tIFNjYWxlIG9mIHdvcmtzcGFjZXMnIHRodW1ibmFpbHMgaW5jcmVhc2VkIDJ4XG4tIFJlc3RvcmVzIHdhbGxwYXBlciBvbiB3b3Jrc3BhY2VzJyB0aHVtYm5haWxzLiBObyBtb3JlIGdyYXkgYmFja2dyb3VuZFxuLSBTaG93IHdvcmtzcGFjZXMnIHRodW1ibmFpbHMgZXZlbiB3aGVuIHRoZXJlIGlzIG9ubHkgb25lIHdvcmtzcGFjZVxuLSBGaXJlZm94J3MgUElQIChwaWN0dXJlIGluIHBpY3R1cmUpIHdpbmRvdyBpcyBub3cgZGlzcGxheWVkIG9uIHRoZSBvdmVydmlldyBzY3JlZW5cblxuQWxsIG1vZGlmaWNhdGlvbnMgY2FuIGJlIGRpc2FibGVkIGluIHRoZSBleHRlbnNpb24ncyBzZXR0aW5ncy5cblxuQVRURU5USU9OIVxuQWZ0ZXIgZXh0ZW5zaW9uIHVwZGF0ZSwgZ25vbWUtc2hlbGwgcmVzdGFydCBpcyByZXF1aXJlZDpcblgxMTogQWx0K0YyID0+IHJcbldheWxhbmQ6IGxvZ291dCA9PiBsb2dpbiIsCiAgIm5hbWUiOiAiR25vbWUgNHgsIDV4IFVJIEltcHJvdmVtZW50cyIsCiAgInNldHRpbmdzLXNjaGVtYSI6ICJvcmcuZ25vbWUuc2hlbGwuZXh0ZW5zaW9ucy5nbm9tZS11aS10dW5lIiwKICAic2hlbGwtdmVyc2lvbiI6IFsKICAgICI1MCIsCiAgICAiNTEiCiAgXSwKICAidXJsIjogImh0dHBzOi8vZ2l0aHViLmNvbS9heHhhcHkvZ25vbWUtdWktdHVuZSIsCiAgInV1aWQiOiAiZ25vbWUtdWktdHVuZUBpdHN0aW1lLnRlY2giLAogICJ2ZXJzaW9uIjogMjcKfQ==";
-    })
     # KDE-style panel widget showing/controlling the current MPRIS player.
     # Patched: nixpkgs' build only declares shell-version support up to 49;
     # GNOME 50 isn't out yet upstream. The extension itself works fine on 50,
