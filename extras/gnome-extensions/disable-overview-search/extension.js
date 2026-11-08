@@ -2,56 +2,47 @@ import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import { SearchController } from 'resource:///org/gnome/shell/ui/searchController.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-// TEMPORARY instrumentation while confirming the fix below actually works - every
-// line is prefixed so it's easy to grep out of `journalctl --user` afterwards:
-//   journalctl --user -b 0 | grep 'DOS-DEBUG'
-// Remove this block and the dbg(...) calls once confirmed.
-const DEBUG = true;
-function dbg(msg) {
-    if (DEBUG)
-        console.log(`DOS-DEBUG: ${msg}`);
-}
-
-// Root cause, confirmed by logging actual state instead of guessing from source
-// reading: by the time this module is even imported, Main.overview._shownState is
-// already "SHOWING" - the overview's own "showing" signal already fired and ran
-// its course before our (or Dash to Dock's, or ArcMenu's) code got a chance to run
-// at all. This matches a known, still-open upstream GNOME 50 regression (e.g.
-// ubuntu/dash-to-dock#2582, "Disabling 'Show overview on startup' not working on
-// gnome 50" - also hits dash-to-panel independently), not anything specific to
-// this config. Every previous attempt here waited for a future "showing" emission,
-// which is why none of them worked: for the startup case specifically, that
-// emission already happened.
+// Typing in the overview is routed to search by SearchController._onStageKeyPress,
+// which (unless the key is Escape) asks _shouldTriggerSearch whether the keystroke
+// should start a search. Overriding it to always say no stops that path, but it
+// doesn't touch the search entry widget itself: clicking directly into it still
+// focuses it and lets you type/search normally.
 //
-// The actual fix: check the CURRENT state immediately in enable() and hide() right
-// then if it's already under way, instead of only listening for a future signal.
-// The "showing" listener stays too, to cover any boot where timing happens to
-// differ and the signal hasn't fired yet when we get here.
+// ControlsManagerLayout.vfunc_allocate (overviewControls.js) gives the entry's
+// wrapping St.Bin (Main.overview.searchEntry.get_parent()) its height by calling
+// get_preferred_height() on it every allocation, so hiding the entry alone leaves
+// a blank gap where it used to be. Overriding get_preferred_height on the bin to
+// report 0 is what actually collapses that space; hiding + disabling the entry's
+// own reactivity/focusability is what stops it from being clicked into at all.
+//
+// This is also where the overview showing on login gets suppressed. Confirmed via
+// live logging (not just source reading): by the time this module is even
+// imported, Main.overview._shownState is already "SHOWING" - its own "showing"
+// signal already fired and ran its course before any extension code (ours, Dash
+// to Dock's, ArcMenu's) got a chance to run at all. That matches a known, still-
+// open upstream GNOME 50 regression (ubuntu/dash-to-dock#2582, "Disabling 'Show
+// overview on startup' not working on gnome 50" - independently hits dash-to-panel
+// too), not anything specific to this config. So instead of only listening for a
+// future "showing" emission (which is what Dash to Dock/ArcMenu's own settings do,
+// and why they stopped working here), _suppressIfStartingUp() also runs
+// immediately in enable() to catch the signal having already fired before we even
+// loaded. The listener stays too, in case timing differs on some boot and it
+// genuinely hasn't fired yet when we get here.
 export default class DisableOverviewSearchExtension extends Extension {
     enable() {
-        dbg(`enable() called; Main.layoutManager._startingUp=${Main.layoutManager._startingUp}, ` +
-            `Main.overview._shownState=${Main.overview._shownState}`);
-
         this._original = SearchController.prototype._shouldTriggerSearch;
         SearchController.prototype._shouldTriggerSearch = () => false;
 
-        this._showingId = Main.overview.connect('showing', () => {
-            dbg(`'showing' fired; Main.layoutManager._startingUp=${Main.layoutManager._startingUp}`);
-            this._suppressIfStartingUp();
-        });
+        this._showingId = Main.overview.connect('showing', () => this._suppressIfStartingUp());
 
-        // Catches the case where "showing" already fired before we got here.
         this._suppressIfStartingUp();
     }
 
     _suppressIfStartingUp() {
         this._applyHidden();
 
-        if (Main.layoutManager._startingUp && Main.overview._shownState !== 'HIDDEN') {
-            dbg(`forcing overview hidden; _shownState was ${Main.overview._shownState}`);
+        if (Main.layoutManager._startingUp && Main.overview._shownState !== 'HIDDEN')
             Main.overview.hide();
-            dbg(`after hide(): _shownState=${Main.overview._shownState}`);
-        }
     }
 
     _applyHidden() {
