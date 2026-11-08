@@ -296,11 +296,18 @@ in
       disable-user-extensions = false;
       disabled-extensions = [ ];
       enabled-extensions = [
+        # Dash to Dock and ArcMenu's "don't show the overview on startup" settings
+        # both only work if Main.layoutManager._startingUp is still true when their
+        # own enable() runs - extensions enable in this list's order, so these two
+        # go first to give them the best chance of winning that race. They used to
+        # sit further down the list and that was fine, until Blur my Shell's v77
+        # upgrade (a whole new pipeline/effects subsystem) made everything ahead of
+        # them here slow enough to start losing it.
+        "dash-to-dock@micxgx.gmail.com"
+        "arcmenu@arcmenu.com"
         "gsconnect@andyholmes.github.io"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "blur-my-shell@aunetx"
-        "dash-to-dock@micxgx.gmail.com"
-        "arcmenu@arcmenu.com"
         "appindicatorsupport@rgcjonas.gmail.com"
         "tilingshell@ferrarodomenico.com"
         "Rounded_Corners@lennart-k"
