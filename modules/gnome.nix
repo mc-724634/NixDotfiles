@@ -411,6 +411,11 @@ in
       pipeline = "pipeline_migrated_dynamic_blur";
       preserve-shell-theme = true;
       style-popup = 0; # transparent (moot while preserve-shell-theme is on)
+      # Was the 18px default: Orchis's .modal-dialog (log out/restart/etc.) uses a
+      # 26px border-radius, so blur-my-shell's own blur/background layer for dialogs
+      # didn't line up with the theme's rounded corners - visible as a mismatched box
+      # behind the dialog title.
+      dialog-corner-radius = 26;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/screenshot" = {
