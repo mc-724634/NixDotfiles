@@ -64,6 +64,19 @@ let
         background-color: rgba(255, 255, 255, 0.08) !important;
       }
       EOF
+
+      # Same two-tier dark palette as the GTK side (see gtk4/gtk3.extraCss in home.nix),
+      # but gnome-shell.css ships fully compiled (no @define-color left to re-point) -
+      # every "#212121"/"rgba(33, 33, 33, ...)" background in this file (checked: always
+      # background-color or -panel-corner-background-color, never text/border) is the
+      # darker window_bg_color-equivalent tier; collapse it onto the lighter
+      # view_bg_color-equivalent tier (#2C2C2C / rgba(44, 44, 44, ...)) so the Activities
+      # overview, top-bar popups and quick settings match Settings/Files/the terminal.
+      # Runs after the cat above so it also sweeps the rule just appended.
+      sed -i \
+        -e 's/#212121/#2C2C2C/g' \
+        -e 's/rgba(33, 33, 33,/rgba(44, 44, 44,/g' \
+        $out/share/themes/${orchisTheme}/gnome-shell/gnome-shell.css
     '';
   });
   # Colour variant (Purple accent, dark). Used for GTK, the shell theme and the
@@ -171,6 +184,19 @@ in
     # Since HM 26.05, GTK4/libadwaita apps (Files, Settings, ...) are only themed
     # if this is set explicitly; it writes ~/.config/gtk-4.0/gtk.css.
     gtk4.theme = config.gtk.theme;
+
+    # No gtk4.extraCss override here: tried redefining window_bg_color/dialog_bg_color
+    # (Orchis's darker chrome tier) to its lighter view_bg_color/card_bg_color tier so
+    # Settings would match Files - confirmed via screenshot it has zero effect. Modern
+    # libadwaita (1.9.4 here) computes these tokens itself and only takes accent colour
+    # and light/dark mode from the theme/portal, same restriction already noted below
+    # in configuration.nix's flatpak GTK_THEME comment. GTK3 still goes through a real
+    # theme engine, so the equivalent override below works there.
+    gtk3.extraCss = ''
+      @define-color theme_bg_color #2C2C2C;
+      @define-color theme_unfocused_bg_color #2C2C2C;
+      @define-color insensitive_bg_color #2C2C2C;
+    '';
   };
 
   xdg.dataFile."sounds/modern-minimal-ui-sounds-v1.2" = {
