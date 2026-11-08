@@ -176,6 +176,7 @@ in
     (retroarch.withCores (cores: with cores; [
        bsnes
        mesen
+       sameboy
      ]))
 
     # Creative, 3D & printing
