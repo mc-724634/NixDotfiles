@@ -14,10 +14,25 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 // a blank gap where it used to be. Overriding get_preferred_height on the bin to
 // report 0 is what actually collapses that space; hiding + disabling the entry's
 // own reactivity/focusability is what stops it from being clicked into at all.
+//
+// Applying that on an "overview showing" event rather than unconditionally in
+// enable() matters: enable() runs very early in the session, around the same time
+// Dash to Dock's and ArcMenu's own "don't show the overview on startup" settings
+// are doing their thing. Reaching into Main.overview.searchEntry that early forces
+// the overview to realize/construct itself, which was reintroducing the overview-
+// on-login behaviour those settings are supposed to suppress. Waiting for the
+// first real "showing" avoids touching any of that startup-timing-sensitive code.
 export default class DisableOverviewSearchExtension extends Extension {
     enable() {
         this._original = SearchController.prototype._shouldTriggerSearch;
         SearchController.prototype._shouldTriggerSearch = () => false;
+
+        this._showingId = Main.overview.connect('showing', () => this._applyHidden());
+    }
+
+    _applyHidden() {
+        if (this._entry)
+            return;
 
         const entry = Main.overview.searchEntry;
         const bin = entry.get_parent();
@@ -38,6 +53,11 @@ export default class DisableOverviewSearchExtension extends Extension {
     disable() {
         SearchController.prototype._shouldTriggerSearch = this._original;
         this._original = null;
+
+        if (this._showingId) {
+            Main.overview.disconnect(this._showingId);
+            this._showingId = null;
+        }
 
         if (this._entry) {
             this._entry.show();
