@@ -142,7 +142,7 @@
   ];
 
   # Match GDM's login screen to the Orchis theme (gtk/icon theme, purple accent,
-  # Bibata cursor, desktop wallpaper) so it fits with the rest of modules/gnome.nix.
+  # Bibata cursor) so it fits with the rest of modules/gnome.nix.
   # The gdm user has no home-manager profile of its own, so this is set directly
   # on its dconf database rather than via `dconf.settings` like the rest of GNOME.
   services.displayManager.gdm.extraPackages = with pkgs; [ orchis-theme tela-icon-theme bibata-cursors ];
@@ -165,14 +165,6 @@
       cursor-theme = "Bibata-Modern-Classic";
       gtk-theme = "Orchis-Purple-Dark"; # must match `orchisTheme` in home.nix
       icon-theme = "Tela-purple-dark";
-    };
-    settings."org/gnome/desktop/background" = {
-      color-shading-type = "solid";
-      picture-options = "zoom";
-      picture-uri = "file://${./extras/wallpapers/wallpaper.jpg}";
-      picture-uri-dark = "file://${./extras/wallpapers/wallpaper.jpg}";
-      primary-color = "#ff7800";
-      secondary-color = "#000000";
     };
   }];
 
