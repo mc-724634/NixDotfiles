@@ -310,6 +310,7 @@ in
         "maximize-to-tile@local"
         "mediacontrols@cliffniff.github.com"
         "caffeine@patapon.info"
+        "gnome-ui-tune@itstime.tech"
       ];
       favorite-apps = [
         "helium.desktop"
@@ -639,6 +640,17 @@ in
       cli-toggle = true; # default false: allow toggling via `gdbus`/CLI, not just the panel menu
       enable-mpris = true; # default false: auto-inhibit sleep while any app is playing media (MPRIS)
       show-notifications = false; # default true: no banner every time it's toggled on/off
+    };
+
+    # Only the search-box hiding is wanted here (ArcMenu is the launcher now); every
+    # other mod this extension bundles defaults to "on" too, so explicitly turn those
+    # off instead of silently inheriting thumbnail-resizing/wallpaper/etc. changes.
+    "org/gnome/shell/extensions/gnome-ui-tune" = {
+      hide-search = true;
+      increase-thumbnails-size = "100%"; # default "200%": no-op, matches GNOME's own default scale
+      restore-thumbnails-background = false; # default true
+      always-show-thumbnails = false; # default true
+      overview-firefox-pip = false; # default true
     };
 
     # Orchis shell theme (needs the User Themes extension).
