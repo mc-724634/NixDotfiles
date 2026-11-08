@@ -110,6 +110,26 @@ let
           s/^  color: rgba(0, 0, 0, 0.35);$/  color: rgba(255, 255, 255, 0.5);/
         }' \
         $out/share/themes/${orchisTheme}/gnome-shell/gnome-shell.css
+
+      # The end-session dialog (log out/restart/power off) shows a visible box
+      # behind its title: blur-my-shell's popup blur (see modules/gnome.nix) makes
+      # ".modal-dialog" itself (semi-)transparent so the blur shows through, but it
+      # never touches ".modal-dialog-content-box" - a separate child actor that
+      # Orchis paints with its own opaque #2C2C2C, independent of whatever
+      # ".modal-dialog" is doing. Removing that makes content-box paint nothing of
+      # its own, so it just shows through to ".modal-dialog" seamlessly instead of
+      # sitting on top as a mismatched rectangle - true with or without the blur.
+      # ".prompt-dialog" (password/authentication prompts) has the exact same
+      # override and needs the same fix; ".run-dialog" and
+      # ".audio-device-selection-dialog" don't set a background-color here at all.
+      sed -i \
+        -e '/^\.modal-dialog \.modal-dialog-content-box {$/,/^}$/ {
+          /^  background-color: #2C2C2C;$/d
+        }' \
+        -e '/^\.prompt-dialog \.modal-dialog-content-box {$/,/^}$/ {
+          /^  background-color: #2C2C2C;$/d
+        }' \
+        $out/share/themes/${orchisTheme}/gnome-shell/gnome-shell.css
     '';
   });
   # Colour variant (Purple accent, dark). Used for GTK, the shell theme and the
