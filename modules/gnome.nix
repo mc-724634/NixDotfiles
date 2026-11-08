@@ -11,7 +11,7 @@ let
   # Radius of Orchis' own window corners (its `window.csd` rule = 18px). The
   # Rounded Window Corners extension uses the same value for every other window.
   windowRadius = 18;
-  wallpaper = "${config.home.homeDirectory}/.local/share/backgrounds/wallpaper.png";
+  wallpaper = "${config.home.homeDirectory}/.local/share/backgrounds/wallpaper.jpg";
 in
 {
   # ── login/logout sounds ─────────────────────────────────────────────────
@@ -70,7 +70,7 @@ in
   };
 
   # ── wallpaper ──────────────────────────────────────────────────────────
-  xdg.dataFile."backgrounds/wallpaper.png".source = ../extras/wallpapers/wallpaper.png;
+  xdg.dataFile."backgrounds/wallpaper.jpg".source = ../extras/wallpapers/wallpaper.jpg;
 
   # ── display layout ─────────────────────────────────────────────────────
   # Installed as a normal (writable) file so GNOME Settings can still save

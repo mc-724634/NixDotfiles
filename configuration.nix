@@ -169,8 +169,8 @@
     settings."org/gnome/desktop/background" = {
       color-shading-type = "solid";
       picture-options = "zoom";
-      picture-uri = "file://${./extras/wallpapers/wallpaper.png}";
-      picture-uri-dark = "file://${./extras/wallpapers/wallpaper.png}";
+      picture-uri = "file://${./extras/wallpapers/wallpaper.jpg}";
+      picture-uri-dark = "file://${./extras/wallpapers/wallpaper.jpg}";
       primary-color = "#ff7800";
       secondary-color = "#000000";
     };
