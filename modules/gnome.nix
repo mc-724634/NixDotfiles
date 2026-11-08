@@ -345,6 +345,7 @@ in
     "org/gnome/shell/extensions/blur-my-shell/appfolder" = {
       blur = true;
       pipeline = "pipeline_migrated_dynamic_blur";
+      style-dialogs = 3; # dark, instead of the "automatic" default
     };
 
     "org/gnome/shell/extensions/blur-my-shell/applications" = {
@@ -362,7 +363,7 @@ in
       override-background = true;
       pipeline = "pipeline_migrated_dynamic_blur";
       static-blur = false;
-      style-dash-to-dock = 0; # transparent
+      style-dash-to-dock = 2; # dark
       unblur-in-overview = false;
     };
 
@@ -397,7 +398,7 @@ in
       override-background-dynamically = false;
       pipeline = "pipeline_migrated_dynamic_blur";
       static-blur = false;
-      style-panel = 0; # transparent
+      style-panel = 2; # dark
     };
 
     # Quick settings, calendar/notifications, right-click menus, switchers and
@@ -411,7 +412,7 @@ in
       override-background = true;
       pipeline = "pipeline_migrated_dynamic_blur";
       preserve-shell-theme = true;
-      style-popup = 0; # transparent (moot while preserve-shell-theme is on)
+      style-popup = 2; # dark (moot while preserve-shell-theme is on)
       # Was the 18px default: Orchis's .modal-dialog (log out/restart/etc.) uses a
       # 26px border-radius, so blur-my-shell's own blur/background layer for dialogs
       # didn't line up with the theme's rounded corners - visible as a mismatched box
