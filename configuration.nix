@@ -90,6 +90,12 @@
     opencl.enable = true;
     overdrive = {
       enable = true;
+      # 0xffffffff (the module's default, needed for LACT overclocking) with bit 0x8000
+      # (PP_GFXOFF_MASK) cleared, forcing GFXOFF off. Added after repeated
+      # "Failed to disable gfxoff!" spam in dmesg from this RX 6600 XT, which stopped
+      # appearing in the journal entirely once this landed - keep until nixpkgs/amdgpu
+      # ships a real fix for whatever SMU race causes the driver's own GFXOFF-disable
+      # request to fail in the first place.
       ppfeaturemask = "0xffff7fff";
     };
   };
