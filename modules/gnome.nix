@@ -667,12 +667,20 @@ in
       switch-to-application-7 = [ ];
       switch-to-application-8 = [ ];
       switch-to-application-9 = [ ];
-      toggle-message-tray = [ "<Super>m" ]; # drop the default <Super>v so Pano can claim it below
+      toggle-message-tray = [ "<Super>m" ]; # drop the default <Super>v so clipboard-history can claim it below
     };
 
     # Windows/KDE-style clipboard history popup.
     "org/gnome/shell/extensions/clipboard-history" = {
       toggle-menu = [ "<Super>v" ];
+      display-mode = 3; # default 0 (icon): "Neither" - no top-bar indicator at all
+      paste-on-selection = false; # default true: selecting an item just copies it, doesn't auto-paste
+      window-width-percentage = 21; # default 33: narrower popup
+    };
+
+    # Emoji picker popup (Super+., default keybind out of the box).
+    "org/gnome/shell/extensions/emoji-copy" = {
+      always-show = false; # default true: no persistent panel icon, Super+. only
     };
 
     "org/gnome/shell/weather" = {
