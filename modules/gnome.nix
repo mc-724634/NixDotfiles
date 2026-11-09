@@ -104,7 +104,7 @@ in
       "x-scheme-handler/https" = "helium.desktop";
       "x-scheme-handler/mailto" = "helium.desktop";
       "text/html" = "helium.desktop";
-      "x-scheme-handler/discord" = "vesktop.desktop";
+      "x-scheme-handler/discord" = "discord.desktop";
       "x-scheme-handler/heroic" = [ "com.heroicgameslauncher.hgl.desktop" "heroic.desktop" ];
       "x-scheme-handler/tg" = "org.telegram.desktop.desktop";
       "x-scheme-handler/tonsite" = "org.telegram.desktop.desktop";
@@ -326,7 +326,7 @@ in
         "org.gnome.Nautilus.desktop"
         "com.mitchellh.ghostty.desktop"
         "steam.desktop"
-        "vesktop.desktop"
+        "discord.desktop"
         "spotify.desktop"
         "code.desktop"
       ];

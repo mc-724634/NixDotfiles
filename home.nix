@@ -160,7 +160,12 @@ in
     claude-code
 
     # Chat
-    vesktop
+    # Official Discord client with Vencord injected at build time by nixpkgs
+    # (what Vencord's own installer does, just reproducible). Not Vesktop:
+    # Vesktop's own screen-share implementation captures system audio via
+    # xdg-desktop-portal, which stock Discord's Linux build still lacks -
+    # traded away here since it isn't used.
+    (discord.override { withVencord = true; })
     telegram-desktop
 
     # Games & emulation
