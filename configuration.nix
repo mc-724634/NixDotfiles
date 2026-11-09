@@ -328,7 +328,11 @@
     gnomeExtensions.notification-timeout # banners time out without waiting for the mouse
     gnomeExtensions.brightness-control-using-ddcutil # brightness sliders for each monitor
     gnomeExtensions.caffeine # "stay awake" coffee-cup toggle in the quick settings menu
-    gnomeExtensions.pano # Windows/KDE-style clipboard history (Super+V, see modules/gnome.nix)
+    # Windows/KDE-style clipboard history (Super+V, see modules/gnome.nix).
+    # Not Pano: Pano has no real GNOME 50 support yet (upstream fix is an
+    # unmerged PR - https://github.com/oae/gnome-shell-pano/pull/381 - and
+    # there's an open report of it freezing the shell on GNOME 49/50).
+    gnomeExtensions.clipboard-history
     gnomeExtensions.emoji-copy # emoji picker popup (Super+., default keybind out of the box)
     # KDE-style panel widget showing/controlling the current MPRIS player.
     # Patched: nixpkgs' build only declares shell-version support up to 49;

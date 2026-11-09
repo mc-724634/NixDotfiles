@@ -318,7 +318,7 @@ in
         "mediacontrols@cliffniff.github.com"
         "caffeine@patapon.info"
         "disable-overview-search@local"
-        "pano@elhan.io"
+        "clipboard-history@alexsaveau.dev"
         "emoji-copy@felipeftn"
       ];
       favorite-apps = [
@@ -671,8 +671,8 @@ in
     };
 
     # Windows/KDE-style clipboard history popup.
-    "org/gnome/shell/extensions/pano" = {
-      global-shortcut = [ "<Super>v" ];
+    "org/gnome/shell/extensions/clipboard-history" = {
+      toggle-menu = [ "<Super>v" ];
     };
 
     "org/gnome/shell/weather" = {
