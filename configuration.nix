@@ -20,6 +20,31 @@
           wrapProgram $out/bin/blender --set LD_PRELOAD "${prev.rocmPackages.rocm-comgr}/lib/libamd_comgr.so.3"
         '';
       };
+
+      # 26.05's pinned Vencord (1.15.13) predates Discord's Nov 2026 switch to
+      # an rspack-built web client, so Vencord's WebpackPatcher can't find the
+      # module shapes it expects and Discord hangs on "Starting...". Bump to
+      # the fixed release (already on nixpkgs master, not yet backported to
+      # 26.05 - https://github.com/Vendicated/Vencord/issues/4799). Drop this
+      # once the 26.05 branch picks up >=1.15.16.
+      vencord = prev.vencord.overrideAttrs (old: rec {
+        version = "1.15.16";
+        src = final.fetchFromGitHub {
+          owner = "Vendicated";
+          repo = "Vencord";
+          tag = "v${version}";
+          hash = "sha256-aUJubLJpyLAZWiOezqFxPY6oVPgWVPQpajFqrJvrO9U=";
+        };
+        patches = [ ];
+        postPatch = "";
+        pnpmDeps = final.fetchPnpmDeps {
+          pname = old.pname;
+          inherit src;
+          pnpm = final.pnpm_11;
+          fetcherVersion = 4;
+          hash = "sha256-HS8uZNepvDefjrsG3buVLFCVv7sHvazcwdpcT3EQ/78=";
+        };
+      });
     })
   ];
 
