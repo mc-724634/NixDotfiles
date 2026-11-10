@@ -490,12 +490,28 @@ in
     # used instead) - that's ArcMenu's own fallback favorites auto-populated from an
     # empty list, not something actually chosen, so not worth persisting as-is.
     "org/gnome/shell/extensions/arcmenu" = {
+      extra-categories = [
+        (mkTuple [ 3 false ])
+        (mkTuple [ 2 true ])
+        (mkTuple [ 0 false ])
+        (mkTuple [ 1 false ])
+        (mkTuple [ 4 false ])
+      ];
       force-menu-location = "BottomCentered";
       hide-overview-on-arcmenu-open = true;
       hide-overview-on-startup = true;
+      left-panel-width = 210;
       menu-arrow-rise = mkTuple [ true (-1) ];
       menu-button-appearance = "None";
-      menu-layout = "11";
+      menu-height = 530;
+      menu-item-icon-size = "Large";
+      # Was "11" (the Windows-11-style "Eleven" layout): switched to "gnome-menu"
+      # while chasing why ArcMenu's popup wasn't picking up blur-my-shell's/Orchis'
+      # rounded corners like every other popup-menu - Eleven's layout code manually
+      # re-derives and reapplies the theme's border-radius to its own sub-widgets
+      # instead of just letting the theme's ".popup-menu-content" rounding flow
+      # through untouched, which is what was producing the mismatch.
+      menu-layout = "gnome-menu";
       pop-folders-data = mkArray (type.dictionaryEntryOf [ type.string type.string ])
         (lib.mapAttrsToList (k: v: mkDictionaryEntry [ k v ]) {
           "Library Home" = "Library Home";
@@ -512,7 +528,11 @@ in
         (mkTuple [ 6 false ])
         (mkTuple [ 7 false ])
       ];
+      right-panel-width = 340;
+      scrollbars-overlay = false;
+      scrollview-fade-effect = false;
       show-activities-button = true;
+      vert-separator = true;
     };
 
     # GSConnect (device pairing is deliberately NOT stored here).
