@@ -307,6 +307,13 @@ in
         "arcmenu@arcmenu.com"
         "gsconnect@andyholmes.github.io"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
+        # Clones the top bar onto every other monitor. Goes before Blur my Shell:
+        # Blur my Shell only scans for panels to style once, on its own enable(),
+        # so the cloned panel needs to already exist by then or it's left flat/
+        # unstyled - it reactively re-scans for *indicators* (ArcMenu, AppIndicator,
+        # clipboard-history, ...) via extension-state-changed, so it still picks
+        # those up fine even though it enables before the extensions that own them.
+        "multi-monitors-bar@frederykabryan"
         "blur-my-shell@aunetx"
         "appindicatorsupport@rgcjonas.gmail.com"
         "tilingshell@ferrarodomenico.com"
@@ -464,9 +471,10 @@ in
       intellihide = true;
       intellihide-mode = "ALL_WINDOWS";
       isolate-workspaces = false;
-      multi-monitor = false;
-      preferred-monitor = -2;
-      preferred-monitor-by-connector = "DP-1";
+      # One dock per monitor instead of a single dock pinned to DP-1
+      # (preferred-monitor/preferred-monitor-by-connector only matter when
+      # multi-monitor is false, so they're dropped rather than left dead).
+      multi-monitor = true;
       pressure-threshold = 100.0;
       require-pressure-to-show = true;
       running-indicator-dominant-color = false;
@@ -533,6 +541,20 @@ in
       scrollview-fade-effect = false;
       show-activities-button = true;
       vert-separator = true;
+    };
+
+    # Multi Monitor Bar: clones the top bar (clock, ArcMenu, quick settings,
+    # AppIndicator icons, etc.) onto every monitor besides the primary one.
+    "org/gnome/shell/extensions/multi-monitors-bar" = {
+      enable-blur-my-shell = true; # matches the panel blur already used on the primary bar
+      # Default true: forces org.gnome.mutter's workspaces-only-on-primary to
+      # false, so workspace switching would start affecting the second
+      # monitor too instead of leaving it static (see that key above in
+      # org/gnome/mutter). Off to keep the existing single-monitor workspace
+      # behaviour; the tradeoff is the cloned bar's workspace-thumbnail
+      # slider wouldn't track correctly, so that's turned off too, below.
+      force-workspaces-on-all-displays = false;
+      thumbnails-slider-position = "none";
     };
 
     # GSConnect (device pairing is deliberately NOT stored here).

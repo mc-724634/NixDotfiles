@@ -351,7 +351,29 @@
       metadata = "ewogICJfZ2VuZXJhdGVkIjogIkdlbmVyYXRlZCBieSBTd2VldFRvb3RoLCBkbyBub3QgZWRpdCIsCiAgImRlc2NyaXB0aW9uIjogIkFkZHMgYSBibHVyIGxvb2sgdG8gZGlmZmVyZW50IHBhcnRzIG9mIEdOT01FIFNoZWxsLCBpbmNsdWRpbmcgdGhlIHRvcCBwYW5lbCwgZGFzaCBhbmQgb3ZlcnZpZXcuXG5cbk5vdGU6IGlmIHRoZSBleHRlbnNpb24gc2hvd3MgYW4gZXJyb3IgYWZ0ZXIgdXBkYXRpbmcsIHJlc3RhcnQgeW91ciBzZXNzaW9uIHRvIHNlZSB3aGV0aGVyIGl0IHBlcnNpc3RzLiBUaGlzIGlzIGR1ZSB0byBhIEdOT01FIFNoZWxsIGJ1ZyB0aGF0IHRoZSBleHRlbnNpb24gY2Fubm90IHdvcmsgYXJvdW5kLiIsCiAgImRvbmF0aW9ucyI6IHsKICAgICJnaXRodWIiOiAiYXVuZXR4IiwKICAgICJrb2ZpIjogImF1bmV0eCIKICB9LAogICJnZXR0ZXh0LWRvbWFpbiI6ICJibHVyLW15LXNoZWxsQGF1bmV0eCIsCiAgIm5hbWUiOiAiQmx1ciBteSBTaGVsbCIsCiAgIm9yaWdpbmFsLWF1dGhvcnMiOiBbCiAgICAibWVAYXVuZXR4LmRldiIKICBdLAogICJzZXNzaW9uLW1vZGVzIjogWwogICAgInVubG9jay1kaWFsb2ciLAogICAgInVzZXIiCiAgXSwKICAic2V0dGluZ3Mtc2NoZW1hIjogIm9yZy5nbm9tZS5zaGVsbC5leHRlbnNpb25zLmJsdXItbXktc2hlbGwiLAogICJzaGVsbC12ZXJzaW9uIjogWwogICAgIjQ2IiwKICAgICI0NyIsCiAgICAiNDgiLAogICAgIjQ5IiwKICAgICI1MCIsCiAgICAiNTEiCiAgXSwKICAidXJsIjogImh0dHBzOi8vZ2l0aHViLmNvbS9hdW5ldHgvYmx1ci1teS1zaGVsbCIsCiAgInV1aWQiOiAiYmx1ci1teS1zaGVsbEBhdW5ldHgiLAogICJ2ZXJzaW9uIjogNzcKfQ==";
     })
     gnomeExtensions.dash-to-dock
-    gnomeExtensions.arcmenu # traditional application-menu launcher button
+    # Patched: force-menu-location (BottomCentered here, see modules/gnome.nix)
+    # always positions the menu using the monitor ArcMenu's own button lives on
+    # (this._monitorIndex, fixed to the primary monitor - ArcMenu only creates
+    # a second real button/menuController per monitor when Dash to Panel is
+    # driving it, which isn't the case here), ignoring where the mouse actually
+    # is. Invisible with one monitor, but means both the Super-key hotkey and
+    # clicking the copy multi-monitor-bar clones onto the second monitor above
+    # always pop the menu up on the primary monitor instead of wherever the
+    # mouse is. forceMenuLocation() recomputes the menu's position fresh every
+    # time it opens, so reading Main.layoutManager.currentMonitor (GNOME's own
+    # "monitor the pointer is over right now") instead of the fixed index/actor
+    # makes it follow the mouse on every open, Super-key or click alike.
+    (gnomeExtensions.arcmenu.overrideAttrs (old: {
+      postInstall = (old.postInstall or "") + ''
+        sed -i -E -z \
+          -e 's/const monitor = Main\.layoutManager\.findMonitorForActor\(this\);\n(\s*)const workArea = Main\.layoutManager\.getWorkAreaForMonitor\(this\._monitorIndex\);/const monitor = Main.layoutManager.currentMonitor ?? Main.layoutManager.findMonitorForActor(this);\n\1const workArea = Main.layoutManager.getWorkAreaForMonitor(monitor?.index ?? this._monitorIndex);/' \
+          $out/share/gnome-shell/extensions/*/menuButton.js
+      '';
+    })) # traditional application-menu launcher button
+    # GNOME's own top bar only ever draws on the primary monitor - there is no
+    # vanilla setting for this. This clones a top bar (clock, Activities/ArcMenu
+    # button, quick settings, etc.) onto every other monitor instead.
+    gnomeExtensions.multi-monitor-bar
     gnomeExtensions.appindicator # system tray (KStatusNotifierItem + legacy tray icons)
     gnomeExtensions.tiling-shell # KDE/Windows-style window snapping zones
     gnomeExtensions.rounded-corners # rounded screen corners
