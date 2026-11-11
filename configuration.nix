@@ -45,6 +45,19 @@
           hash = "sha256-HS8uZNepvDefjrsG3buVLFCVv7sHvazcwdpcT3EQ/78=";
         };
       });
+
+      # VS Code 1.144.0 (26.05's current pin) moved ripgrep from
+      # @vscode/ripgrep (node_modules/.../bin/rg) to @vscode/ripgrep-universal,
+      # unpacked at node_modules.asar.unpacked/.../bin/linux-x64/rg. nixpkgs'
+      # vscode derivation still swaps in its own ripgrep at the old path, so the
+      # build fails outright (`rm: cannot remove ... No such file or directory`).
+      # Point the swap at the real path until nixpkgs' derivation catches up.
+      vscode = prev.vscode.overrideAttrs (old: {
+        postPatch = builtins.replaceStrings
+          [ "resources/app/node_modules/@vscode/ripgrep/bin/rg" ]
+          [ "resources/app/node_modules.asar.unpacked/@vscode/ripgrep-universal/bin/linux-x64/rg" ]
+          old.postPatch;
+      });
     })
   ];
 
