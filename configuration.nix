@@ -68,7 +68,10 @@
 
   boot.plymouth = {
     enable = true;
-    theme = "spinner";
+    # bgrt reads the motherboard's boot logo from the UEFI firmware's BGRT
+    # ACPI table (the same image shown during POST) and draws the spinner
+    # underneath it.
+    theme = "bgrt";
   };
 
   # The systemd initrd is required for TPM2 unlocking of the LUKS volume.
