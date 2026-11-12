@@ -103,6 +103,12 @@
   };
 
   hardware.amdgpu = {
+    # Load amdgpu in the initrd (early KMS) so Plymouth's DRM renderer is in
+    # control from the start. Without this, Plymouth starts on the generic
+    # EFI framebuffer and amdgpu takes over mid-boot, resetting the display
+    # and killing the spinner animation (the static BGRT logo survives the
+    # handoff, but the throbber's render loop doesn't).
+    initrd.enable = true;
     opencl.enable = true;
     overdrive = {
       enable = true;
