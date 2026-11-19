@@ -196,9 +196,6 @@ in
     easyeffects
     open-scq30
 
-    # Networking
-    cisco-packet-tracer_9
-
     # System & fun
     gnome-boxes
     gnome-tweaks
