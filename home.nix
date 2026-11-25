@@ -100,13 +100,28 @@ in
     # the one consistent toolkit this setup is actually built around.
     snapshot
 
-    # Image viewer, text editor, PDF reader, video player - all GTK3, so
-    # they pick up the adw-gtk3-dark theming already fixed in
-    # modules/hyprland.nix, no extra theming work needed.
-    ristretto
-    mousepad
-    xreader
-    celluloid
+    # Image viewer, text editor, PDF reader, video player, music player -
+    # swapped from the XFCE/X-apps picks (ristretto/mousepad/xreader/
+    # celluloid) to GNOME's own GTK4/libadwaita apps, matching the Nautilus
+    # switch instead of just being "any GTK3 app that themes fine":
+    #
+    # - loupe replaces ristretto (GNOME's current image viewer, Eye of
+    #   GNOME's GTK4 successor).
+    # - gnome-text-editor replaces mousepad (GNOME's current default editor).
+    # - papers replaces xreader (GNOME's current document viewer, the
+    #   libadwaita fork that's replacing Evince).
+    # - showtime replaces celluloid for video. One real trade-off: Showtime
+    #   is GStreamer-backed (same as old Totem), not mpv - mpv/celluloid has
+    #   broader out-of-the-box codec/subtitle support. If a video format
+    #   misbehaves, that's why; swap back to celluloid if it's a problem.
+    # - amberol is new (nothing handled single-file audio playback before) -
+    #   GNOME's minimal single-track player, not a library manager like
+    #   gnome-music, matching the "double-click a file" role the others play.
+    loupe
+    gnome-text-editor
+    papers
+    showtime
+    amberol
 
     # Games & emulation
     prismlauncher
@@ -213,39 +228,22 @@ in
     catppuccinVencordTheme;
 
   # ── default applications (Settings → Apps → Default Apps) ──────────────
+  # Web browser/mail and archive-manager used to be pinned here too, but DMS's
+  # own Settings → Applications → Default apps page has pickers for both
+  # (confirmed: it writes straight to ~/.config/mimeapps.list, the same file
+  # this option manages as a read-only symlink - home-manager's own module
+  # docs say so explicitly). Declaring them here meant every
+  # `nixos-rebuild switch` would silently revert whatever was picked in DMS's
+  # UI back to these values. Left in Nix only for scheme handlers DMS has no
+  # picker for at all - nothing here fights that settings page anymore.
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "x-scheme-handler/http" = "helium.desktop";
-      "x-scheme-handler/https" = "helium.desktop";
-      "x-scheme-handler/mailto" = "helium.desktop";
-      "text/html" = "helium.desktop";
       "x-scheme-handler/discord" = "discord.desktop";
       "x-scheme-handler/heroic" = [ "com.heroicgameslauncher.hgl.desktop" "heroic.desktop" ];
       "x-scheme-handler/tg" = "org.telegram.desktop.desktop";
       "x-scheme-handler/tonsite" = "org.telegram.desktop.desktop";
       "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
-
-      # PrismLauncher registers itself as a zip handler (for importing
-      # modpacks) and had silently become the system *default* for
-      # application/zip, so double-clicking a .zip opened PrismLauncher
-      # instead of an archive manager. Pinned to Nautilus rather than
-      # leaving it unset. Deliberately not touching the more specialized
-      # types Nautilus also declares (epub, deb/rpm, odt, docx, appimage,
-      # iso, etc.) - those already have more appropriate handlers.
-      "application/zip" = "org.gnome.Nautilus.desktop";
-      "application/x-7z-compressed" = "org.gnome.Nautilus.desktop";
-      "application/vnd.rar" = "org.gnome.Nautilus.desktop";
-      "application/x-rar" = "org.gnome.Nautilus.desktop";
-      "application/x-tar" = "org.gnome.Nautilus.desktop";
-      "application/gzip" = "org.gnome.Nautilus.desktop";
-      "application/x-bzip2" = "org.gnome.Nautilus.desktop";
-      "application/x-xz" = "org.gnome.Nautilus.desktop";
-      "application/x-compressed-tar" = "org.gnome.Nautilus.desktop";
-      "application/x-bzip2-compressed-tar" = "org.gnome.Nautilus.desktop";
-      "application/x-xz-compressed-tar" = "org.gnome.Nautilus.desktop";
-      "application/zstd" = "org.gnome.Nautilus.desktop";
-      "application/x-zstd-compressed-tar" = "org.gnome.Nautilus.desktop";
     };
   };
 }

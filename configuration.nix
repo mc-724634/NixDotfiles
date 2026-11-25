@@ -67,13 +67,12 @@
   boot.kernelParams = [
     "quiet"
     "splash"
-    # 0xffffffff (needed for LACT overclocking) with bit 0x8000
-    # (PP_GFXOFF_MASK) cleared, forcing GFXOFF off. Without this, this
-    # RX 6600 XT spams "Failed to disable gfxoff!" in dmesg - this mask
-    # stopped it appearing in the journal entirely. Keep until nixpkgs/
-    # amdgpu ships a real fix for whatever SMU race causes the driver's
-    # own GFXOFF-disable request to fail in the first place.
-    "amdgpu.ppfeaturemask=0xffff7fff"
+    # Stock LACT-required featuremask (GFXOFF left enabled). Previously ran
+    # with bit 0x8000 (PP_GFXOFF_MASK) cleared (0xffff7fff) to force GFXOFF
+    # off, since this RX 6600 XT's SMU fails to disable it on its own and
+    # spams "Failed to disable gfxoff!" in dmesg - reverted back to the
+    # default mask at the user's request.
+    "amdgpu.ppfeaturemask=0xffffffff"
   ];
   boot.kernel.sysctl."vm.swappiness" = 100;
 
