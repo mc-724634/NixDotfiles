@@ -1,149 +1,51 @@
-{ config, pkgs, inputs, ... }:
+{ pkgs, inputs, ... }:
+
 let
-  # Orchis from upstream (nixpkgs ships an older release); pinned in flake.lock.
-  # "macos" tweak = macOS-style window buttons.
-  orchis = (pkgs.orchis-theme.override { tweaks = [ "macos" ]; }).overrideAttrs (old: {
-    version = "git";
-    src = inputs.orchis-src;
+  # The official Catppuccin Discord/Vencord theme hardcodes its accent ($brand)
+  # to blue for every flavour. Patch the mocha variant to mauve (to match the
+  # rest of this setup) and compile it with the same sass toolchain upstream
+  # uses, instead of relying on their remotely-hosted, accent-fixed CSS.
+  catppuccinVencordTheme =
+    let
+      discordSrc = pkgs.fetchFromGitHub {
+        owner = "catppuccin";
+        repo = "discord";
+        rev = "b9b5547f0b32296d2389716ef606de87b3c1e7c7";
+        hash = "sha256-rxvHIifq5CYIBPwFA2SpOrWT+sG/z0ItXT3sx2wbEqg=";
+      };
+      highlightjsSrc = pkgs.fetchFromGitHub {
+        owner = "catppuccin";
+        repo = "highlightjs";
+        rev = "79a8accb89c5a94010ed3968cb2b04c3d679b6ba";
+        hash = "sha256-zdXbktS/uiidSwX8BvFGxLb/J3dwKFZVDrxQV38l9G4=";
+      };
+      paletteTarball = pkgs.fetchurl {
+        url = "https://registry.npmjs.org/@catppuccin/palette/-/palette-1.8.0.tgz";
+        hash = "sha256-kv0aQd8/kQohCO9WKRCgkKD3PbII6Aj22t26VTUarpk=";
+      };
+    in
+    pkgs.runCommand "catppuccin-mocha-mauve.theme.css" {
+      nativeBuildInputs = [ pkgs.dart-sass ];
+    } ''
+      mkdir -p node_modules/@catppuccin/palette node_modules/@catppuccin/highlightjs
+      tar xzf ${paletteTarball} -C node_modules/@catppuccin/palette --strip-components=1
+      cp -r ${highlightjsSrc}/sass node_modules/@catppuccin/highlightjs/sass
 
-    # Orchis deliberately renders the QuickToggleMenu popup (Suspend/Restart/Power
-    # Off/Log Out, Night Light, etc.) as a white Material card with dark text
-    # (.quick-toggle-menu rules around "gnome-shell.css:1913") - confirmed by diffing
-    # against GNOME's own stock dark theme, which leaves that selector's background
-    # unset (inherits dark) entirely. That clashes with everything else in this setup
-    # being dark, so flip it back to match.
-    #
-    # ".quick-toggle-menu-container" (the outer wrapper) is never styled by Orchis at
-    # all and is left that way here too: it's only a BinLayout animation wrapper, and
-    # giving it its own opaque background made the real card's rounded corners
-    # (border-radius on ".quick-toggle-menu" below, untouched) invisible - same solid
-    # colour behind and in front leaves nothing for the rounding to contrast against.
-    #
-    # Every override selector below is prefixed with the ".quick-toggle-menu-container"
-    # ancestor class so it has strictly higher specificity than Orchis's own same-class
-    # rules: appending a same-specificity "!important" rule later in the file (tried
-    # first) did NOT win, confirmed live via Looking Glass (Main.panel.statusArea
-    # .quickSettings._system._systemItem.menu...get_theme_node()) - GNOME's St CSS
-    # engine doesn't reliably prefer later declarations on a specificity tie the way
-    # the CSS cascade does, so winning on specificity is the only reliable lever.
-    postInstall = (old.postInstall or "") + ''
-      cat >> $out/share/themes/${orchisTheme}/gnome-shell/gnome-shell.css <<'EOF'
+      cp -r ${discordSrc}/src src
+      chmod -R u+w src
+      sed -i 's/\$brand: \$blue;/\$brand: \$mauve;/' src/catppuccin-mocha.theme.scss
 
-      .quick-toggle-menu-container .quick-toggle-menu,
-      .quick-toggle-menu-container .quick-toggle-menu:insensitive {
-        background-color: rgba(33, 33, 33, 0.97) !important;
-        color: #ffffff !important;
-      }
-
-      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item,
-      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item StLabel {
-        color: #ffffff !important;
-      }
-
-      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item:focus,
-      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item:hover,
-      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item.selected {
-        background-color: rgba(255, 255, 255, 0.08) !important;
-        color: #ffffff !important;
-      }
-
-      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item:active {
-        background-color: rgba(255, 255, 255, 0.3) !important;
-        color: #ffffff !important;
-      }
-
-      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item:insensitive {
-        color: rgba(255, 255, 255, 0.5) !important;
-      }
-
-      .quick-toggle-menu-container .quick-toggle-menu .popup-menu-item .popup-separator-menu-item-separator {
-        background-color: rgba(255, 255, 255, 0.1) !important;
-      }
-
-      .quick-toggle-menu-container .quick-toggle-menu .header .icon {
-        background-color: rgba(255, 255, 255, 0.08) !important;
-      }
-      EOF
-
-      # Same two-tier dark palette as the GTK side (see gtk4/gtk3.extraCss in home.nix),
-      # but gnome-shell.css ships fully compiled (no @define-color left to re-point) -
-      # every "#212121"/"rgba(33, 33, 33, ...)" background in this file (checked: always
-      # background-color or -panel-corner-background-color, never text/border) is the
-      # darker window_bg_color-equivalent tier; collapse it onto the lighter
-      # view_bg_color-equivalent tier (#2C2C2C / rgba(44, 44, 44, ...)) so the Activities
-      # overview, top-bar popups and quick settings match Settings/Files/the terminal.
-      # Runs after the cat above so it also sweeps the rule just appended.
-      sed -i \
-        -e 's/#212121/#2C2C2C/g' \
-        -e 's/rgba(33, 33, 33,/rgba(44, 44, 44,/g' \
-        $out/share/themes/${orchisTheme}/gnome-shell/gnome-shell.css
-
-      # Orchis also renders the Activities overview's search entry as a white Material
-      # field with dark text (the "#overview .search-entry" family of rules around
-      # "gnome-shell.css:3000"), same deliberate pattern as the quick-toggle-menu card
-      # above - GNOME's own stock dark theme leaves it dark. The values being replaced
-      # here (e.g. "rgba(0, 0, 0, 0.75)") are reused for unrelated shadows elsewhere in
-      # the file, so this is scoped with sed address ranges to just these six rules
-      # instead of a global swap, and flips each one to the equivalent value the
-      # plain (non-overview) ".search-entry" rule above it already uses.
-      sed -i \
-        -e '/^#overview \.search-entry {$/,/^}$/ {
-          s/^  caret-color: rgba(0, 0, 0, 0.75);$/  caret-color: rgba(255, 255, 255, 0.7);/
-          s/^  color: rgba(0, 0, 0, 0.75);$/  color: rgba(255, 255, 255, 0.7);/
-          s/^  background-color: rgba(255, 255, 255, 0.75);$/  background-color: rgba(255, 255, 255, 0.12);/
-        }' \
-        -e '/^#overview \.search-entry:hover {$/,/^}$/ {
-          s/^  color: rgba(0, 0, 0, 0.75);$/  color: white;/
-          s/^  background-color: rgba(255, 255, 255, 0.85);$/  background-color: rgba(255, 255, 255, 0.18);/
-        }' \
-        -e '/^#overview \.search-entry:focus {$/,/^}$/ {
-          s/^  color: rgba(0, 0, 0, 0.85);$/  color: white;/
-          s/^  background-color: rgba(255, 255, 255, 0.95);$/  background-color: rgba(255, 255, 255, 0.24);/
-        }' \
-        -e '/^#overview \.search-entry \.search-entry-icon {$/,/^}$/ {
-          s/^  color: rgba(0, 0, 0, 0.65);$/  color: rgba(255, 255, 255, 0.7);/
-        }' \
-        -e '/^#overview \.search-entry:hover \.search-entry-icon, #overview \.search-entry:focus \.search-entry-icon {$/,/^}$/ {
-          s/^  color: rgba(0, 0, 0, 0.75);$/  color: white;/
-        }' \
-        -e '/^#overview \.search-entry StLabel\.hint-text {$/,/^}$/ {
-          s/^  color: rgba(0, 0, 0, 0.35);$/  color: rgba(255, 255, 255, 0.5);/
-        }' \
-        $out/share/themes/${orchisTheme}/gnome-shell/gnome-shell.css
-
-      # The end-session dialog (log out/restart/power off) shows a visible box
-      # behind its title: blur-my-shell's popup blur (see modules/gnome.nix) makes
-      # ".modal-dialog" itself (semi-)transparent so the blur shows through, but it
-      # never touches ".modal-dialog-content-box" - a separate child actor that
-      # Orchis paints with its own opaque #2C2C2C, independent of whatever
-      # ".modal-dialog" is doing. Removing that makes content-box paint nothing of
-      # its own, so it just shows through to ".modal-dialog" seamlessly instead of
-      # sitting on top as a mismatched rectangle - true with or without the blur.
-      # ".prompt-dialog" (password/authentication prompts) has the exact same
-      # override and needs the same fix; ".run-dialog" and
-      # ".audio-device-selection-dialog" don't set a background-color here at all.
-      sed -i \
-        -e '/^\.modal-dialog \.modal-dialog-content-box {$/,/^}$/ {
-          /^  background-color: #2C2C2C;$/d
-        }' \
-        -e '/^\.prompt-dialog \.modal-dialog-content-box {$/,/^}$/ {
-          /^  background-color: #2C2C2C;$/d
-        }' \
-        $out/share/themes/${orchisTheme}/gnome-shell/gnome-shell.css
+      sass -I node_modules --no-charset --no-source-map \
+        src/catppuccin-mocha.theme.scss "$out"
     '';
-  });
-  # Colour variant (Purple accent, dark). Used for GTK, the shell theme and the
-  # ~/.local/share/themes link so they can never get out of sync.
-  orchisTheme = "Orchis-Purple-Dark";
+
 in
 {
   imports = [
     inputs.spicetify-nix.homeManagerModules.default
     ./modules/fastfetch.nix
     ./modules/shell.nix   # fish, starship, ghostty
-    ./modules/gnome.nix   # dconf settings, wallpaper, display layout, default apps
-    ./modules/maximize-to-tile.nix   # custom extension: maximize button -> Tiling Shell-style tile
-    ./modules/disable-overview-search.nix   # custom extension: typing in the overview does nothing
+    ./modules/hyprland.nix
   ];
 
   home.username = "mc";
@@ -167,6 +69,44 @@ in
     # traded away here since it isn't used.
     (discord.override { withVencord = true; })
     telegram-desktop
+
+    # Phone integration - runs alongside kdeconnect-kde (configuration.nix's
+    # programs.kdeconnect), reusing the same firewall ports (TCP+UDP
+    # 1714-1764) that option already opens, no extra networking changes
+    # needed. Both implement the same KDE Connect protocol though, so if
+    # they're both advertising/listening at once, only one is likely to
+    # actually hold the discovery port at a time - not a conflict Nix can
+    # resolve, just something to be aware of if pairing acts up.
+    valent
+
+    # Desktop utilities - no DE-provided file manager/camera app now that
+    # KDE Plasma's gone; DMS doesn't ship one itself.
+    #
+    # Nautilus (GNOME), not Dolphin/Ark/Thunar - after Thunar's archive
+    # extraction turned out unreliable here, Dolphin fixed that (KIO handles
+    # file associations/archives independently of GTK/GIO) but needed a
+    # dedicated QT_QPA_PLATFORMTHEME=kde wrapper plus kded/plasma-integration/
+    # a kdeglobals patch just to render its own icon-view labels correctly,
+    # since it was the only KDE Frameworks app in an otherwise GTK-first
+    # setup. Nautilus is GTK4/libadwaita, so it follows the dark-mode/
+    # accent-color portal signal this setup already had working correctly
+    # for every other GTK4 app, and its archive extraction (gnome-autoar) is
+    # built directly into the file manager itself - no separate backend
+    # package or MIME-default resolution to go wrong at all.
+    nautilus
+
+    # snapshot, not kamoso/webcamoid - GNOME's actively-maintained camera
+    # app (Cheese's replacement), GTK4, same reasoning as Nautilus: stays in
+    # the one consistent toolkit this setup is actually built around.
+    snapshot
+
+    # Image viewer, text editor, PDF reader, video player - all GTK3, so
+    # they pick up the adw-gtk3-dark theming already fixed in
+    # modules/hyprland.nix, no extra theming work needed.
+    ristretto
+    mousepad
+    xreader
+    celluloid
 
     # Games & emulation
     prismlauncher
@@ -197,17 +137,69 @@ in
     open-scq30
 
     # System & fun
-    gnome-boxes
-    gnome-tweaks
     hyfetch
   ];
 
+  # Reverted back to spicetify-nix's declarative build-time patching - the
+  # imperative CLI + matugen flow (writable Spotify copy, spicetify watch -s)
+  # didn't actually get live color updates reaching Spotify, and wasn't
+  # worth the extra moving parts without that working. Static Catppuccin
+  # Mauve again, same as before.
   programs.spicetify =
     let
       spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
     in
     {
       enable = true;
+      theme = spicePkgs.themes.catppuccin;
+      # The bundled catppuccin theme only ships flavours, not accents - every
+      # accent-bearing key in its [mocha] section is a neutral grey. Reuse the
+      # rest of that section verbatim and override just those keys to mauve.
+      customColorScheme = {
+        text               = "cdd6f4";
+        subtext            = "cdd6f4";
+        main               = "1e1e2e";
+        main-elevated      = "313244";
+        highlight          = "313344";
+        highlight-elevated = "45475a";
+        sidebar            = "181825";
+        player             = "11111b";
+        card               = "313244";
+        shadow             = "181825";
+        selected-row       = "cba6f7";
+        button             = "7f849c";
+        button-active      = "cba6f7";
+        button-disabled    = "6c7086";
+        tab-active         = "313244";
+        notification       = "cba6f7";
+        notification-error = "f38ba8";
+        equalizer          = "cba6f7";
+        misc               = "45475a";
+
+        crust              = "11111b";
+        mantle             = "181825";
+        base               = "1e1e2e";
+        surface0           = "313244";
+        surface1           = "45475a";
+        surface2           = "585b70";
+        overlay0           = "6c7086";
+        overlay1           = "7f849c";
+        overlay2           = "9399b2";
+        rosewater          = "f5e0dc";
+        flamingo           = "f2cdcd";
+        pink               = "f5c2e7";
+        maroon             = "eba0ac";
+        red                = "f38ba8";
+        peach              = "fab387";
+        yellow             = "f9e2af";
+        green              = "a6e3a1";
+        teal               = "94e2d5";
+        sapphire           = "74c7ec";
+        blue               = "89b4fa";
+        sky                = "89dceb";
+        mauve              = "cba6f7";
+        lavender           = "b4befe";
+      };
       enabledExtensions = with spicePkgs.extensions; [
         shuffle
         beautifulLyrics
@@ -217,63 +209,43 @@ in
       ];
     };
 
-  home.pointerCursor = {
-    package = pkgs.bibata-cursors;
-    name = "Bibata-Modern-Classic";
-    size = 24;
-    gtk.enable = true;
-  };
+  xdg.configFile."Vencord/themes/catppuccin-mocha-mauve.theme.css".source =
+    catppuccinVencordTheme;
 
-  # Applies the theme, icons and cursor to GTK apps and GNOME (Home Manager
-  # also writes the matching org.gnome.desktop.interface dconf keys).
-  gtk = {
+  # ── default applications (Settings → Apps → Default Apps) ──────────────
+  xdg.mimeApps = {
     enable = true;
-    theme = {
-      name = orchisTheme;
-      package = orchis;
+    defaultApplications = {
+      "x-scheme-handler/http" = "helium.desktop";
+      "x-scheme-handler/https" = "helium.desktop";
+      "x-scheme-handler/mailto" = "helium.desktop";
+      "text/html" = "helium.desktop";
+      "x-scheme-handler/discord" = "discord.desktop";
+      "x-scheme-handler/heroic" = [ "com.heroicgameslauncher.hgl.desktop" "heroic.desktop" ];
+      "x-scheme-handler/tg" = "org.telegram.desktop.desktop";
+      "x-scheme-handler/tonsite" = "org.telegram.desktop.desktop";
+      "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
+
+      # PrismLauncher registers itself as a zip handler (for importing
+      # modpacks) and had silently become the system *default* for
+      # application/zip, so double-clicking a .zip opened PrismLauncher
+      # instead of an archive manager. Pinned to Nautilus rather than
+      # leaving it unset. Deliberately not touching the more specialized
+      # types Nautilus also declares (epub, deb/rpm, odt, docx, appimage,
+      # iso, etc.) - those already have more appropriate handlers.
+      "application/zip" = "org.gnome.Nautilus.desktop";
+      "application/x-7z-compressed" = "org.gnome.Nautilus.desktop";
+      "application/vnd.rar" = "org.gnome.Nautilus.desktop";
+      "application/x-rar" = "org.gnome.Nautilus.desktop";
+      "application/x-tar" = "org.gnome.Nautilus.desktop";
+      "application/gzip" = "org.gnome.Nautilus.desktop";
+      "application/x-bzip2" = "org.gnome.Nautilus.desktop";
+      "application/x-xz" = "org.gnome.Nautilus.desktop";
+      "application/x-compressed-tar" = "org.gnome.Nautilus.desktop";
+      "application/x-bzip2-compressed-tar" = "org.gnome.Nautilus.desktop";
+      "application/x-xz-compressed-tar" = "org.gnome.Nautilus.desktop";
+      "application/zstd" = "org.gnome.Nautilus.desktop";
+      "application/x-zstd-compressed-tar" = "org.gnome.Nautilus.desktop";
     };
-    iconTheme = {
-      name = "Tela-purple-dark";
-      package = pkgs.tela-icon-theme;
-    };
-    colorScheme = "dark";
-
-    # Since HM 26.05, GTK4/libadwaita apps (Files, Settings, ...) are only themed
-    # if this is set explicitly; it writes ~/.config/gtk-4.0/gtk.css.
-    gtk4.theme = config.gtk.theme;
-
-    # No gtk4.extraCss override here: tried redefining window_bg_color/dialog_bg_color
-    # (Orchis's darker chrome tier) to its lighter view_bg_color/card_bg_color tier so
-    # Settings would match Files - confirmed via screenshot it has zero effect. Modern
-    # libadwaita (1.9.4 here) computes these tokens itself and only takes accent colour
-    # and light/dark mode from the theme/portal, same restriction already noted below
-    # in configuration.nix's flatpak GTK_THEME comment. GTK3 still goes through a real
-    # theme engine, so the equivalent override below works there.
-    gtk3.extraCss = ''
-      @define-color theme_bg_color #2C2C2C;
-      @define-color theme_unfocused_bg_color #2C2C2C;
-      @define-color insensitive_bg_color #2C2C2C;
-    '';
-  };
-
-  xdg.dataFile."sounds/modern-minimal-ui-sounds-v1.2" = {
-    source = ./extras/sounds/modern-minimal-ui-sounds-v1.2;
-    force = true;
-  };
-
-  # Put the theme where both GTK and the GNOME Shell User Themes extension
-  # look for it (~/.local/share/themes), so it never depends on XDG_DATA_DIRS.
-  xdg.dataFile."themes/${orchisTheme}" = {
-    source = "${orchis}/share/themes/${orchisTheme}";
-    force = true;
-  };
-
-  # Same reasoning, for the icon theme: Tela otherwise only lives in the
-  # per-user Nix profile, a path Flatpak's "xdg-data/icons" filesystem
-  # override (configuration.nix) can't see. Put it at ~/.local/share/icons
-  # too so sandboxed apps can read it.
-  xdg.dataFile."icons/Tela-purple-dark" = {
-    source = "${pkgs.tela-icon-theme}/share/icons/Tela-purple-dark";
-    force = true;
   };
 }

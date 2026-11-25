@@ -279,10 +279,11 @@
       font-family = "Hack";
       font-size = 12;
 
-      # Window background of the Orchis-Purple-Dark theme (@window_bg_color), instead
-      # of Ghostty's own blue-grey default (#282C34). Content areas such as lists
-      # and text views use the slightly lighter #2C2C2C if you prefer that.
-      background = "#2C2C2C";
+      # Dux Shell's matugen hook writes a live-updating theme file to
+      # ~/.config/ghostty/themes/dankcolors (regenerated on wallpaper
+      # change) - pointing at it by name instead of hardcoding a static
+      # theme hands terminal coloring over to the shell, same as GTK/Qt.
+      theme = "dankcolors";
       window-padding-x = 10;
       window-padding-y = 10;
       confirm-close-surface = false;

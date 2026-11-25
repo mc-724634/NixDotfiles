@@ -1,4 +1,4 @@
-{ pkgs, lib, helium-flake, ... }:
+{ pkgs, lib, helium-flake, nur, ... }:
 
 {
   imports = [
@@ -46,18 +46,42 @@
         };
       });
     })
+    (final: prev: {
+      # nixpkgs' own kdePackages.qt6ct has no KDE theming support at all
+      # (upstream qt6ct, not the qt6ct-kde fork - open, unresolved nixpkgs
+      # issue #489021). NUR's ilya-fedin/nur-repository ships the patched
+      # build (confirmed: pulls in kcolorscheme/kiconthemes as real deps,
+      # drop-in replacement for the plain package - same binary, same
+      # plugin layout). Overriding it here means every existing use of
+      # kdePackages.qt6ct (home-manager's qt.platformTheme.name = "qtct" in
+      # modules/hyprland.nix) picks up the fix automatically, nothing else
+      # needs to change.
+      kdePackages = prev.kdePackages // {
+        qt6ct = nur.legacyPackages.${prev.system}.repos.ilya-fedin.qt6ct;
+      };
+    })
   ];
 
   # ── Boot ────────────────────────────────────────────────────────────────
   boot.kernelPackages = pkgs.linuxPackages_zen;
-  boot.kernelParams = [ "quiet" "splash" ];
+  boot.kernelParams = [
+    "quiet"
+    "splash"
+    # 0xffffffff (needed for LACT overclocking) with bit 0x8000
+    # (PP_GFXOFF_MASK) cleared, forcing GFXOFF off. Without this, this
+    # RX 6600 XT spams "Failed to disable gfxoff!" in dmesg - this mask
+    # stopped it appearing in the journal entirely. Keep until nixpkgs/
+    # amdgpu ships a real fix for whatever SMU race causes the driver's
+    # own GFXOFF-disable request to fail in the first place.
+    "amdgpu.ppfeaturemask=0xffff7fff"
+  ];
   boot.kernel.sysctl."vm.swappiness" = 100;
 
   boot.plymouth = {
     enable = true;
-    # bgrt reads the motherboard's boot logo from the UEFI firmware's BGRT
-    # ACPI table (the same image shown during POST) and draws the spinner
-    # underneath it.
+    # Stock theme: motherboard/OEM logo from the firmware's BGRT table, with
+    # the normal spinner overlaid (bundled with plymouth itself, no extra
+    # themePackages needed).
     theme = "bgrt";
   };
 
@@ -97,16 +121,6 @@
     # handoff, but the throbber's render loop doesn't).
     initrd.enable = true;
     opencl.enable = true;
-    overdrive = {
-      enable = true;
-      # 0xffffffff (the module's default, needed for LACT overclocking) with bit 0x8000
-      # (PP_GFXOFF_MASK) cleared, forcing GFXOFF off. Added after repeated
-      # "Failed to disable gfxoff!" spam in dmesg from this RX 6600 XT, which stopped
-      # appearing in the journal entirely once this landed - keep until nixpkgs/amdgpu
-      # ships a real fix for whatever SMU race causes the driver's own GFXOFF-disable
-      # request to fail in the first place.
-      ppfeaturemask = "0xffff7fff";
-    };
   };
 
   hardware.bluetooth.enable = true;
@@ -137,89 +151,60 @@
     };
   };
 
-  # KDE Connect protocol, GNOME front-end (GSConnect). Opens the needed
-  # firewall ports; the extension itself is enabled in modules/gnome.nix.
-  programs.kdeconnect = {
-    enable = true;
-    package = pkgs.gnomeExtensions.gsconnect;
-  };
+  # KDE Connect protocol/pairing. DE-agnostic (not Plasma-specific) - opens
+  # the needed firewall ports and installs the kdeconnect-kde package itself.
+  programs.kdeconnect.enable = true;
 
   # ── Locale ──────────────────────────────────────────────────────────────
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
 
-  # ── Desktop (GNOME) ─────────────────────────────────────────────────────
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
+  # ── Desktop (Hyprland + Dux Shell) ───────────────────────────────────────
+  # Migrated off KDE Plasma (2026-11-22) - KDE is gone for good, not kept
+  # around for a revert.
+  #
+  # Login screen is DMS's own dms-greeter (greetd-backed), not SDDM - it
+  # renders in the same Hyprland compositor the rest of the session uses and
+  # picks up the logged-in user's DMS wallpaper/colors, instead of a generic
+  # greeter theme that has nothing to do with the rest of this setup.
+  programs.dms-greeter = {
+    enable = true;
+    compositor.name = "hyprland";
+    configHome = "/home/mc";
+  };
+  programs.hyprland.enable = true;
+  # Hyprland's own packaged session launcher (start-hyprland) invokes UWSM
+  # unconditionally now, regardless of this flag - but leaving it at the
+  # module's default (false) means NixOS never wires UWSM's systemd user
+  # units into the session's unit search path, so the launcher's own
+  # internal "systemctl --user start wayland-session-bindpid@<pid>.service"
+  # call fails with "unit not found" and the whole session tears down ~10s
+  # after login. Matching this to true is what actually makes the package's
+  # own launcher behavior work.
+  programs.hyprland.withUWSM = true;
 
-  # RDP server for GNOME's built-in "Remote Desktop" screen sharing.
-  services.gnome.gnome-remote-desktop.enable = true;
-  networking.firewall.allowedTCPPorts = [ 3389 ];
-
-  # services.gnome.gnome-remote-desktop only links the system-level
-  # gnome-remote-desktop{,-configuration}.service unit files in (systemd
-  # reports them as "linked", not "enabled"/"disabled") without wiring them
-  # into any target. gnome-control-center's System panel hides its entire
-  # "Remote Desktop" row unless that *system*-scope service reports
-  # "enabled" or "disabled" (see cc_get_service_state() in
-  # panels/system/cc-system-panel.c) — "linked" reads as "not found", so the
-  # row — and with it the actual on/off switch — never appears in Settings.
-  # The row itself still toggles the per-session (--user) RDP daemon we
-  # already have running; this only makes systemd recognize the system unit
-  # as properly installed so the panel stops hiding it.
-  systemd.services.gnome-remote-desktop.wantedBy = [ "graphical.target" ];
-  systemd.services.gnome-remote-desktop-configuration.wantedBy = [ "graphical.target" ];
-
-  # Skip GNOME's default terminal (Ghostty is used instead) and GNOME Web.
-  environment.gnome.excludePackages = with pkgs; [
-    gnome-console
-    epiphany
-  ];
-
-  # Give the GDM login screen the same monitor layout as the desktop.
-  systemd.tmpfiles.rules = [
-    "L+ /run/gdm/.config/monitors.xml - - - - ${./extras/monitors.xml}"
-  ];
-
-  # Match GDM's login screen to the Orchis theme (gtk/icon theme, purple accent,
-  # Bibata cursor) so it fits with the rest of modules/gnome.nix.
-  # The gdm user has no home-manager profile of its own, so this is set directly
-  # on its dconf database rather than via `dconf.settings` like the rest of GNOME.
-  services.displayManager.gdm.extraPackages = with pkgs; [ orchis-theme tela-icon-theme bibata-cursors ];
-
-  # The cursor-theme setting above only tells mutter *which* theme to load; it
-  # still has to find it. libXcursor's theme search path is hardcoded to
-  # ~/.icons, ~/.local/share/icons and /usr/share/icons — it never looks at
-  # XDG_DATA_DIRS, so putting bibata-cursors in extraPackages above doesn't
-  # help. In a normal session home-manager symlinks the theme into ~/.icons,
-  # but the gdm-greeter user has no home directory contents at all, so mutter
-  # can't locate Bibata there and falls back to a blank/white box cursor.
-  # Linking it into the system profile instead puts it on XCURSOR_PATH for
-  # every session (NixOS already adds /run/current-system/sw/share/icons to
-  # XCURSOR_PATH — see <nixpkgs/nixos/modules/config/xdg/icons.nix>; the
-  # package itself is added to environment.systemPackages below).
-  programs.dconf.profiles.gdm.databases = [{
-    settings."org/gnome/desktop/interface" = {
-      accent-color = "purple";
-      color-scheme = "prefer-dark";
-      cursor-theme = "Bibata-Modern-Classic";
-      gtk-theme = "Orchis-Purple-Dark"; # must match `orchisTheme` in home.nix
-      icon-theme = "Tela-purple-dark";
-    };
-  }];
+  programs.dank-material-shell = {
+    enable = true;
+    # Clipboard and brightness control are built into DMS now (no toggle
+    # needed - the module rejects enableClipboard/enableBrightnessControl as
+    # dead options). This just backs Super+M (process list).
+    enableClipboardPaste = true;
+    enableSystemMonitoring = true;
+    # DMS's own systemd user service (Type=notify, Restart=on-failure,
+    # ordered before tray.target) instead of the bare exec Hyprland's own
+    # generated startup block used to do. Gets auto-restart-on-crash and
+    # auto-restart-on-package-update for free, and tray icon apps no longer
+    # risk starting before DMS's tray host is actually ready. The matching
+    # exec hook was removed from extras/hyprland/hyprland.lua - leaving both
+    # active would race two processes for the same D-Bus name
+    # (org.freedesktop.Notifications) and one would lose.
+    systemd.enable = true;
+  };
 
   fonts.packages = with pkgs; [
-    hack-font # monospace font (Ghostty + GNOME)
-    noto-fonts # "Noto Sans", the interface/document font set in GNOME
+    hack-font # monospace font (Ghostty)
+    noto-fonts
   ];
-
-  # The generic families (what apps get when they ask for "sans-serif",
-  # "serif" or "monospace"). Plasma used to set these; GNOME doesn't.
-  fonts.fontconfig.defaultFonts = {
-    sansSerif = [ "Noto Sans" ];
-    serif = [ "Noto Serif" ];
-    monospace = [ "Hack" "Noto Sans Mono" ];
-  };
 
   # Makes system fonts visible to Flatpak apps.
   fonts.fontDir.enable = true;
@@ -234,54 +219,14 @@
 
     # module-x11-bell (redirects the old X11 system bell through libcanberra)
     # crashes the whole PipeWire server on an X11/XWayland I/O error, taking
-    # every audio client down with it (including GNOME's own sound daemon,
-    # which doesn't reconnect, silently killing event sounds for the rest of
-    # the session). It's only the legacy bell beep, so just disable it.
+    # every other audio client in the session down with it too. It's only
+    # the legacy bell beep, so just disable it.
     extraConfig.pipewire."10-disable-x11-bell" = {
       "context.properties" = {
         "module.x11.bell" = false;
       };
     };
   };
-
-  # modules/gnome.nix's shutdown-sound-grace-period holds a logind shutdown
-  # inhibitor so the 2.9s logout sound isn't cut off by poweroff/reboot.
-  # Default (5s) leaves only ~2.1s of headroom once session-teardown signal
-  # propagation eats into it; bumped by 1s of slack, not padded further.
-  services.logind.settings.Login.InhibitDelayMaxSec = 6;
-
-  # Like desktop-login/-logout (see modules/gnome.nix), GNOME dropped native
-  # device-added/device-removed sounds years ago; nothing in gnome-settings-daemon
-  # or gnome-shell plays them anymore. Recreate it with a udev rule (fires once per
-  # physical USB device, not per interface) that starts a templated system service
-  # playing the sound as the desktop user.
-  #
-  # Unlike login-logout-sound (a `systemd --user` unit, which inherits the full
-  # graphical session environment), this is a plain `systemd.services` unit started
-  # by PID1 — it never sees XDG_DATA_DIRS, DBUS_SESSION_BUS_ADDRESS, DISPLAY, etc.
-  # `canberra-gtk-play --id=` needs exactly that session environment to resolve the
-  # configured sound theme via GTK/GSettings, so under this service it always failed
-  # silently ("File or data not found") even though the sound files are right there.
-  # Pointing `--file=` straight at this theme's .oga sidesteps theme resolution
-  # entirely, so it only needs PipeWire (via XDG_RUNTIME_DIR) to actually play.
-  systemd.services."usb-sound@" = {
-    description = "Play a sound on USB device %i";
-    serviceConfig = {
-      Type = "oneshot";
-      User = "mc";
-      Environment = "XDG_RUNTIME_DIR=/run/user/1000";
-      ExecStart = "${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play --file=${./extras/sounds/modern-minimal-ui-sounds-v1.2/stereo}/device-%i.oga";
-    };
-  };
-
-  services.udev.extraRules = ''
-    ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", TAG+="systemd", ENV{SYSTEMD_WANTS}+="usb-sound@added.service"
-    # SYSTEMD_WANTS only fires when a device unit *becomes active* (systemd.device(5)) —
-    # it's never acted on for "remove", since the device unit is going inactive, not
-    # active. Start the service straight from the udev worker instead; --no-block keeps
-    # the rule itself fast since it only queues the job rather than waiting on it.
-    ACTION=="remove", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", RUN+="${pkgs.systemd}/bin/systemctl --no-block start usb-sound@removed.service"
-  '';
 
   # ── Services & programs ─────────────────────────────────────────────────
   # Declarative flatpaks (nix-flatpak): apps installed/removed to match this
@@ -295,25 +240,16 @@
     packages = [
       "org.vinegarhq.Sober" # Roblox client
     ];
-
-    # Sandboxed apps otherwise can't see the host theme/icon files, and GTK3
-    # ignores GNOME's theme entirely unless told to via GTK_THEME. GTK4/
-    # libadwaita apps still won't pick up Orchis itself (GTK4 removed support
-    # for theme engines; they only follow accent colour + light/dark via the
-    # portal), but this covers every GTK3 app and the icon set for both.
-    overrides.settings.global = {
-      Context.filesystems = [ "xdg-data/themes:ro" "xdg-data/icons:ro" ];
-      Environment = {
-        GTK_THEME = "Orchis-Purple-Dark"; # must match `orchisTheme` in home.nix
-        # Non-GTK (X11/XWayland, libXcursor) apps don't read GTK's cursor
-        # setting; this is what they actually consult.
-        XCURSOR_THEME = "Bibata-Modern-Classic";
-        XCURSOR_SIZE = "24";
-      };
-    };
   };
   services.printing.enable = true;
   virtualisation.libvirtd.enable = true;
+
+  # GVFS - never installed at all on this system (nothing needed it before
+  # switching to Nautilus). Without it, `gio list network:///` returns
+  # "Operation not supported" - confirmed live - and Nautilus's "Network"
+  # sidebar entry can't load anything. Provides gvfsd itself plus the
+  # network/dnssd/smb/trash backends GTK/GNOME apps expect to just exist.
+  services.gvfs.enable = true;
 
   services.wivrn = {
     enable = true;
@@ -322,7 +258,30 @@
   };
 
   programs.helium.enable = true;
-  programs.steam.enable = true;
+  # ExtensionInstallForcelist (tried for the Catppuccin Mocha Chrome theme)
+  # doesn't actually work here: chrome://policy reports it as accepted, but
+  # the extension never appears in the profile's extensions.settings and
+  # never installs - confirmed by inspecting Preferences directly, not just
+  # a timing issue. Likely deliberate: Helium's whole premise is resisting
+  # exactly this kind of silent policy-forced install (the same mechanism
+  # browser hijackers/corporate spyware abuse), so it validates the policy
+  # schema but doesn't act on it. Install Chrome Web Store items by hand
+  # instead (visit the store page in Helium, click install) - not something
+  # to fight further here.
+  programs.steam = {
+    enable = true;
+    # Steam's client UI runs inside its own FHS-compliant sandbox (bubblewrap),
+    # built only from this package list - NOT from home.packages or
+    # environment.systemPackages. That sandbox has its own isolated
+    # filesystem image, so Bibata (installed everywhere else on this system)
+    # was never actually reachable from inside it: every fix that targeted
+    # the real filesystem (GTK settings.ini, XCURSOR_PATH, a shadowed
+    # "Adwaita" cursor theme under ~/.local/share/icons) had zero effect
+    # because Steam's sandboxed cursor lookup never saw any of it. Confirmed
+    # via https://github.com/NixOS/nixpkgs/issues/437281 - this is the
+    # documented, correct fix, not a guess.
+    extraPackages = [ pkgs.bibata-cursors ];
+  };
   programs.gamemode.enable = true;
   programs.nix-ld.enable = true;
 
@@ -334,77 +293,32 @@
   users.users.mc = {
     isNormalUser = true;
     description = "mc";
-    extraGroups = [ "networkmanager" "wheel" "libvirtd" "dialout" "i2c" ];
+    # "input" is what DMS's own evdev manager needs for raw input device
+    # access - confirmed via its own startup warning ("Failed to initialize
+    # evdev manager: insufficient permissions... Add your user to the
+    # 'input' group"), logged on every single startup in the journal
+    # (`journalctl --user -u dms`) without it.
+    extraGroups = [ "networkmanager" "wheel" "libvirtd" "dialout" "i2c" "input" ];
   };
 
   # ── System packages ─────────────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
-    bibata-cursors # on XCURSOR_PATH for every session, incl. the GDM greeter — see note above gdm.extraPackages
+    # dms-greeter's own cursor-sync logic (core/internal/launcher/cursor.go
+    # in the dux-greeter source) reads cursorSettings.theme out of the
+    # user's synced settings.json and sets XCURSOR_THEME/XCURSOR_PATH for
+    # the login screen automatically - but only if it can find that theme
+    # under one of its search dirs, which always includes
+    # /run/current-system/sw/share/icons (this list). bibata-cursors is
+    # already in modules/hyprland.nix's home.packages for the user session,
+    # but that only reaches the user's own profile, never the system one
+    # the greeter (running as a separate "greeter" user) can see.
+    bibata-cursors
     wayvr
     xrizer
     sbctl
     unrar
     arduino-ide
-    gnome-system-monitor # Ctrl+Shift+Esc (shortcut defined in modules/gnome.nix)
-    ddcutil # used by the brightness-slider extension
-    openssl # gnome-control-center shells out to this to generate the Remote Desktop TLS cert
-
-    # GNOME Shell extensions (enabled declaratively in modules/gnome.nix)
-    gnomeExtensions.user-themes # loads the Orchis shell theme
-    # nixpkgs ships v72, which has no blur for popup menus/calendar/quick settings
-    # (that landed in v73) and has a since-fixed panel blur bug (upstream v77
-    # changelog). Pinned to v77 until nixpkgs catches up.
-    (gnomeExtensions.blur-my-shell.override {
-      version = 77;
-      sha256 = "sha256-Kxscapq5bqZypfhq7l70cglDcqMu4JbzU9krVonG/bw=";
-      metadata = "ewogICJfZ2VuZXJhdGVkIjogIkdlbmVyYXRlZCBieSBTd2VldFRvb3RoLCBkbyBub3QgZWRpdCIsCiAgImRlc2NyaXB0aW9uIjogIkFkZHMgYSBibHVyIGxvb2sgdG8gZGlmZmVyZW50IHBhcnRzIG9mIEdOT01FIFNoZWxsLCBpbmNsdWRpbmcgdGhlIHRvcCBwYW5lbCwgZGFzaCBhbmQgb3ZlcnZpZXcuXG5cbk5vdGU6IGlmIHRoZSBleHRlbnNpb24gc2hvd3MgYW4gZXJyb3IgYWZ0ZXIgdXBkYXRpbmcsIHJlc3RhcnQgeW91ciBzZXNzaW9uIHRvIHNlZSB3aGV0aGVyIGl0IHBlcnNpc3RzLiBUaGlzIGlzIGR1ZSB0byBhIEdOT01FIFNoZWxsIGJ1ZyB0aGF0IHRoZSBleHRlbnNpb24gY2Fubm90IHdvcmsgYXJvdW5kLiIsCiAgImRvbmF0aW9ucyI6IHsKICAgICJnaXRodWIiOiAiYXVuZXR4IiwKICAgICJrb2ZpIjogImF1bmV0eCIKICB9LAogICJnZXR0ZXh0LWRvbWFpbiI6ICJibHVyLW15LXNoZWxsQGF1bmV0eCIsCiAgIm5hbWUiOiAiQmx1ciBteSBTaGVsbCIsCiAgIm9yaWdpbmFsLWF1dGhvcnMiOiBbCiAgICAibWVAYXVuZXR4LmRldiIKICBdLAogICJzZXNzaW9uLW1vZGVzIjogWwogICAgInVubG9jay1kaWFsb2ciLAogICAgInVzZXIiCiAgXSwKICAic2V0dGluZ3Mtc2NoZW1hIjogIm9yZy5nbm9tZS5zaGVsbC5leHRlbnNpb25zLmJsdXItbXktc2hlbGwiLAogICJzaGVsbC12ZXJzaW9uIjogWwogICAgIjQ2IiwKICAgICI0NyIsCiAgICAiNDgiLAogICAgIjQ5IiwKICAgICI1MCIsCiAgICAiNTEiCiAgXSwKICAidXJsIjogImh0dHBzOi8vZ2l0aHViLmNvbS9hdW5ldHgvYmx1ci1teS1zaGVsbCIsCiAgInV1aWQiOiAiYmx1ci1teS1zaGVsbEBhdW5ldHgiLAogICJ2ZXJzaW9uIjogNzcKfQ==";
-    })
-    gnomeExtensions.dash-to-dock
-    # Patched: force-menu-location (BottomCentered here, see modules/gnome.nix)
-    # always positions the menu using the monitor ArcMenu's own button lives on
-    # (this._monitorIndex, fixed to the primary monitor - ArcMenu only creates
-    # a second real button/menuController per monitor when Dash to Panel is
-    # driving it, which isn't the case here), ignoring where the mouse actually
-    # is. Invisible with one monitor, but means both the Super-key hotkey and
-    # clicking the copy multi-monitor-bar clones onto the second monitor above
-    # always pop the menu up on the primary monitor instead of wherever the
-    # mouse is. forceMenuLocation() recomputes the menu's position fresh every
-    # time it opens, so reading Main.layoutManager.currentMonitor (GNOME's own
-    # "monitor the pointer is over right now") instead of the fixed index/actor
-    # makes it follow the mouse on every open, Super-key or click alike.
-    (gnomeExtensions.arcmenu.overrideAttrs (old: {
-      postInstall = (old.postInstall or "") + ''
-        sed -i -E -z \
-          -e 's/const monitor = Main\.layoutManager\.findMonitorForActor\(this\);\n(\s*)const workArea = Main\.layoutManager\.getWorkAreaForMonitor\(this\._monitorIndex\);/const monitor = Main.layoutManager.currentMonitor ?? Main.layoutManager.findMonitorForActor(this);\n\1const workArea = Main.layoutManager.getWorkAreaForMonitor(monitor?.index ?? this._monitorIndex);/' \
-          $out/share/gnome-shell/extensions/*/menuButton.js
-      '';
-    })) # traditional application-menu launcher button
-    # GNOME's own top bar only ever draws on the primary monitor - there is no
-    # vanilla setting for this. This clones a top bar (clock, Activities/ArcMenu
-    # button, quick settings, etc.) onto every other monitor instead.
-    gnomeExtensions.multi-monitor-bar
-    gnomeExtensions.appindicator # system tray (KStatusNotifierItem + legacy tray icons)
-    gnomeExtensions.tiling-shell # KDE/Windows-style window snapping zones
-    gnomeExtensions.rounded-corners # rounded screen corners
-    gnomeExtensions.rounded-window-corners-reborn # rounds windows libadwaita doesn't
-    gnomeExtensions.notification-timeout # banners time out without waiting for the mouse
-    gnomeExtensions.brightness-control-using-ddcutil # brightness sliders for each monitor
-    gnomeExtensions.caffeine # "stay awake" coffee-cup toggle in the quick settings menu
-    # Windows/KDE-style clipboard history (Super+V, see modules/gnome.nix).
-    # Not Pano: Pano has no real GNOME 50 support yet (upstream fix is an
-    # unmerged PR - https://github.com/oae/gnome-shell-pano/pull/381 - and
-    # there's an open report of it freezing the shell on GNOME 49/50).
-    gnomeExtensions.clipboard-history
-    gnomeExtensions.emoji-copy # emoji picker popup (Super+., default keybind out of the box)
-    # KDE-style panel widget showing/controlling the current MPRIS player.
-    # Patched: nixpkgs' build only declares shell-version support up to 49;
-    # GNOME 50 isn't out yet upstream. The extension itself works fine on 50,
-    # it just hasn't been re-tagged, so this adds "50" to metadata.json.
-    (gnomeExtensions.media-controls.overrideAttrs (old: {
-      postInstall = (old.postInstall or "") + ''
-        sed -i 's/"49"/"49", "50"/' $out/share/gnome-shell/extensions/*/metadata.json
-      '';
-    }))
+    ddcutil # DDC/CI monitor brightness control
   ];
 
   # ── Nix ─────────────────────────────────────────────────────────────────
