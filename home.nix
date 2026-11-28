@@ -124,6 +124,21 @@ in
     amberol
 
     # Games & emulation
+    #
+    # gamescope - needed for HDR in Steam/Proton games specifically. Hyprland
+    # itself already supports HDR (wp_color_manager_v1 protocol,
+    # render:cm_auto_hdr enabled by default - confirmed live via
+    # `hyprctl getoption`), which is why native apps like RetroArch already
+    # get it with no extra config. DXVK/VKD3D-Proton don't speak that
+    # protocol at all though, so a Proton game launched directly has no way
+    # to request HDR regardless of what the compositor supports. gamescope
+    # exposes a Vulkan WSI layer Proton *can* target
+    # (`--hdr-enabled`'s own --help text: "needs Gamescope WSI layer enabled
+    # for support from clients"), then renegotiates real Wayland HDR with
+    # Hyprland on the game's behalf - the same mechanism the Steam Deck uses.
+    # Per-game, not a gamescopeSession: set a Steam launch option of
+    # `gamescope --hdr-enabled -- %command%` on whichever game needs it.
+    gamescope
     prismlauncher
     heroic
     bottles
