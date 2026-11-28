@@ -279,7 +279,7 @@
     # because Steam's sandboxed cursor lookup never saw any of it. Confirmed
     # via https://github.com/NixOS/nixpkgs/issues/437281 - this is the
     # documented, correct fix, not a guess.
-    extraPackages = [ pkgs.bibata-cursors ];
+    extraPackages = [ pkgs.bibata-cursors pkgs.mangohud ];
   };
   programs.gamemode.enable = true;
   programs.nix-ld.enable = true;

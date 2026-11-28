@@ -155,6 +155,13 @@ in
     hyfetch
   ];
 
+  # Package + config generation (~/.config/MangoHud/MangoHud.conf) for normal
+  # desktop use. Steam launch options (`mangohud %command%`) run inside
+  # Steam's own FHS sandbox though, which never sees home.packages - same gap
+  # already hit with gamescope and the cursor theme - so the actual binary
+  # Steam calls also needs programs.steam.extraPackages in configuration.nix.
+  programs.mangohud.enable = true;
+
   # Reverted back to spicetify-nix's declarative build-time patching - the
   # imperative CLI + matugen flow (writable Spotify copy, spicetify watch -s)
   # didn't actually get live color updates reaching Spotify, and wasn't
