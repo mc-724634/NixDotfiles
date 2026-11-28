@@ -279,7 +279,13 @@
     # because Steam's sandboxed cursor lookup never saw any of it. Confirmed
     # via https://github.com/NixOS/nixpkgs/issues/437281 - this is the
     # documented, correct fix, not a guess.
-    extraPackages = [ pkgs.bibata-cursors ];
+    # gamescope is the same class of gap as the cursor fix above: it's in
+    # home.nix's home.packages, but Steam launch options (e.g.
+    # `gamescope --hdr-enabled -- %command%`) run inside this sandbox via its
+    # own /bin/sh, which never sees the user profile - confirmed live
+    # ("/bin/sh: line 1: gamescope: command not found", game launch aborted
+    # immediately). Needs to be reachable from inside the sandbox itself.
+    extraPackages = [ pkgs.bibata-cursors pkgs.gamescope ];
   };
   programs.gamemode.enable = true;
   programs.nix-ld.enable = true;
